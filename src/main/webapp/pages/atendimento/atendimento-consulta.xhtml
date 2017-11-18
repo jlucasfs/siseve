@@ -1,0 +1,278 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/pages/templates/ui.xhtml">
+
+	<ui:define name="content">
+		<h2>Prontuário</h2>
+
+		<h:form id="frmAtdtoPacte" styleClass="form-contour">
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton id="btBack1" value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{atendimentoPacienteController.voltarConsultaPaciente}" immediate="true" 
+	               	rendered="#{atendimentoPacienteController.chamadaDePaciente}"/>
+	            <p:commandButton id="btPront1" value="Prontuário" update=":idmsg,@form" ajax="false" process="@form"
+					action="#{atendimentoPacienteController.imprimirProntuario}" icon="ui-icon-print"
+					title="Imprimir prontuário" onclick="javascript:this.form.target='_blank';"
+					onblur="javascript:this.form.target='_self'" 
+					disabled="#{atendimentoPacienteController.pacienteSelecionado == null}"/>
+			</h:panelGrid>
+			
+			<p:panel header="Paciente" styleClass="boxSubtit" id="panel" visible="#{atendimentoPacienteController.pacienteSelecionado == null}">
+				<h:panelGrid columns="6" cellpadding="2" cellspacing="7" >
+					<h:panelGroup>
+						<p:autoComplete id="nomePaciente" forceSelection="false"
+							value="#{atendimentoPacienteController.nomePaciente}"
+							completeMethod="#{clienteController.completeNomePaciente}"
+							dropdown="true" scrollHeight="150" size="30" disabled="false">
+							<p:ajax event="itemSelect" 
+								update="listAtend,info,btPront1,btPront2"
+								listener="#{atendimentoPacienteController.obterPacienteProntuario}" />
+						</p:autoComplete>
+					</h:panelGroup>
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel id="info" header="Paciente" styleClass="boxSubtit">
+				<h:panelGrid columns="4" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Nome :" />
+	           		<h:outputLabel value="Sexo :" />
+	           		<h:outputLabel value="Convênio :" />
+	           		<h:outputLabel value="Telefone(s) :" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.nome} #{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade != '' ? '(' : ''}#{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade}#{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade != '' ? ')' : ''}"
+	           			disabled="true" style="width:300px;" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.sexoDescricao}"
+	           			disabled="true" style="width:150px;" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.convenio == null ? 'Particular' : atendimentoPacienteController.pacienteSelecionado.convenio.pessoa.nome}"
+	           			disabled="true" style="width:200px;" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.telefoneResidencial} #{atendimentoPacienteController.pacienteSelecionado.pessoa.telefoneMovel == null or atendimentoPacienteController.pacienteSelecionado.pessoa.telefoneMovel == '' ? '' : '/'} #{atendimentoPacienteController.pacienteSelecionado.pessoa.telefoneMovel == null ? '' : atendimentoPacienteController.pacienteSelecionado.pessoa.telefoneMovel}"
+	           			disabled="true" style="width:150px;" />
+	           		<h:outputLabel value="Endereço :" />
+	           		<h:outputLabel value="Bairro :" />
+	           		<h:outputLabel value="Cidade :" />
+	           		<h:outputLabel value="UF :" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.size() == 0 ? '' : 
+	           							  atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.get(0).logradouro}"
+	           			disabled="true" style="width:300px;" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.size() == 0 ? '' :
+	           							  atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.get(0).bairro}"
+	           			disabled="true" style="width:150px;" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.size() == 0 ? '' :
+	           							  atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.get(0).cidade}"
+	           			disabled="true" style="width:200px;" />
+	           		<p:inputText value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.size() == 0 ? '' :
+	           							  atendimentoPacienteController.pacienteSelecionado.pessoa.enderecos.get(0).uf}"
+	           			disabled="true" style="width:150px;" />
+	           	</h:panelGrid>
+	        </p:panel>
+
+			 <!-- INICIO LOOP DE ATENDIMENTOS -->
+			 <p:outputPanel id="listAtend">
+		        <ui:repeat var="it" value="#{atendimentoPacienteController.listaAtendimentos}">
+			        
+			        <p:panel id="atends" styleClass="boxSubtit">
+						<f:facet name="header">
+					    	<h:graphicImage value="/static/img/attendance-main.png" alt="Atendimento" width="30" height="30" />
+					    	<p:spacer width="10" height="10" />
+					    	<h:outputText value="Atendimento em: #{it.dataAtendimentoStr}" />
+					    	<p:spacer width="40" height="10" />
+					    	<h:outputText value="Tipo: #{it.codTipoAtendimento.descricao}" />
+					    	<p:spacer width="40" height="10" />
+					    	<h:outputText value="Dentista: #{it.dentista.pessoa.nome}" />
+					    	<p:spacer width="40" height="10" />
+					    	<h:outputText value="#{it.tipoPlano == 'P' ? '()Atendimento PARTICULAR)' : ''}" />
+					    </f:facet>
+					    
+						<h:panelGrid columns="1" cellpadding="2" cellspacing="7">
+			           		<h:outputLabel value="Queixa principal :" />
+				        	<p:inputTextarea value="#{it.descricaoQueixaPrincipal}" maxlength="2000" cols="200" maxHeight="100" rows="6" autoResize="false"
+								style="margin:3px; max-width:890px;" disabled="true" />
+						</h:panelGrid>
+						
+						<p:panel id="pnAnamnese" styleClass="boxSubtit" style="margin-left:15px !important;margin-right:15px !important;"
+							rendered="#{it.perguntasA.size() > 0}">
+							<f:facet name="header">
+						    	<h:graphicImage value="/static/img/question.png" alt="Anamnese" width="20" height="20" />
+						    	<p:spacer width="10" height="10" />
+						    	<h:outputText value="Anamnese" />
+						    </f:facet>
+							
+							<h:panelGrid columns="2" cellpadding="2" cellspacing="5" styleClass="pgridperguntas">
+								<h:panelGroup>
+									<p:dataTable id="perguntasA" var="row" value="#{it.perguntasA}" 
+										emptyMessage="#{msg['search.noResults']}" widgetVar="cellPerguntas"
+										paginator="false" scrollable="false" styleClass="gridContour" 
+										rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}" style="font-size:10px;">
+										<p:column headerText="Pergunta" style="text-align:left;width:150px;max-width:150px;min-width:150px;">
+											<h:outputText value="#{row.pergunta}" />
+										</p:column>
+										<p:column headerText="Resposta" style="text-align:center;width:90px;max-width:90px;min-width:90px;">
+											<h:outputText value="#{row.resposta}" />
+										</p:column>
+										<p:column headerText="Observações" style="text-align:left;margin-left:2px;width:120px;max-width:120px;min-width:120px;">
+											<h:outputText value="#{row.observacoes}" />
+										</p:column>
+									</p:dataTable>
+								</h:panelGroup>
+								<h:panelGroup>
+									<p:dataTable id="perguntasB" var="rowb" value="#{it.perguntasB}" 
+										emptyMessage="#{msg['search.noResults']}" widgetVar="cellPerguntasB"
+										paginator="false" scrollable="false" styleClass="gridContour" 
+										rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
+										<p:column headerText="Pergunta" style="text-align:left;width:150px;max-width:150px;min-width:150px;">
+											<h:outputText value="#{rowb.pergunta}" />
+										</p:column>
+										<p:column headerText="Resposta" style="text-align:center;width:90px;max-width:90px;min-width:90px;">
+											<h:outputText value="#{rowb.resposta}" />
+										</p:column>
+										<p:column headerText="Observações" style="text-align:left;margin-left:2px;width:120px;max-width:120px;min-width:120px;">
+											<h:outputText value="#{rowb.observacoes}" />
+										</p:column>
+									</p:dataTable>
+								</h:panelGroup>
+							</h:panelGrid>
+							<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+								<h:outputLabel value="Observações : " />
+								<p:inputTextarea id="descanmnse" value="#{it.descricaoAnamnese}" 
+									maxlength="2000" cols="200" maxHeight="100" rows="3" autoResize="false"
+									style="margin:3px; max-width:856px;" disabled="true" />
+							</h:panelGrid>
+						</p:panel>
+						
+						<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+							<p:panel styleClass="boxSubtit" style="margin-left:15px !important;">
+								<f:facet name="header">
+							    	<h:graphicImage value="/static/img/plus.png" alt="Diagnóstico" width="20" height="20" />
+							    	<p:spacer width="10" height="10" />
+							    	<h:outputText value="Diagnóstico" />
+							    </f:facet>
+								<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+									<h:outputLabel value="Descrição : " />
+									<p:inputTextarea id="descdignst" value="#{it.descricaoDiagnostico}" 
+										maxlength="2000" cols="200" maxHeight="100" rows="3" autoResize="false"
+										style="margin:3px; max-width:410px;" disabled="true" />
+								</h:panelGrid>
+							</p:panel>
+							<p:panel styleClass="boxSubtit" style="margin-right:15px !important;">
+								<f:facet name="header">
+							    	<h:graphicImage value="/static/img/plus.png" alt="Conduta" width="20" height="20" />
+							    	<p:spacer width="10" height="10" />
+							    	<h:outputText value="Conduta" />
+							    </f:facet>
+								<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+									<h:outputLabel value="Descrição : " />
+									<p:inputTextarea id="desccndta" value="#{it.descricaoConduta}" 
+										maxlength="2000" cols="200" maxHeight="100" rows="3" autoResize="false"
+										style="margin:3px; max-width:410px;" disabled="true" />
+								</h:panelGrid>
+							</p:panel>
+						</h:panelGrid>
+						
+						<h:panelGrid columns="2" cellpadding="0" cellspacing="0"
+							rendered="#{(it.descricaoPrescricao != null and it.descricaoPrescricao.trim() != '') 
+										or (it.descricaoAtestado != null and it.descricaoAtestado.trim() != '')}">
+							<p:panel styleClass="boxSubtit" style="margin-left:15px !important;">
+								<f:facet name="header">
+							    	<h:graphicImage value="/static/img/print.png" alt="Prescrição" width="20" height="20" />
+							    	<p:spacer width="10" height="10" />
+							    	<h:outputText value="Prescrição" />
+							    </f:facet>
+								<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+									<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+										<h:outputLabel value="Título : " />
+										<p:spacer width="8" height="10" />
+										<p:inputText maxlength="60" size="49" value="#{it.tituloPrescricao}" disabled="true" />
+									</h:panelGrid>
+									<h:outputLabel value="Descrição : " />
+									<p:inputTextarea id="descprscr" value="#{it.descricaoPrescricao}" 
+										maxlength="2000" cols="200" maxHeight="100" rows="3" autoResize="false"
+										style="margin:3px; max-width:410px;" disabled="true" />
+								</h:panelGrid>
+							</p:panel>
+							<p:panel styleClass="boxSubtit" style="margin-right:15px !important;">
+								<f:facet name="header">
+							    	<h:graphicImage value="/static/img/print.png" alt="Atestado" width="20" height="20" />
+							    	<p:spacer width="10" height="10" />
+							    	<h:outputText value="Atestado" />
+							    </f:facet>
+								<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+									<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+										<h:outputLabel value="Título : " />
+										<p:spacer width="8" height="10" />
+										<p:inputText maxlength="60" size="49" value="#{it.tituloAtestado}" disabled="true" />
+									</h:panelGrid>
+									<h:outputLabel value="Descrição : " />
+									<p:inputTextarea id="descatstdo" value="#{it.descricaoAtestado}" 
+										maxlength="2000" cols="200" maxHeight="100" rows="3" autoResize="false"
+										style="margin:3px; max-width:410px;" disabled="true" />
+								</h:panelGrid>
+							</p:panel>
+						</h:panelGrid>
+						
+						<p:panel id="pnEvol" styleClass="boxSubtit" toggleable="true" collapsed="false"
+							rendered="#{it.listAtendimentoEvolucao.size() > 0}" style="margin-left:15px !important;margin-right:15px !important;">
+							<f:facet name="header">
+						    	<h:graphicImage value="/static/img/evolution.png" alt="Evoluções" width="20" height="20" />
+						    	<p:spacer width="10" height="10" />
+						    	<h:outputText value="Evoluções" />
+						    </f:facet>
+							<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+								<h:panelGroup>
+									<p:dataTable id='dtevols' var="ent" paginator="true" rows="100" 
+										emptyMessage="#{msg['search.noResults']}" value="#{it.listAtendimentoEvolucao}"
+							            paginatorPosition="bottom"
+										paginatorTemplate="{CurrentPageReport}    {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+							            currentPageReportTemplate="Total de registros: {totalRecords}"
+							            rowsPerPageTemplate="5" rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+										styleClass="gridContour" style="font-size:10px;width:100%">
+										<p:column headerText="Data">
+											<h:outputText value="#{ent.dataEvolucao}">
+						                    	<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" timeZone="America/Sao_Paulo" />
+						                    </h:outputText>
+										</p:column>
+										<p:column headerText="Dentista" style="text-align:left;width:170px;max-width:170px;min-width:170px;">
+						                    <h:outputText value="#{ent.dentista.pessoa.nome}" />
+						                </p:column>
+										<p:column headerText="Tipo" style="text-align:left;width:90px;max-width:90px;min-width:90px;">
+						                    <h:outputText value="#{ent.codTipoAtendimento}" />
+						                </p:column>
+										<p:column headerText="Convênio" style="text-align:left;width:130px;max-width:130px;min-width:130px;">
+						                    <h:outputText value="#{ent.tipoPlano == 'P' ? 'Particular' : ent.convenio.pessoa.nome}" />
+						                </p:column>
+										<p:column headerText="Descrição Evolução" style="text-align:left;width:260px;max-width:260px;min-width:260px;white-space:normal;">
+						                    <h:outputText value="#{ent.descricaoEvolucao}" />
+						                </p:column>
+									</p:dataTable>
+								</h:panelGroup>
+							</h:panelGrid>
+						</p:panel>
+			        </p:panel>
+	
+		        </ui:repeat> <!-- FIM LOOP DE ATENDIMENTOS -->
+	        </p:outputPanel>
+				
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton id="btBack2" value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{atendimentoPacienteController.voltarConsultaPaciente}" immediate="true" 
+	               	rendered="#{atendimentoPacienteController.chamadaDePaciente}"/>
+	            <p:commandButton id="btPront2" value="Prontuário" update=":idmsg,@form" ajax="false" process="@form"
+					action="#{atendimentoPacienteController.imprimirProntuario}" icon="ui-icon-print"
+					title="Imprimir prontuário" onclick="javascript:this.form.target='_blank';"
+					onblur="javascript:this.form.target='_self'" 
+					disabled="#{atendimentoPacienteController.pacienteSelecionado == null}"/>
+			</h:panelGrid>
+		</h:form>
+		
+		<script type="text/javascript">
+			setInterval( function() {
+				$('thead tr th').css('font-weight','bold');
+				$('.pgridperguntas tbody tr td').css('vertical-align','top');
+			}, 500 );
+		</script>
+		
+	</ui:define>
+
+</ui:composition>

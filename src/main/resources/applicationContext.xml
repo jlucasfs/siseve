@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:p="http://www.springframework.org/schema/p"		xmlns:tx="http://www.springframework.org/schema/tx"		
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/context 	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/tx 		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<context:component-scan base-package="br.com.mobiew.siseve" />
+
+	<!-- Conexao deve ser definida no context.xml no servidor de aplicacao. -->
+	<bean id="mysqlDS" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/siseveDS" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="mysqlDS" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.dbcp.testOnBorrow">true</prop>
+				<prop key="hibernate.dbcp.validationQuery">SELECT 1</prop>
+				<prop key="hibernate.connection.release_mode">auto</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<!-- prop key="hibernate.hbm2ddl.auto">update</prop-->
+				<prop key="hibernate.ejb.event.pre-insert">org.hibernate.cfg.beanvalidation.BeanValidationEventListener</prop>
+				<prop key="hibernate.ejb.event.pre-update">org.hibernate.cfg.beanvalidation.BeanValidationEventListener</prop>
+				<prop key="hibernate.ejb.event.pre-delete">org.hibernate.cfg.beanvalidation.BeanValidationEventListener</prop>
+			</props>
+		</property>
+
+		<!-- Package que contem as classes de dominio com anotacoes do hibernate -->
+		<property name="packagesToScan">
+			<list>
+				<value>br.com.mobiew.siseve.model.entity</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="simpleJdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+		<constructor-arg ref="mysqlDS" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize" value="10485760" />
+    </bean>
+
+	<tx:annotation-driven />
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/classes/messages" />
+	</bean>
+
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<property name="scopes">
+			<map>
+				<entry key="view">
+					<bean class="br.com.mobiew.siseve.util.scopes.ViewScope" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="appConfig" class="br.com.mobiew.siseve.util.CustomPropertyPlaceholderConfigurer" lazy-init="false">
+		<property name="location" value="classpath:config.properties" />
+	</bean>
+
+</beans>

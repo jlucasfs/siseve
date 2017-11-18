@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<style>
+			table thead tr th {
+				font-weight: bold;
+			}
+		</style>
+ 		
+ 		<h2>Cadastro de #{clienteController.entidade}</h2>
+		<h:form id="cadastro" styleClass="form-contour">
+            <p:panel header="Filtro de consulta" styleClass="boxSubtit" id="panel">
+            	<h:panelGrid columns="4" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Nome :" />
+					<h:outputLabel value="CPF :" />
+					<h:outputLabel value="Convênio: " />
+					<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+						<h:outputLabel value="Período para data de inclusão: " />
+					</h:panelGrid>
+					<h:panelGroup>
+						<ui:include src="paciente-autocomplete.xhtml">
+							<ui:param name="id" value="nome"></ui:param>
+							<ui:param name="controller" value="#{clienteController}"></ui:param>
+							<ui:param name="required" value="#{false}"></ui:param>
+							<ui:param name="size" value="#{35}"></ui:param>
+							<ui:param name="disabled" value="#{false}"></ui:param>
+						</ui:include>
+						<p:spacer width="10" height="10" />
+					</h:panelGroup>
+					<p:inputMask id='cpf' mask="999.999.999-99"
+						value="#{clienteController.cpf}" converter="delstrmask" style="width:97px;" />
+					<p:selectOneMenu value="#{clienteController.idConvenioFiltro}" 
+						style="width:155px; margin-left: 0;" height="150">
+						<f:selectItem itemLabel="Selecione" itemValue="" />
+						<f:selectItem itemLabel="Particular" itemValue="0" />
+						<f:selectItems value="#{clienteController.conveniosFiltro}" var="ent" 
+							itemValue="#{ent.idConvenio}" itemLabel="#{ent.pessoa.nome}" />
+					</p:selectOneMenu>
+					<h:panelGrid columns="3" cellpadding="0" cellspacing="7">
+						<p:calendar id='dtinicio' value="#{clienteController.dataInclusaoInicio}" showOn="both"
+							pattern="dd/MM/yyyy" maxlength="10" size="11" popupIconOnly="true"
+							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
+						<h:outputLabel value="Até: " />
+						<p:calendar id='dtfim' value="#{clienteController.dataInclusaoFim}" showOn="both"
+							pattern="dd/MM/yyyy" maxlength="10" size="11" popupIconOnly="true"
+							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
+					</h:panelGrid>
+				</h:panelGrid>
+            </p:panel>
+
+			<h:panelGrid styleClass="btnForm" columns="6" cellpadding="2" cellspacing="5">
+	   	    	<p:commandButton id="consultarCad" value="Consultar" update=":idmsg,:frmtabcliente" 
+					action="#{clienteController.consultar}" icon="ui-icon-search"
+					title="Consultar dados de #{clienteController.entidade}" />
+				<p:commandButton id="btnLimparSave" value="#{msg['button.clear']}" update="@form,:frmtabcliente:dtclientes" 
+					action="#{clienteController.inicializar}" icon="ui-icon-arrowreturnthick-1-w"
+					title="Limpar Campos do filtro" />
+				<p:commandButton value="Novo #{clienteController.entidade}" update=":idmsg,@form" ajax="false"
+					action="#{clienteController.incluir}" icon="ui-icon-plus"
+					title="Incluir um novo #{clienteController.entidade}" />
+		    </h:panelGrid>
+
+			<p:focus for=":cadastro:nome" />
+		</h:form>
+		
+		<h:form id='frmtabcliente' styleClass="gridContour" style="margin:0; height:auto;">
+			<h:panelGroup id='grupocliente'>
+			<p:dataTable id='dtclientes' var="ent" paginator="true" rows="50" 
+				emptyMessage="#{msg['search.noResults']}" 
+				value="#{clienteController.pacientes}"
+	            paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}    {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+	            currentPageReportTemplate="Total de registros: {totalRecords}"
+	            rowsPerPageTemplate="10,50,100,500,1000"
+                rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+                first="#{clienteController.paginaAtual}">
+                <p:ajax event="page" listener="#{clienteController.onPageChange}" />
+				<p:column headerText="Nome" style="text-align:left;width:170px;max-width:170px;;min-width:170px;" sortBy="#{ent.nome}" >
+                    <h:outputText value="#{ent.nome}" />
+                </p:column>
+				<p:column headerText="Nº Carteira" style="width:50px; max-width:50px;">
+                    <h:outputText value="#{ent.numeroCarteira}" />
+                </p:column>
+				<p:column headerText="Convênio" style="width:50px; max-width:50px;">
+                    <h:outputText value="#{ent.convenio}" />
+                </p:column>
+				<p:column headerText="Data Inclusão" style="width:43px; max-width:43px;">
+                    <h:outputText value="#{ent.dataInclusao}">
+                    	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+                    </h:outputText>
+				</p:column>
+                <p:column headerText="Ações" style="width:115px;max-width:115px;min-width:115px">
+					<h:panelGrid columns="6" styleClass="actions" cellpadding="2">
+						<p:commandButton action="#{clienteController.editar}" update=":cadastro" ajax="false" icon="ui-icon-pencil" immediate="true" title="Alterar">
+							<f:setPropertyActionListener value="#{ent.id}" target="#{clienteController.idCliente}" />
+							<f:setPropertyActionListener value="#{'F'}" target="#{clienteController.tipoPessoa}" />
+						</p:commandButton>
+                        <p:commandButton update=":frmtabcliente:displayexc" icon="ui-icon ui-icon-close"
+                        	action="#{clienteController.exclusao}"
+                        	oncomplete ="confirmationExcuir.show()" title="Excluir">
+                            <f:setPropertyActionListener value="#{ent.id}" target="#{clienteController.idCliente}" />
+                        </p:commandButton>
+						<p:commandButton action="#{atendimentoPacienteController.entrar}" ajax="false" icon="ui-icon-circle-plus" process="@this"
+							title="Gerenciar atendimentos" immediate="true">
+							<f:setPropertyActionListener value="#{ent.id}" target="#{atendimentoPacienteController.idCliente}" />
+							<f:setPropertyActionListener value="#{true}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+						</p:commandButton>
+						<p:commandButton action="#{atendimentoPacienteController.incluirEvolucaoPaciente}" ajax="false" icon="ui-icon-plusthick" process="@this"
+							title="Incluir Evolução" immediate="true"
+							style="background-color:green !important; background:none;">
+							<f:setPropertyActionListener value="#{ent.id}" target="#{atendimentoPacienteController.idCliente}" />
+							<f:setPropertyActionListener value="#{true}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+						</p:commandButton>
+						<p:commandButton action="#{atendimentoPacienteController.entrarConsulta}" ajax="false" icon="ui-icon-document" process="@this"
+							title="Prontuário" immediate="true"
+							style="background-color:#aaa !important; background:none;">
+							<f:setPropertyActionListener value="#{ent.id}" target="#{atendimentoPacienteController.idCliente}" />
+							<f:setPropertyActionListener value="#{true}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+						</p:commandButton>
+						<p:commandButton action="#{atendimentoPacienteController.entrarEvolucoes}" ajax="false" icon="ui-icon-circle-plus" process="@this"
+							title="Evoluções do paciente" immediate="true">
+							<f:setPropertyActionListener value="#{ent.id}" target="#{atendimentoPacienteController.idCliente}" />
+							<f:setPropertyActionListener value="#{true}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+						</p:commandButton>
+                    </h:panelGrid>
+                </p:column>
+            </p:dataTable>
+            </h:panelGroup>
+            
+            <h:panelGrid id="displayexc" columns="2" cellpadding="4" style="margin:0 auto;">  
+				<p:confirmDialog message="Confirma a exclusão de #{clienteController.cliente.pessoa.nome}?" width="350"
+					showEffect="explode" hideEffect="explode"
+					header="Confirmação" severity="alert" widgetVar="confirmationExcuir">
+                	<p:commandButton value="Sim" update=":idmsg,:frmtabcliente" actionListener="#{clienteController.excluir}" 
+                		icon="ui-icon ui-icon-check" onclick="confirmationExcuir.hide()" />
+                	<p:commandButton value="Não" onclick="confirmationExcuir.hide()" type="button" icon="ui-icon ui-icon-close"/>
+				</p:confirmDialog>
+            </h:panelGrid>
+
+	 	</h:form>
+	</ui:define>
+</ui:composition>

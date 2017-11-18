@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<h2>Cadastro de Funcionalidade</h2>
+		<h:form id="formFuncionalidade" styleClass="form-contour" prependId="false">
+			<p:panel id="panelFuncionalidade" header="Dados de Funcionalidade" styleClass="boxSubtit">
+				<h:panelGrid columns="5" cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Funcionalidade" for="funcionalidade" />
+					<p:inputText id="funcionalidade" label="Funcionalidade" size="60"
+						required='true' requiredMessage="O campo Funcionalidade é obrigatório."
+						value="#{funcionalidadeController.funcionalidade.nomeFuncionalidade}" />
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid styleClass="btnForm" columns="3" cellpadding="2" cellspacing="5">
+				<p:commandButton oncomplete="init();" id="btnSalvar" value="Salvar"
+					update=":idmsg,@form,:formFuncionalidadeTabela" action="#{funcionalidadeController.salvar}" icon="ui-icon ui-icon-disk" />
+				<p:commandButton id="btnLimpar" value="Limpar Campos" process="@this" update="@form"
+				    action="#{funcionalidadeController.limparCampos}"
+				    image="botao-limpar-campos" title="Limpar Campos do filtro" />
+			</h:panelGrid>
+			<p:focus for="formFuncionalidade:funcionalidade" />
+		</h:form>
+
+		<h:form id='formFuncionalidadeTabela' styleClass="gridContour" style="margin:0; height:auto;">
+			<p:dataTable id='tabfuncionalidades' var="funcionalidade"
+				value="#{funcionalidadeController.funcionalidades}" 
+				paginator="true" rows="10" paginatorPosition="bottom" emptyMessage="Nenhum registro encontrado"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                rowsPerPageTemplate="10,20,50,100"
+                sortBy="#{funcionalidade.nomeFuncionalidade}"
+				rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
+				<p:column sortBy="#{funcionalidade.nomeFuncionalidade}" headerText="Funcionalidade" style="text-align:left;">
+					<h:outputText value="#{funcionalidade.nomeFuncionalidade}" />
+				</p:column>
+				<p:column style="width:100px" headerText="Ações">
+					<h:panelGrid columns="3" styleClass="actions" cellpadding="2">
+						<p:commandButton oncomplete="init();" update=":formFuncionalidade"
+							icon="ui-icon ui-icon-pencil" title="Alterar">
+							<f:setPropertyActionListener value="#{funcionalidade}" target="#{funcionalidadeController.funcionalidade}" />
+						</p:commandButton>
+						<p:commandButton update=":formFuncionalidadeTabela:display"
+							icon="ui-icon ui-icon-close" oncomplete="confirmation.show()" title="Excluir">
+							<f:setPropertyActionListener value="#{funcionalidade}" target="#{funcionalidadeController.funcionalidade}" />
+						</p:commandButton>
+					</h:panelGrid>
+				</p:column>
+			</p:dataTable>
+			<h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">
+				<p:confirmDialog message="Confirma exclusão da Funcionalidade #{funcionalidadeController.funcionalidade.nomeFuncionalidade} ?"
+					width="280" showEffect="explode" hideEffect="explode"
+					header="Confirmação" severity="alert" widgetVar="confirmation">
+					<p:commandButton value="Sim" update=":idmsg,@form,:formFuncionalidade"
+						actionListener="#{funcionalidadeController.excluir}"
+						icon="ui-icon ui-icon-check" onclick="confirmation.hide()" />
+					<p:commandButton value="Não" onclick="confirmation.hide()"
+						type="button" icon="ui-icon ui-icon-close" />
+				</p:confirmDialog>
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/static/css/menu.css" />
+	<h:form id='frmmenu'>
+		<div style='position:relative;'>
+			<p:menubar styleClass="bg-menu" autoDisplay="false">
+			 	<p:menuitem value="Painel" url="/pages/home.jsf" icon="ui-icon ui-icon-home" style="max-width:70px; min-width:90px;" />
+			 	<p:menuitem value="Agenda" url="/pages/agenda.jsf" icon="ui-icon ui-icon-calendar" style="min-width:100px;" />
+			    <p:submenu label="Cadastro" style="opacity:0.95;">
+			        <p:menuitem value="Paciente" ajax="false" action="#{clienteController.entrar}" style="width:180px;" />
+			        <p:menuitem value="Dentista" url='/pages/dentista-index.jsf' style="width:180px;" rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
+			        <p:menuitem value="Convênio" url='/pages/convenio-index.jsf' style="width:180px;" rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
+			        <p:menuitem value="Especialidade" url='/pages/especialidade-index.jsf' style="width:180px;" />
+			        <p:menuitem value="Perguntas Anamnese" url='/pages/anamnese-index.jsf' style="width:180px;" />
+			        <p:menuitem value="Índice" url='/pages/indice-index.jsf' style="width:180px;" />
+			        <p:menuitem value="Procedimento" url='/pages/procedimento-index.jsf' style="width:180px;" />
+			        <p:menuitem value="Evento" url='/pages/ca/evento-index.jsf' style="width:160px;" rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
+			    </p:submenu>
+			    <p:submenu label="Atendimento" style="opacity:0.95;">
+			        <p:menuitem value="Gerenciar Atendimentos" ajax="false" action="#{atendimentoPacienteController.entrar}" style="width:190px;" >
+			        	<f:setPropertyActionListener value="#{false}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+			        </p:menuitem>
+			        <p:menuitem value="Gerenciar Evoluções" ajax="false" action="#{atendimentoPacienteController.entrarEvolucoes}" style="width:190px;" >
+			        	<f:setPropertyActionListener value="#{false}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+			        </p:menuitem>
+			        <p:menuitem value="Prontuário" ajax="false" action="#{atendimentoPacienteController.entrarConsulta}" style="width:190px;" >
+			        	<f:setPropertyActionListener value="#{false}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+			        </p:menuitem>
+			    </p:submenu>
+			    <p:submenu label="Financeiro" style="opacity:0.95;">
+			        <p:menuitem value="#{sessionScope.perfilUsuarioAutenticado == 'ADM'? 'Lançar' : 'Consultar'} Procedimentos" ajax="false" action="#{lanctoProcedimentosController.entrar}" />
+			        <p:menuitem value="Lançar Valores" ajax="false" action="#{lanctoValoresController.entrar}" style="width:230px;" />
+			        <p:menuitem value="Fechamento Mensal" url='/pages/fechamentoFinanceiro-index.jsf' style='width:230px;'
+			        	rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
+			        <p:menuitem value="Comparativo de Procedimentos" ajax="false" action="#{comparativoProcedimentosController.entrar}" style="width:230px;"
+			        	rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
+			        <p:menuitem value="Pagamentos Parcelados" url='/pages/pagto-parcelado-index.jsf' style='width:230px;'
+			        	rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
+
+			        <p:menuitem value="Movimentações" action="#{financeiroController.movimentacoes}" 
+			        	ajax="false" style="width:230px;" />
+			        <p:menuitem value="Relatório" action="#{relatorioFinanceiroController.entrar}" 
+			        	ajax="false" style="width:230px;" />
+			    </p:submenu>
+			    <p:submenu label="Estoque" style="opacity:0.95;">
+			        <p:menuitem value="Cadastrar Produtos" ajax="false" action="#{produtoController.entrar}" style="width:190px;" />
+			        <p:menuitem value="Lançar Movimentações" ajax="false" action="#{movimentacaoProdutoController.entrar}" style="width:190px;" />
+			        <p:menuitem value="Requisição de material" ajax="false" action="#{requisicaoMaterialController.entrar}" style="width:190px;" />
+			    </p:submenu>
+			    <p:submenu label="Administração" rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
+			        <p:menuitem value="Usuário" url='/pages/ca/usuario.jsf' style="width:170px;" />
+			        <p:menuitem value="Funcionalidade" url='/pages/ca/funcionalidade.jsf' style="width:170px;" />
+			        <p:menuitem value="Perfil" url='/pages/ca/perfil.jsf' style="width:170px;" />
+			        <p:menuitem value="Perfil x usuarios" url='/pages/ca/perfilUsuario.jsf' style="width:170px;" />
+			        <p:menuitem value="Permissões" url='/pages/ca/permissaoPerfil.jsf' style="width:170px;" />
+			        <p:menuitem value="Consulta Envio e-mails" url='/pages/consulta-envio-emails.jsf' style="width:170px;" rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
+			    </p:submenu>
+			</p:menubar>
+			<p:commandButton value="Sair" ajax="false" action="#{loginController.doLogoff}" icon="ui-icon-power" title="Sair do sistema"
+				style="position:absolute; right:5px; top:5px; z-index:1000; border-radius: 5px;" />
+		</div>
+	</h:form>
+</ui:composition>

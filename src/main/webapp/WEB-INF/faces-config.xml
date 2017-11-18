@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+	<converter>
+		<converter-id>convsex</converter-id>
+		<converter-class>br.com.mobiew.siseve.converters.SexoConverter</converter-class>
+	</converter>
+	<converter>
+		<converter-id>delstrmask</converter-id>
+		<converter-class>br.com.mobiew.siseve.converters.DeleteStringMaskConverter</converter-class>
+	</converter>
+	<converter>
+		<converter-id>doubleconv</converter-id>
+		<converter-class>br.com.mobiew.siseve.converters.DoubleConverter</converter-class>
+	</converter>
+	<converter>
+		<converter-id>intergercnv</converter-id>
+		<converter-class>javax.faces.convert.IntegerConverter</converter-class>
+	</converter>
+	<converter>
+		<converter-id>anomesconv</converter-id>
+		<converter-class>br.com.mobiew.siseve.converters.AnoMesConverter</converter-class>
+	</converter>
+
+	
+	<application>
+		<!-- incluir tag el-resolver para criar instancias do spring em projetos 
+			com jsf. -->
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+		<locale-config>
+			<default-locale>pt_BR</default-locale>
+			<supported-locale>pt_BR</supported-locale>
+			<supported-locale>en</supported-locale>
+			<supported-locale>es</supported-locale>
+		</locale-config>
+		<message-bundle>messages</message-bundle>
+		<resource-bundle>
+			<base-name>config</base-name>
+			<var>cfg</var>
+		</resource-bundle>
+	</application>
+	<lifecycle>
+		<phase-listener>br.com.mobiew.siseve.filters.AuthorizationListener</phase-listener>
+	</lifecycle>
+	<lifecycle>
+		<phase-listener>br.com.mobiew.siseve.util.MultiPageMessageSupport</phase-listener>
+	</lifecycle>
+</faces-config>

@@ -1,0 +1,282 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
+
+	<ui:define name="content">
+		<h2>Prontuário</h2>
+
+		<h:form id="frmAtdtoPacte" styleClass="form-contour">
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{atendimentoPacienteController.entrar}" immediate="true" />
+				<p:commandButton value="#{msg['button.clear']}" update="@form" 
+					action="#{atendimentoPacienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="true" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form" ajax="false"
+					action="#{atendimentoPacienteController.salvar}" icon="ui-icon ui-icon-disk"
+					process="@this,:frmAtdtoPacte" oncomplete="goTopPage();" />
+				<p:commandButton value="#{msg['button.addevolucao']}" update=":idmsg,@form" ajax="false"
+					action="#{atendimentoPacienteController.adicionarEvolucao}" icon="ui-icon ui-icon-plus"
+					rendered="#{atendimentoPacienteController.atendimento.id != null}">
+					<f:setPropertyActionListener value="#{false}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+				</p:commandButton>
+			</h:panelGrid>
+
+			<p:panel header="Atendimento" styleClass="boxSubtit">
+				<h:panelGrid columns="3" cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Paciente : " />
+					<h:outputLabel value="Dentista : " />
+					<h:outputLabel value="Tipo *: " />
+					<p:inputText maxlength="60" size="50" disabled="true"
+						value="#{atendimentoPacienteController.atendimento.cliente.pessoa.nome} #{atendimentoPacienteController.atendimento.cliente.pessoa.pessoaFisica.abreParentesesIdade} #{atendimentoPacienteController.atendimento.cliente.pessoa.pessoaFisica.idade} #{atendimentoPacienteController.atendimento.cliente.pessoa.pessoaFisica.fechaParentesesIdade}" />
+					<h:panelGroup>
+						<p:autoComplete id="dentista" value="#{atendimentoPacienteController.dentista}" 
+							completeMethod="#{atendimentoPacienteController.completeDentista}"
+							dropdown="true" scrollHeight="150" size="36" onchange="" >
+						 	<p:ajax event="itemSelect" update="dentista" />
+						 </p:autoComplete>
+						<p:spacer width="5" height="10" />
+					</h:panelGroup>
+					<p:selectOneMenu id="tpatd" value="#{atendimentoPacienteController.atendimento.codTipoAtendimento}" 
+						style="width:160px;" disabled="#{atendimentoPacienteController.atendimento.id != null}">  
+						<f:selectItems value="#{atendimentoPacienteController.getAllTipoAtendimento()}" 
+							var="ent" itemValue="#{ent}" itemLabel="#{ent.descricao}" />
+						<p:ajax event="change" listener="#{atendimentoPacienteController.getAnamnesesInclusao}" update="pnAnamnese" />
+					</p:selectOneMenu> 
+					
+					<h:outputLabel value="Data e Hora *: " />
+					<h:outputLabel value="Convênio : " />
+					<h:outputLabel value="Tipo de Plano : " />
+					<h:panelGrid columns="2" cellpadding="1" cellspacing="2">
+						<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+							<p:calendar value="#{atendimentoPacienteController.dataAtendimento}" showOn="both"
+								maxdate="#{atendimentoPacienteController.dataAtual}" pattern="dd/MM/yyyy"
+								maxlength="10" size="11" popupIconOnly="true" 
+								readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo"
+								required="true" requiredMessage="O campo 'Data de Atendimento' é obrigatório" />
+							<p:spacer width="5" />
+						</h:panelGrid>
+						<p:inputText maxlength="5" size="5" value="#{atendimentoPacienteController.horaAtendimento}"
+							required="true" requiredMessage="O campo 'Hora de Atendimento' é obrigatório" />
+					</h:panelGrid>
+					<h:panelGroup id="pnlpartc">
+						<p:inputText id="partic" value="#{atendimentoPacienteController.atendimento.cliente.convenio == null
+							|| atendimentoPacienteController.atendimento.cliente.convenio.idConvenio == null ? 'Particular' : 
+							atendimentoPacienteController.atendimento.cliente.convenio.pessoa.nome }" 
+							style="width:273px;" disabled="true" />
+					</h:panelGroup>
+					<p:selectOneRadio id="tpplano" value="#{atendimentoPacienteController.atendimento.tipoPlano}"
+						disabled="#{atendimentoPacienteController.atendimento.cliente.convenio == null}">
+						<f:selectItem itemLabel="Convênio" itemValue="C" />
+						<f:selectItem itemLabel="Particular" itemValue="P" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+			</p:panel>
+
+			<p:panel id="pnEvol" header="Evoluções" styleClass="boxSubtit" toggleable="true" collapsed="false"
+				rendered="#{atendimentoPacienteController.atendimento.listAtendimentoEvolucao.size() > 0}">
+				<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+					<h:panelGroup>
+						<p:dataTable id='dtevols' var="ent" paginator="true" rows="50" 
+							emptyMessage="#{msg['search.noResults']}" value="#{atendimentoPacienteController.atendimento.listAtendimentoEvolucao}"
+				            paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport}    {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+				            currentPageReportTemplate="Total de registros: {totalRecords}"
+				            rowsPerPageTemplate="10,20,50,100" rowIndexVar="rowIx" 
+				            rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+							styleClass="gridContour" style="font-size:10px;width:100%">
+							<p:column headerText="Data">
+								<h:outputText value="#{ent.dataEvolucao}">
+			                    	<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" timeZone="America/Sao_Paulo" />
+			                    </h:outputText>
+							</p:column>
+							<p:column headerText="Dentista" style="text-align:left;width:110px;max-width:110px;min-width:110px;">
+			                    <h:outputText value="#{ent.dentista.pessoa.nome}" />
+			                </p:column>
+							<p:column headerText="Tipo" style="text-align:left;width:90px;max-width:90px;min-width:90px;">
+			                    <h:outputText value="#{ent.codTipoAtendimento}" />
+			                </p:column>
+							<p:column headerText="Convênio" style="text-align:left;width:110px;max-width:110px;min-width:110px;">
+			                    <h:outputText value="#{ent.tipoPlano == 'P' ? 'Particular' : ent.convenio.pessoa.nome}" />
+			                </p:column>
+							<p:column headerText="Descrição" style="text-align:left;width:280px;max-width:280px;min-width:280px;white-space:normal;">
+			                    <h:outputText value="#{ent.descricaoEvolucao}" />
+			                </p:column>
+			                <p:column headerText="Ações" style="width:60px;max-width:60px;min-width:60px;">
+			                	<h:panelGrid columns="3" styleClass="actions" cellpadding="2">
+									<p:commandButton action="#{atendimentoPacienteController.alterarEvolucao}" update=":frmAtdtoPacte" ajax="false" 
+										icon="ui-icon-pencil" immediate="true" title="Alterar">
+										<f:setPropertyActionListener value="#{ent}" target="#{atendimentoPacienteController.atendimentoEvolucao}" />
+									</p:commandButton>
+									<p:commandButton update=":frmAtdtoPacte:displayexcevol" icon="ui-icon ui-icon-close" 
+										oncomplete="confirmationExcluirEvol.show()" title="Excluir">
+			                            <f:setPropertyActionListener value="#{ent}" target="#{atendimentoPacienteController.atendimentoEvolucao}" />
+			                        </p:commandButton>
+			                    </h:panelGrid>
+			                </p:column>
+						</p:dataTable>
+					</h:panelGroup>
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:panel header="Queixa Principal" styleClass="boxSubtit">
+				<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Descrição : " />
+					<p:inputTextarea id="descqxprinc" value="#{atendimentoPacienteController.atendimento.descricaoQueixaPrincipal}" 
+						maxlength="1500" cols="200" maxHeight="100" rows="6" autoResize="false"
+						style="margin:3px; max-width:890px;" />
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:panel id="pnAnamnese" header="Anamnese" styleClass="boxSubtit">
+				<h:panelGrid columns="2" cellpadding="2" cellspacing="5" styleClass="pgridperguntas">
+					<h:panelGroup>
+						<p:dataTable id="perguntasA" var="row" editable="true" value="#{atendimentoPacienteController.perguntasA}" 
+							emptyMessage="#{msg['search.noResults']}" editMode="cell" widgetVar="cellPerguntas"
+							paginator="false" scrollable="false" styleClass="gridContour" 
+							rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}" style="font-size:10px;">
+							<p:ajax event="cellEdit" listener="#{atendimentoPacienteController.onCellEdit}" update="@this" process="@this" immediate="true" />
+							<p:column headerText="Pergunta" style="text-align:left;width:170px;max-width:170px;min-width:170px;">
+								<h:outputText value="#{row.pergunta}" />
+							</p:column>
+							<p:column headerText="Resposta" style="text-align:center;width:90px;max-width:90px;min-width:90px;">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText value="#{row.resposta}" /></f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{row.resposta}" style="width:90%;text-align:left;" effect="fade">
+											<f:selectItem itemLabel="Selecione..." itemValue="" noSelectionOption="true" />
+											<f:selectItems value="#{row.respostas}" var="it" itemLabel="#{it}" itemValue="#{it}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Observações" style="text-align:left;margin-left:2px;width:120px;max-width:120px;min-width:120px;">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText value="#{row.observacoes}" /></f:facet>
+									<f:facet name="input"><p:inputText value="#{row.observacoes}" style="width:90%;"/></f:facet>
+								</p:cellEditor>
+							</p:column>
+						</p:dataTable>
+					</h:panelGroup>
+					<h:panelGroup>
+						<p:dataTable id="perguntasB" var="rowb" editable="true" value="#{atendimentoPacienteController.perguntasB}" 
+							emptyMessage="#{msg['search.noResults']}" editMode="cell" widgetVar="cellPerguntasB"
+							paginator="false" scrollable="false" styleClass="gridContour" 
+							rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
+							<p:ajax event="cellEdit" listener="#{atendimentoPacienteController.onCellEditB}" update="@this" process="@this" immediate="true" />
+							<p:column headerText="Pergunta" style="text-align:left;width:170px;max-width:170px;min-width:170px;">
+								<h:outputText value="#{rowb.pergunta}" />
+							</p:column>
+							<p:column headerText="Resposta" style="text-align:center;width:90px;max-width:90px;min-width:90px;">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText value="#{rowb.resposta}" /></f:facet>
+									<f:facet name="input">
+										<p:selectOneMenu value="#{rowb.resposta}" style="width:90%;text-align:left;" effect="fade">
+											<f:selectItem itemLabel="Selecione..." itemValue="" noSelectionOption="true"/>
+											<f:selectItems value="#{rowb.respostas}" var="it" itemLabel="#{it}" itemValue="#{it}" />
+										</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Observações" style="text-align:left;margin-left:2px;width:120px;max-width:120px;min-width:120px;">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText value="#{rowb.observacoes}" /></f:facet>
+									<f:facet name="input"><p:inputText value="#{rowb.observacoes}" style="width:90%;"/></f:facet>
+								</p:cellEditor>
+							</p:column>
+						</p:dataTable>
+					</h:panelGroup>
+				</h:panelGrid>
+				<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Observações : " />
+					<p:inputTextarea id="descanmnse" value="#{atendimentoPacienteController.atendimento.descricaoAnamnese}" 
+						maxlength="1500" cols="200" maxHeight="100" rows="3" autoResize="false"
+						style="margin:3px; max-width:890px;" />
+				</h:panelGrid>
+			</p:panel>
+			
+			<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+				<p:panel header="Diagnóstico" styleClass="boxSubtit">
+					<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+						<h:outputLabel value="Descrição : " />
+						<p:inputTextarea id="descdignst" value="#{atendimentoPacienteController.atendimento.descricaoDiagnostico}" 
+							maxlength="1500" cols="200" maxHeight="100" rows="3" autoResize="false"
+							style="margin:3px; max-width:424px;" />
+					</h:panelGrid>
+				</p:panel>
+				<p:panel header="Conduta" styleClass="boxSubtit">
+					<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+						<h:outputLabel value="Descrição : " />
+						<p:inputTextarea id="desccndta" value="#{atendimentoPacienteController.atendimento.descricaoConduta}" 
+							maxlength="1500" cols="200" maxHeight="100" rows="3" autoResize="false"
+							style="margin:3px; max-width:424px;" />
+					</h:panelGrid>
+				</p:panel>
+			</h:panelGrid>
+			
+			<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+				<p:panel header="Prescrição" styleClass="boxSubtit">
+					<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<h:outputLabel value="Título : " />
+							<p:spacer width="8" height="10" />
+							<p:inputText maxlength="60" size="50" value="#{atendimentoPacienteController.atendimento.tituloPrescricao}" />
+						</h:panelGrid>
+						<h:outputLabel value="Descrição : " />
+						<p:inputTextarea id="descprscr" value="#{atendimentoPacienteController.atendimento.descricaoPrescricao}" 
+							maxlength="1500" cols="200" maxHeight="100" rows="3" autoResize="false"
+							style="margin:3px; max-width:424px;" />
+					</h:panelGrid>
+				</p:panel>
+				<p:panel header="Atestado" styleClass="boxSubtit">
+					<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<h:outputLabel value="Título : " />
+							<p:spacer width="8" height="10" />
+							<p:inputText maxlength="60" size="50" value="#{atendimentoPacienteController.atendimento.tituloAtestado}" />
+						</h:panelGrid>
+						<h:outputLabel value="Descrição : " />
+						<p:inputTextarea id="descatstdo" value="#{atendimentoPacienteController.atendimento.descricaoAtestado}" 
+							maxlength="1500" cols="200" maxHeight="100" rows="3" autoResize="false"
+							style="margin:3px; max-width:424px;" />
+					</h:panelGrid>
+				</p:panel>
+			</h:panelGrid>
+			
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{atendimentoPacienteController.entrar}" immediate="true" />
+				<p:commandButton id="btnLimpar2" value="#{msg['button.clear']}" update="@form" 
+					action="#{atendimentoPacienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="true" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form" ajax="false"
+					action="#{atendimentoPacienteController.salvar}" icon="ui-icon ui-icon-disk"
+					process="@this,:frmAtdtoPacte" oncomplete="goTopPage();" />
+				<p:commandButton value="#{msg['button.addevolucao']}" update=":idmsg,@form" ajax="false"
+					action="#{atendimentoPacienteController.adicionarEvolucao}" icon="ui-icon ui-icon-plus"
+					rendered="#{atendimentoPacienteController.atendimento.id != null}">
+					<f:setPropertyActionListener value="#{false}" target="#{atendimentoPacienteController.chamadaDePaciente}" />
+				</p:commandButton>
+			</h:panelGrid>
+
+			<h:panelGrid id="displayexcevol" columns="2" cellpadding="4" style="margin:0 auto;">
+				<p:confirmDialog message="Confirma a exclusão da Evolução?" width="350" showEffect="explode" hideEffect="explode"
+					header="Confirmação" severity="alert" widgetVar="confirmationExcluirEvol">
+                	<p:commandButton value="Sim" update=":idmsg,:frmAtdtoPacte,pnEvol" actionListener="#{atendimentoPacienteController.excluirEvolucao}" 
+                		icon="ui-icon ui-icon-check" onclick="confirmationExcluirEvol.hide()" />
+                	<p:commandButton value="Não" onclick="confirmationExcluirEvol.hide()" type="button" icon="ui-icon ui-icon-close"/>
+				</p:confirmDialog>
+            </h:panelGrid>
+
+		</h:form>
+		
+		<script type="text/javascript">
+			setInterval( function() {
+				$('thead tr th').css('font-weight','bold');
+				$('.pgridperguntas tbody tr td').css('vertical-align','top');
+			}, 500 );
+		</script>
+		
+	</ui:define>
+
+</ui:composition>

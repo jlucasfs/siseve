@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+ 		<h2>#{atendimentoPacienteController.tituloTela}</h2>
+		<h:form id="cadastro" styleClass="form-contour">
+            <p:panel header="Paciente" styleClass="boxSubtit" id="panel">
+            	<h:panelGrid columns="6" cellpadding="2" cellspacing="7" rendered="#{atendimentoPacienteController.chamadaDePaciente}">
+	           		<h:outputLabel value="Nome :" />
+	           		<h:outputText id="nome" value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.nome} #{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade != '' ? '(' : ''}#{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade}#{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade != '' ? ')' : ''}" />
+	           		<p:spacer width="12" height="10" />
+	           		<h:outputLabel value="Convênio :" />
+	           		<h:outputText value="#{atendimentoPacienteController.pacienteSelecionado.convenio == null ? 'Particular' : atendimentoPacienteController.pacienteSelecionado.convenio.pessoa.nome}" />
+				</h:panelGrid>
+            	<h:panelGrid columns="6" cellpadding="2" cellspacing="7" rendered="#{!atendimentoPacienteController.chamadaDePaciente}">
+					<h:panelGroup>
+						<p:autoComplete id="nomePaciente" forceSelection="false"
+							value="#{atendimentoPacienteController.nomePaciente}"
+							completeMethod="#{clienteController.completeNomePaciente}"
+							dropdown="true" scrollHeight="150" size="30" disabled="false">
+							<p:ajax event="itemSelect"
+								update=":frmtabatendpac,lblIdade,idade,lblConvenio,convenio,btPront,btAtend"
+								process="@this" listener="#{atendimentoPacienteController.obterPacienteAtendimento}" />
+						</p:autoComplete>
+	           		<p:spacer width="20" height="10" />
+	           		<h:outputLabel id="lblIdade" value="#{atendimentoPacienteController.pacienteSelecionado != null ? 'Idade: ' : ''}" />
+	           		<h:outputText id="idade" 
+	           			value="#{atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade != null ? atendimentoPacienteController.pacienteSelecionado.pessoa.pessoaFisica.idade : ''}" />
+	           		<p:spacer width="50" height="10" />
+	           		<h:outputLabel id="lblConvenio" value="#{atendimentoPacienteController.pacienteSelecionado != null ? 'Convênio: ' : ''}" />
+	           		<h:outputText id="convenio" 
+	           			value="#{atendimentoPacienteController.pacienteSelecionado != null ? atendimentoPacienteController.pacienteSelecionado.convenio == null ? 'Particular' : atendimentoPacienteController.pacienteSelecionado.convenio.pessoa.nome : ''}" />
+					</h:panelGroup>
+				</h:panelGrid>
+            </p:panel>
+			<h:panelGrid styleClass="btnForm" columns="6" cellpadding="2" cellspacing="5" >
+				<p:commandButton id="btBack" value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" rendered="#{atendimentoPacienteController.chamadaDePaciente}"
+	               	action="#{clienteController.voltar}" immediate="true" />
+				<p:commandButton id="btPront" value="Prontuário" update=":idmsg,@form" ajax="false" disabled="#{atendimentoPacienteController.pacienteSelecionado == null}"
+					action="#{atendimentoPacienteController.imprimirProntuario}" icon="ui-icon-print"
+					title="Imprimir prontuário do paciente" onclick="javascript:this.form.target='_blank';"
+					onblur="javascript:this.form.target='_self'" />
+				<p:commandButton id="btAtend" value="Novo atendimento" update=":idmsg,@form" ajax="false" disabled="#{atendimentoPacienteController.pacienteSelecionado == null}"
+					action="#{atendimentoPacienteController.novoAtendimento}" icon="ui-icon-plus"
+					title="Atender paciente" />
+		    </h:panelGrid>
+		</h:form>
+		
+		<h:form id='frmtabatendpac' styleClass="gridContour" style="margin:0; height:auto;" >
+			<h:panelGroup id='grupocliente'>
+			<p:dataTable id='dtatendimentos' var="ent" paginator="true" rows="100" 
+				emptyMessage="#{msg['search.noResults']}" 
+				value="#{atendimentoPacienteController.atendimentos}"
+	            paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}    {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+	            currentPageReportTemplate="Total de registros: {totalRecords}"
+	            rowsPerPageTemplate="10,50,100,500,1000"
+                rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
+				<p:column headerText="Data" style="width:80px;max-width:80px;min-width:80px;">
+                    <h:outputText value="#{ent.dataAtendimento}">
+                    	<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" timeZone="America/Sao_Paulo" />
+                    </h:outputText>
+				</p:column>
+				<p:column headerText="Tipo" style="text-align:left;width:90px;max-width:90px;min-width:90px;">
+                    <h:outputText value="#{ent.tipoAtendimento}" />
+                </p:column>
+				<p:column headerText="Dentista" style="text-align:left;width:210px;max-width:210px;min-width:210px;">
+                    <h:outputText value="#{ent.nomeDentista}" />
+                </p:column>
+				<p:column headerText="Convênio" style="text-align:left;width:100px;max-width:100px;min-width:100px;">
+                    <h:outputText value="#{ent.tipoPlano == 'P' ? 'Particular' : ent.convenio }" />
+                </p:column>
+                <p:column headerText="Ações" style="width:60px;max-width:60px;min-width:60px;">
+					<h:panelGrid columns="3" styleClass="actions" cellpadding="2">
+						<p:commandButton action="#{atendimentoPacienteController.alterar}" update=":cadastro" ajax="false" 
+							icon="ui-icon-pencil" immediate="true" title="Alterar">
+							<f:setPropertyActionListener value="#{ent}" target="#{atendimentoPacienteController.atendimentoSelecionado}" />
+						</p:commandButton>
+						<p:commandButton update=":frmtabatendpac:displayexc" icon="ui-icon ui-icon-close" 
+							oncomplete="confirmationExcluirAtendPac.show()" title="Excluir">
+                            <f:setPropertyActionListener value="#{ent}" target="#{atendimentoPacienteController.atendimentoSelecionado}" />
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:column>
+            </p:dataTable>
+            </h:panelGroup>
+            
+            <h:panelGrid id="displayexc" columns="2" cellpadding="4" style="margin:0 auto;">
+				<p:confirmDialog message="Confirma a exclusão do atendimento?" width="350"
+					showEffect="explode" hideEffect="explode"
+					header="Confirmação" severity="alert" widgetVar="confirmationExcluirAtendPac">
+                	<p:commandButton value="Sim" update=":idmsg,:frmtabatendpac" actionListener="#{atendimentoPacienteController.excluir}" 
+                		icon="ui-icon ui-icon-check" onclick="confirmationExcluirAtendPac.hide()" />
+                	<p:commandButton value="Não" onclick="confirmationExcluirAtendPac.hide()" type="button" icon="ui-icon ui-icon-close"/>
+				</p:confirmDialog>
+            </h:panelGrid>
+	 	</h:form>
+	</ui:define>
+</ui:composition>

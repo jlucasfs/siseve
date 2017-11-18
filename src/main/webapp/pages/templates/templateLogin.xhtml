@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="pt-BR" lang="pt-BR"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<f:view contentType="text/html">
+		<h:head>
+	        <f:facet name="first">
+	            <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+	            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+	            <title>#{msg['app.sigla']} - #{msg['app.title']}</title>
+	        </f:facet>
+	        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/static/css/default.css" />
+			<link type="text/css" rel="stylesheet" href="#{request.contextPath}/static/css/login.css" />
+			<ui:insert name="head" />
+		</h:head>
+		<h:body styleClass="bodylogin">
+			<f:loadBundle basename="messages" var="msg" />
+			<div class="ui-widget ui-widget-header">
+				<div id="logo">
+					<h2 class="nome-sistema">#{msg['app.title']}</h2>
+				</div>
+			</div>
+			<div  class="tarja-login"></div>
+			<div id="wrapper">
+				<div id="page">
+					<ui:insert name="content">***</ui:insert>
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+			</div>
+			
+	        <ui:insert name="status">
+	            <p:ajaxStatus style="width:32px;height:32px;display:block;position:fixed;right:0;top:0;">
+	                <f:facet name="start">
+	                    <p:graphicImage value="/static/img/loading.gif" />
+	                </f:facet>
+	                <f:facet name="complete">
+	                    <h:outputText value="" />
+	                </f:facet>
+	            </p:ajaxStatus>
+	        </ui:insert>
+			<div id="footer">
+				<p class="copyright">&copy;&nbsp;&nbsp;2017 &nbsp;&bull;&nbsp;Desenvolvido por C&amp;J Sistemas.</p>
+				<p class="versao"><h:outputText value="Versão: #{cfg.appversion}#{cfg.appversion.contains('SNAPSHOT') ? ' - ' : ''}#{cfg.appversion.contains('SNAPSHOT') ? cfg.builddate : ''}" /></p>
+			</div>
+		</h:body>
+	</f:view>
+</html>

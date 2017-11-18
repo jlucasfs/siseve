@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<h2>Associar funcionalidade ao Perfil</h2>
+		<h:form id="formPerfilUsuario" styleClass="form-contour" prependId="false">
+			<p:panel id="panelPerfil" header="Perfil" styleClass="boxSubtit">
+				<h:panelGrid id="gridperfil" columns='2' cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Perfil: " />
+					<p:selectOneMenu id='perfil'
+						value="#{perfilController.perfilSelecionado}" effect="fade"	style="width:220px!important;">
+						<f:selectItem itemLabel="Selecione..." itemValue="" />
+						<f:selectItems value="#{perfilController.perfis}" var="perfil"
+							itemLabel="#{perfil.descPerfilUsuario}"
+							itemValue="#{perfil.codPerfilUsuario}" />
+							<p:ajax listener="#{perfilController.recuperaFuncionalidades}" update="funcionalidadesSelect funcionalidadeItens" />
+					</p:selectOneMenu>
+					<h:outputLabel value="Funcionalidades " />
+					<p:selectManyMenu id="funcionalidadesSelect" value="#{perfilController.funcionalidadesSelecionadas}"
+						converter="funcionalidadeConverter" style="width:100%;height:100%">
+						<f:selectItems id="funcionalidadeItens" value="#{perfilController.funcionalidades}" var="funcionalidade"
+							itemLabel="#{funcionalidade.nomeFuncionalidade}" itemValue="#{funcionalidade}" />
+					</p:selectManyMenu>
+				</h:panelGrid>
+			</p:panel>
+
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton oncomplete="init();" id="btnSalvar" value="Salvar"
+					update=":idmsg,@form,:formPerfilUsuario"
+					action="#{perfilController.salvarPerfilFuncionalidade}" image="ui-icon ui-icon-disk" />
+				<p:commandButton oncomplete="init();" id="btnLimpar" value="Limpar"
+					update="@form,:idmsg" action="#{perfilController.limparCampos}"
+					image="ui-icon ui-icon-trash" />
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>

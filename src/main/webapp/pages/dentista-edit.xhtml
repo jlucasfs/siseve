@@ -1,0 +1,183 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+			function goTopPage() {
+				$( 'html, body' ).animate( { scrollTop: 0 }, 'slow' );
+				$('#nome').focus();
+			}
+		</script>
+		
+		<h2>Cadastro de #{dentistaController.entidade}</h2>
+
+		<h:form id="formCadastro" styleClass="form-contour">
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{dentistaController.entrar}" immediate="true" />
+				<p:commandButton value="#{msg['button.clear']}" update=":formCadastro:nome" 
+					action="#{dentistaController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form" ajax="false"
+					action="#{dentistaController.salvar}" icon="ui-icon ui-icon-disk"
+					process="@this,:formCadastro" oncomplete="goTopPage();" />
+			</h:panelGrid>
+
+			<p:panel header="Dados Gerais" styleClass="boxSubtit">
+				<h:panelGrid columns="5" cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Nome *: " for="nome" />
+					<h:outputLabel value="CPF :" />
+					<h:outputLabel value="RG :" />
+					<h:outputLabel value="Data de Inclusão: " for="dtinclusao" />
+					<h:outputText value="" />
+					<p:inputText id="nome" maxlength="60" size="45" value="#{dentistaController.entity.pessoa.nome}" />
+					<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+						<p:inputMask id='cpf' mask="999.999.999-99" value="#{dentistaController.entity.pessoa.pessoaFisica.cpf}" 
+							converter="delstrmask" size="20" />
+						<p:spacer width="2" />
+					</h:panelGrid>
+					<p:inputText id='ident' value="#{dentistaController.entity.pessoa.pessoaFisica.identidade}" size='10' />
+                    <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+						<p:calendar id='dtinclusao' value="#{dentistaController.entity.pessoa.dataInclusao}" showOn="both"
+							maxdate="#{dentistaController.dataAtual}" pattern="dd/MM/yyyy"
+							maxlength="10" size="11" popupIconOnly="true" 
+							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
+						<p:spacer width="5" />
+					</h:panelGrid>
+					<h:outputText value="" />
+
+	        		<h:outputLabel value="Data de Nascimento: " />
+					<h:outputLabel value="Sexo: " />
+					<h:outputLabel value="Perc. Repasse : " />
+					<h:outputLabel value="CRO : " />
+	        		<h:outputLabel value="Usuário : " />
+					<p:calendar id='dtnasc' value="#{dentistaController.entity.pessoa.pessoaFisica.dataNascimento}" showOn="both"
+						maxdate="#{dentistaController.dataAtual}" pattern="dd/MM/yyyy"
+						maxlength="10" size="11" popupIconOnly="true"
+						readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
+					<p:selectOneRadio id="sexo" value="#{dentistaController.entity.pessoa.pessoaFisica.sexo}" converter="convsex">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+						<f:selectItem itemLabel="Feminino" itemValue="F" />
+					</p:selectOneRadio>
+					<p:inputText value="#{dentistaController.entity.percentualRepasse}" 
+						maxlength="10" styleClass="valorMoedaInput" converter="doubleconv" style="width:90px;">
+						<f:convertNumber pattern="#,##0.00" locale="pt_BR" />
+					</p:inputText>
+					<p:inputText value="#{dentistaController.entity.numCro}" size="16" maxlength="20" />
+	        		<p:selectOneMenu id='usu' value="#{dentistaController.idUsuarioSelecionado}" effect="fade"
+						style="width:150px!important;">
+						<f:selectItem itemLabel="Selecione..." itemValue="" />
+						<f:selectItems value="#{dentistaController.usuarios}" var="e" itemLabel="#{e.codUsuario}" itemValue="#{e.numSeqUsuario}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+				
+				<p:panel id="pnEnd" header="Endereço" styleClass="boxSubtit">
+					<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
+				        <h:outputLabel value="CEP: " for="cep" />
+						<h:outputLabel value="Endereço: " for="endereco" />
+				        <h:outputLabel value="Número: " for="numero" />
+				        <h:outputLabel value="Complemento: " for="complemento" />
+				        <h:panelGroup>
+							<p:inputMask id='cep' mask="99999-999" value="#{dentistaController.endereco.cep}"
+				        		maxlength="8" converter="delstrmask" size="8" />
+				        	<p:spacer width="5" height="10" />
+				        	<p:commandButton icon="ui-icon-search" actionListener="#{dentistaController.obterEnderecoPorCep}"
+				        		update=":formCadastro:endereco,:formCadastro:bairro,:formCadastro:cidade,:formCadastro:uf" />
+				        </h:panelGroup>
+						<p:inputText id="endereco" maxlength="60" size="60" value="#{dentistaController.endereco.logradouro}" />
+						<p:inputText id="numero" maxlength="45" size="13" value="#{dentistaController.endereco.numero}" />
+						<p:inputText id="complemento" maxlength="45" size="13" value="#{dentistaController.endereco.complemento}" />
+				        <h:outputText value="" />
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+					        <h:outputLabel value="Bairro: " for="bairro" />
+				        	<p:spacer width="170" height="10" />
+							<h:outputLabel value="Cidade: " for="cidade" />
+						</h:panelGrid>
+				        <h:outputLabel value="UF: " for="uf"/>
+				        <h:outputText value="" />
+				        <h:outputText value="" />
+						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+							<p:inputText id="bairro" maxlength="45" size="25" value="#{dentistaController.endereco.bairro}" />
+				        	<p:spacer width="13" height="10" />
+							<p:inputText id="cidade" maxlength="45" size="25" value="#{dentistaController.endereco.cidade}" />
+						</h:panelGrid>
+						<p:selectOneMenu id="uf" value="#{dentistaController.endereco.uf}" 
+							styleClass="push-l" style="width:100px; margin-left: 0;" height="200">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems value="#{dentistaController.getAllUFs()}" var="uf" itemValue="#{uf}" itemLabel="#{uf}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</p:panel>
+				
+				<p:panel id="pnContatos" header="Contatos" styleClass="boxSubtit">
+ 					<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
+				        <h:outputLabel value="Telefones Residenciais : " />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneResidencial}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneResidencial2}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneResidencial3}" />
+				        <h:outputLabel value="Telefones Comericiais : " />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneComercial}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneComercial2}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneComercial3}" />
+				        <h:outputLabel value="Telefones Móveis : " />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneMovel}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneMovel2}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.telefoneMovel3}" />
+				        <h:outputLabel value="Emails : " />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.email}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.email2}" />
+						<p:inputText maxlength="45" size="25" value="#{dentistaController.entity.pessoa.email3}" />
+				    </h:panelGrid>
+				</p:panel>
+				
+				<p:panel id="pnBanco" header="Dados Bancários" styleClass="textAreaTotal boxSubtit">
+ 					<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
+				        <h:outputLabel value="Banco : " />
+				        <h:outputLabel value="Agência : " />
+				        <h:outputLabel value="Conta : " />
+						<h:outputText value="" />
+						<p:selectOneMenu id='banco' value="#{dentistaController.bancoSelecionado}" 
+							effect="fade" style="width:200px!important;" >
+							<f:selectItem itemLabel="Selecione..." itemValue="" />
+							<f:selectItems value="#{dentistaController.bancos}" var="item" 
+								itemLabel="#{item.nome}" itemValue="#{item.codigo}" />
+			           	</p:selectOneMenu>
+			           	<p:inputText id="agencia" value="#{dentistaController.entity.pessoa.agencia}" />
+			           	<p:inputText id="conta" value="#{dentistaController.entity.pessoa.conta}" />
+					</h:panelGrid>
+				</p:panel>
+				
+				<p:panel id="pnObs" header="Informações Adicionais" styleClass="textAreaTotal boxSubtit">
+			        <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+				        <h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+					        <h:outputLabel value="Comentários : " />
+							<p:inputTextarea id="obs" value="#{dentistaController.entity.observacao}" 
+								maxlength="2000" cols="120" maxHeight="100" rows="4" autoResize="false"
+								style="margin:3px; max-width:550px;" />
+						</h:panelGrid>
+				        <h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+					        <h:outputLabel value="Data / hora da Última Atualização : " />
+							<p:calendar value="#{dentistaController.entity.pessoa.dataAtualizacao}" showOn="both"
+								pattern="dd/MM/yyyy HH:mm:ss" size="18" popupIconOnly="true" disabled="true"
+								readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
+					        <h:outputLabel value="Usuário da Última Atualização : " />
+							<p:inputText value="#{dentistaController.entity.pessoa.usuario.nomeUsuario}" size="45" disabled="true" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:panel>
+			</p:panel>
+			
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{dentistaController.entrar}" immediate="true" />
+				<p:commandButton id="btnLimpar2" value="#{msg['button.clear']}" update=":formCadastro:nome" 
+					action="#{dentistaController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form" ajax="false"
+					action="#{dentistaController.salvar}" icon="ui-icon ui-icon-disk"
+					process="@this,:formCadastro" oncomplete="goTopPage();" />
+			</h:panelGrid>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

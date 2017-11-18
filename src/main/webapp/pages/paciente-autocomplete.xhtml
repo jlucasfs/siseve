@@ -1,0 +1,20 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<p:autoComplete id="#{id}"
+		value="#{controller.pacienteSelecionado}" 
+		completeMethod="#{clienteController.completePaciente}" 
+		dropdown="true" scrollHeight="150" size="#{size}"
+		var="item"
+		itemLabel="#{item.nome}" 
+		itemValue="#{item}"
+		forceSelection="true"
+		required="#{required}"
+		requiredMessage="Campo Paciente é obrigatório"
+		disabled="#{disabled}">
+		<f:selectItem itemLabel="" itemValue="" />
+		<f:converter binding="#{pacienteConverter}" />
+	</p:autoComplete>
+</f:view>

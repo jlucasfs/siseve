@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<h2>Cadastro de Perfil</h2>
+		<h:form id="formPerfil" styleClass="form-contour" prependId="false">
+			<p:panel id="panelPerfil" header="Dados de Perfil" styleClass="boxSubtit">
+				<h:panelGrid columns="2" cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Código :" for="codigo" />
+					<p:inputText id="codigo" size="10"
+						required='true'	requiredMessage="O campo Código é obrigatório."
+						value="#{perfilController.perfil.codPerfilUsuario}" />
+					<h:outputLabel value="Nome :" for="nome" />
+					<p:inputText id="nome" size="60"
+						required='true' requiredMessage="O campo Nome é obrigatório."
+						value="#{perfilController.perfil.descPerfilUsuario}" />
+					<h:outputLabel value="Tipo :" />
+					<h:panelGrid columns="2" cellpadding="0" cellspacing="2">
+						<p:selectBooleanCheckbox id='tipoAdm' value="#{perfilController.tipoAdministrador}" />
+						<h:outputLabel value="Administrador" for='tipoAdm' />
+					</h:panelGrid>
+				</h:panelGrid>
+			</p:panel>
+			<h:panelGrid styleClass="btnForm" columns="3" cellpadding="2" cellspacing="5">
+				<p:commandButton oncomplete="init();" id="btnSalvar" value="Salvar" update=":idmsg,@form,:formPerfilTabela" 
+					action="#{perfilController.salvar}" icon="ui-icon ui-icon-disk" ajax="false" />
+				<p:commandButton id="btnLimpar" value="Limpar Campos" process="@this" update="@form"
+				    action="#{perfilController.limparCampos}"
+				    icon="botao-limpar-campos" title="Limpar Campos do filtro" />
+			</h:panelGrid>
+			<p:focus for="formPerfil:codigo" />
+		</h:form>
+		
+		<h:form id='formPerfilTabela' styleClass="gridContour" style="margin:0; height:auto;">
+			<p:dataTable id='tabperfis' var="perfil"
+				value="#{perfilController.perfis}"
+				paginator="true" rows="10" paginatorPosition="bottom" emptyMessage="Nenhum registro encontrado"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                rowsPerPageTemplate="10,20,50,100"
+                sortBy="#{perfil.codPerfilUsuario}"
+				rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
+				<p:column headerText="Código" sortBy="#{perfil.codPerfilUsuario}" style="text-align:left;">
+					<h:outputText value="#{perfil.codPerfilUsuario}" />
+				</p:column>
+				<p:column headerText="Nome" sortBy="#{perfil.descPerfilUsuario}" style="text-align:left;">
+					<h:outputText value="#{perfil.descPerfilUsuario}" />
+				</p:column>
+				<p:column headerText="Usuário administrador" sortBy="#{perfil.indAdministrador}" style="width:20%;">
+					<h:outputText value="#{perfil.indAdministrador}" />
+				</p:column>
+				<p:column headerText="Ações" style="width:100px">
+					<h:panelGrid columns="3" styleClass="actions" cellpadding="2">
+						<p:commandButton update=":formPerfil" oncomplete="init();" icon="ui-icon ui-icon-pencil" title="Alterar">
+							<f:setPropertyActionListener value="#{perfil}" target="#{perfilController.perfil}" />
+							<f:setPropertyActionListener value="#{perfil.indAdministrador == 'S'}" target="#{perfilController.tipoAdministrador}" />
+						</p:commandButton>
+						<p:commandButton update=":formPerfilTabela:display" oncomplete="confirmation.show()" 
+							icon="ui-icon ui-icon-close" title="Excluir">
+							<f:setPropertyActionListener value="#{perfil}" target="#{perfilController.perfil}" />
+						</p:commandButton>
+					</h:panelGrid>
+				</p:column>
+			</p:dataTable>
+			<h:panelGrid id="display" columns="2" cellpadding="4"
+				style="margin:0 auto;">
+				<p:confirmDialog
+					message="Confirma a exclusão de #{perfilController.perfil.descPerfilUsuario} ?"
+					width="280" showEffect="explode" hideEffect="explode"
+					header="Confirmar Exclusão" severity="alert"
+					widgetVar="confirmation">
+					<p:commandButton value="Sim" update=":idmsg,@form,:formPerfil" icon="ui-icon ui-icon-check"
+						actionListener="#{perfilController.excluir}" onclick="confirmation.hide()" />
+					<p:commandButton value="Não" onclick="confirmation.hide()" type="button" icon="ui-icon ui-icon-close" />
+				</p:confirmDialog>
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>

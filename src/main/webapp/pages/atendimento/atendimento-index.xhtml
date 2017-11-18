@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+ 		<h2>Cadastro de #{atendimentoController.tituloTela}</h2>
+		<h:form id="frmatendtos" styleClass="form-contour">
+            <p:panel header="Filtro de consulta" styleClass="boxSubtit" id="panel">
+            	<h:panelGrid columns="1" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Paciente :" />
+					<h:panelGroup>
+						<p:autoComplete id="nome" value="#{atendimentoController.nomePaciente}" 
+							completeMethod="#{atendimentoController.completePaciente}" 
+							dropdown="true" scrollHeight="150" size="50" />
+						<p:spacer width="15" height="10" />
+					</h:panelGroup>
+				</h:panelGrid>
+            </p:panel>
+
+			<h:panelGrid styleClass="btnForm" columns="6" cellpadding="2" cellspacing="5">
+	   	    	<p:commandButton value="Consultar" update=":idmsg,:frmtabatendimentos" 
+					action="#{atendimentoController.consultar}" icon="ui-icon-search"
+					title="Consultar atendimentos" />
+				<p:commandButton id="btnLimparSave" value="#{msg['button.clear']}" update="@form,:frmtabatendimentos:dtatendimentos" 
+					action="#{atendimentoController.inicializar}" icon="ui-icon-arrowreturnthick-1-w"
+					title="Limpar Campos do filtro" />
+		    </h:panelGrid>
+
+			<p:focus for=":frmatendtos:nome" />
+
+		</h:form>
+		
+		<h:form id='frmtabatendimentos' styleClass="gridContour" style="margin:0; height:auto;">
+			<h:panelGroup id='grupocliente'>
+			<p:dataTable id='dtatendimentos' var="ent" paginator="true" rows="100" 
+				emptyMessage="#{msg['search.noResults']}" 
+				value="#{atendimentoController.atendimentos}"
+	            paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}    {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+	            currentPageReportTemplate="Total de registros: {totalRecords}"
+	            rowsPerPageTemplate="10,50,100,500,1000"
+                rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
+				<p:column headerText="Data">
+                    <h:outputText value="#{ent.dataAtendimento}">
+                    	<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" timeZone="America/Sao_Paulo" />
+                    </h:outputText>
+				</p:column>
+				<p:column headerText="Paciente" style="text-align:left;width:260px;max-width:260px;">
+                    <h:outputText value="#{ent.nomePaciente}" />
+                </p:column>
+				<p:column headerText="Atendido por">
+                    <h:outputText value="#{ent.nomeDentista}" />
+                </p:column>
+				<p:column headerText="Tipo" style="width:90px; max-width:90px;">
+                    <h:outputText value="#{ent.tipoAtendimento}" />
+                </p:column>
+				<p:column headerText="Convênio" style="width:90px; max-width:90px;">
+                    <h:outputText value="#{ent.convenio}" />
+                </p:column>
+                <p:column headerText="Ações" style="width:40px; max-width:40px">
+					<h:panelGrid columns="3" styleClass="actions" cellpadding="2">
+						<p:commandButton action="#{atendimentoPacienteController.atender}" update=":frmatendtos" ajax="false" 
+							icon="ui-icon-pencil" immediate="true" title="Alterar">
+							<f:setPropertyActionListener value="#{ent}" target="#{atendimentoController.atendimentoSelecionado}" />
+						</p:commandButton>
+						<p:commandButton update=":frmtabatendimentos:displayexcAtend" icon="ui-icon ui-icon-close" 
+							oncomplete="confirmationExcluirAtend.show()" title="Excluir">
+                            <f:setPropertyActionListener value="#{ent}" target="#{atendimentoPacienteController.paciente}" />
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:column>
+            </p:dataTable>
+            </h:panelGroup>
+            
+             <h:panelGrid id="displayexcAtend" columns="2" cellpadding="4" style="margin:0 auto;">  
+				<p:confirmDialog message="Confirma a exclusão de #{atendimentoPacienteController.pacienteSelecionado.pessoa.nome}?" width="350"
+					showEffect="explode" hideEffect="explode"
+					header="Confirmação" severity="alert" widgetVar="confirmationExcluirAtend">
+                	<p:commandButton value="Sim" update=":idmsg,:frmatendtos" actionListener="#{atendimentoPacienteController.excluir}" 
+                		icon="ui-icon ui-icon-check" onclick="confirmationExcluirAtend.hide()" />
+                	<p:commandButton value="Não" onclick="confirmationExcluirAtend.hide()" type="button" icon="ui-icon ui-icon-close"/>
+				</p:confirmDialog>
+            </h:panelGrid>
+	 	</h:form>
+	</ui:define>
+</ui:composition>

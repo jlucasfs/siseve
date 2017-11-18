@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/templates/templateLogin.xhtml">
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/static/css/login.css" />
+	<ui:define name="content">
+			<div id="login">
+				<p:messages id="idmsg" />
+				<div id="divlogin">
+					<div class="camposLogin">
+						<h:form id="frmacesso" acceptcharset="UTF-8" 
+							style="background-color:#f3f3f3; padding:30px; width:180px; border:1px solid #AAA; height:250px;">
+							<h2 style="background-color: transparent; border-left:none; border-right:none;
+										 border-top:none; border-bottom:1px solid #777;">Entrar no sistema</h2>
+							<h:panelGrid class="loginFormGrid" cellpadding="0" cellspacing="3" style="margin-top:45px;">
+								<h:outputLabel for="codigoUsuario" value="Código do usuário" />
+								<h:inputText class="fields" id="codigoUsuario" maxlength="10"
+									value="#{loginController.usuario.codUsuario}"
+									required="true" requiredMessage="O campo Código é obrigatório."
+									style="font-size:16px !important;" />
+								<h:outputText value=" " />
+								<h:outputText value=" " />
+								<h:outputLabel for="senhaUsuario" value="Senha" />
+								<h:inputSecret class="fields" id="senhaUsuario" maxlength="8" 
+									value="#{loginController.usuario.senha}"
+									required="true" requiredMessage="O campo Senha é obrigatório."
+									style="font-size:16px !important;" />
+							</h:panelGrid>
+							<div id="loginFormButton">
+								<p:commandButton id="btnlogin" value="Entrar" update=":idmsg" ajax="false"
+									action="#{loginController.doLogin}" />
+							</div>
+							<p:focus for="codigoUsuario" />
+						</h:form>
+					</div>
+				</div>
+			</div>
+	</ui:define>
+</ui:composition>
