@@ -61,7 +61,7 @@
 
 	<filter>
 		<filter-name>Character Encoding Filter</filter-name>
-		<filter-class>br.com.nicolashomsi.siseve.filters.CharacterEncodingFilter</filter-class>
+		<filter-class>br.com.mobiew.siseve.filters.CharacterEncodingFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>Character Encoding Filter</filter-name>
@@ -92,7 +92,7 @@
 	</context-param>
 
 	<session-config>
-		<session-timeout>720</session-timeout>
+		<session-timeout>-1</session-timeout>
 	</session-config>
 
 </web-app>

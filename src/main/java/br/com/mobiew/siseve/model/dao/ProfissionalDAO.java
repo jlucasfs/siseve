@@ -7,7 +7,7 @@ import br.com.mobiew.siseve.model.entity.Usuario;
 
 public interface ProfissionalDAO extends GenericDAO<Profissional, Long> {
 
-	List<Profissional> findAll( String nome, String cpf );
+	List<Profissional> findAll( String nome );
 
 	Profissional findByUsuario( Usuario usuario );
 }

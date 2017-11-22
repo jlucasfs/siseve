@@ -17,19 +17,19 @@ import br.com.mobiew.siseve.service.ProfissionalService;
 public class ProfissionalConverter implements Converter {
 
     @Autowired
-    private ProfissionalService dentistaService;
+    private ProfissionalService profissionalService;
 
     public Object getAsObject( FacesContext context, UIComponent component, String value ) {
         if ( value == null || value.trim().length() <= 0 ) {
             return null;
         }
         try {
-            Profissional dentista = this.dentistaService.findById( Long.parseLong( value ) );
-            return dentista;
+            Profissional ent = this.profissionalService.findById( Long.parseLong( value ) );
+            return ent;
         } catch ( NumberFormatException e ) {
-            throw new ConverterException( new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro na conversão do objeto dentista", "Profissional inválido." ), e );
+            throw new ConverterException( new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro na conversão do objeto Profissional", "Profissional inválido." ), e );
         } catch ( Exception e ) {
-            throw new SistemaException( "Erro não esperado na tentativa de conversão do objeto dentista - " + e.getMessage() );
+            throw new SistemaException( "Erro não esperado na tentativa de conversão do objeto Profissional - " + e.getMessage() );
         }
     }
 

@@ -65,8 +65,8 @@ public class ProfissionalServiceImpl implements ProfissionalService {
     }
 
     @Override
-    public List<Profissional> findAll( String nomeParam, String cpfParam ) {
-        List<Profissional> lista = this.dao.findAll( nomeParam, cpfParam );
+    public List<Profissional> findAll( String nomeParam ) {
+        List<Profissional> lista = this.dao.findAll( nomeParam );
         return lista;
     }
     

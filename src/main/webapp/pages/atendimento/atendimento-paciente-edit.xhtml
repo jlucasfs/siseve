@@ -26,15 +26,15 @@
 			<p:panel header="Atendimento" styleClass="boxSubtit">
 				<h:panelGrid columns="3" cellpadding="2" cellspacing="5">
 					<h:outputLabel value="Paciente : " />
-					<h:outputLabel value="Dentista : " />
+					<h:outputLabel value="Profissional : " />
 					<h:outputLabel value="Tipo *: " />
 					<p:inputText maxlength="60" size="50" disabled="true"
 						value="#{atendimentoPacienteController.atendimento.cliente.pessoa.nome} #{atendimentoPacienteController.atendimento.cliente.pessoa.pessoaFisica.abreParentesesIdade} #{atendimentoPacienteController.atendimento.cliente.pessoa.pessoaFisica.idade} #{atendimentoPacienteController.atendimento.cliente.pessoa.pessoaFisica.fechaParentesesIdade}" />
 					<h:panelGroup>
-						<p:autoComplete id="dentista" value="#{atendimentoPacienteController.dentista}" 
-							completeMethod="#{atendimentoPacienteController.completeDentista}"
+						<p:autoComplete id="profsnl" value="#{atendimentoPacienteController.profissional}" 
+							completeMethod="#{atendimentoPacienteController.completeProfissional}"
 							dropdown="true" scrollHeight="150" size="36" onchange="" >
-						 	<p:ajax event="itemSelect" update="dentista" />
+						 	<p:ajax event="itemSelect" update="profsnl" />
 						 </p:autoComplete>
 						<p:spacer width="5" height="10" />
 					</h:panelGroup>
@@ -91,14 +91,11 @@
 			                    	<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR" timeZone="America/Sao_Paulo" />
 			                    </h:outputText>
 							</p:column>
-							<p:column headerText="Dentista" style="text-align:left;width:110px;max-width:110px;min-width:110px;">
-			                    <h:outputText value="#{ent.dentista.pessoa.nome}" />
+							<p:column headerText="Profissional" style="text-align:left;width:110px;max-width:110px;min-width:110px;">
+			                    <h:outputText value="#{ent.profissional.nome}" />
 			                </p:column>
 							<p:column headerText="Tipo" style="text-align:left;width:90px;max-width:90px;min-width:90px;">
 			                    <h:outputText value="#{ent.codTipoAtendimento}" />
-			                </p:column>
-							<p:column headerText="Convênio" style="text-align:left;width:110px;max-width:110px;min-width:110px;">
-			                    <h:outputText value="#{ent.tipoPlano == 'P' ? 'Particular' : ent.convenio.pessoa.nome}" />
 			                </p:column>
 							<p:column headerText="Descrição" style="text-align:left;width:280px;max-width:280px;min-width:280px;white-space:normal;">
 			                    <h:outputText value="#{ent.descricaoEvolucao}" />

@@ -33,17 +33,12 @@ public class ProfissionalDAOImpl extends GenericHibernateDAO<Profissional, Long>
 
     @SuppressWarnings( "unchecked" )
     @Override
-    public List<Profissional> findAll( String nomeParam, String cpfParam ) {
+    public List<Profissional> findAll( String nomeParam ) {
     	List<Profissional>  result = null;
     	try {
         	DetachedCriteria criteria = DetachedCriteria.forClass( Profissional.class, "a" );
-        	criteria.createCriteria( "a.pessoa", "p", Criteria.INNER_JOIN );
-        	criteria.createCriteria( "p.pessoaFisica", "pf", Criteria.INNER_JOIN );
-        	if ( StringUtils.isNotBlank( cpfParam ) ) {
-        		criteria.add( Restrictions.eq( "pf.cpf", cpfParam ) );
-        	}
         	if ( StringUtils.isNotBlank( nomeParam ) ) {
-        		criteria.add( Restrictions.ilike( "p.nome", nomeParam.trim(), MatchMode.ANYWHERE ) );
+        		criteria.add( Restrictions.ilike( "a.nome", nomeParam.trim(), MatchMode.ANYWHERE ) );
         	}
         	criteria.addOrder(Order.asc("p.nome"));
         	criteria.setResultTransformer( Criteria.DISTINCT_ROOT_ENTITY );
@@ -57,17 +52,17 @@ public class ProfissionalDAOImpl extends GenericHibernateDAO<Profissional, Long>
 	@SuppressWarnings("unchecked")
 	@Override
 	public Profissional findByUsuario(Usuario usuario) {
-		Profissional dentista = null;
+		Profissional ent = null;
 		DetachedCriteria criteria = DetachedCriteria.forClass( Profissional.class, "d" );
 		if ( usuario != null ) {
             criteria.add( Restrictions.eq( "d.usuario", usuario ) );
         }
-		List<Profissional> dentistas = getHibernateTemplate().findByCriteria( criteria );
+		List<Profissional> entities = getHibernateTemplate().findByCriteria( criteria );
 		
-		if ( !dentistas.isEmpty()) {
-			dentista = dentistas.get(0);
+		if ( !entities.isEmpty()) {
+			ent = entities.get(0);
 		}
-		return dentista;
+		return ent;
 	}
 
 }

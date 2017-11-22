@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
+import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.PieChartModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,5 +121,17 @@ public class AtendimentoServiceImpl implements AtendimentoService {
 			}
 		} );
 		return atendimentos;
+	}
+
+	@Override
+	public CartesianChartModel findAllAtendimentosSeisMeses() {
+		CartesianChartModel lista = new CartesianChartModel();
+		return lista;
+	}
+
+	@Override
+	public PieChartModel findAllAtendimentosPorServico() {
+		PieChartModel pie = new PieChartModel();
+		return pie;
 	}
 }

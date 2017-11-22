@@ -25,17 +25,26 @@ public class Servico implements Serializable {
 
 	private static final long serialVersionUID = -3472895763433507107L;
 
+	@Id
+	@GeneratedValue( strategy = IDENTITY )
+	@Column( name = "ID", unique = true, nullable = false )
 	private Long id;
 
+	@ManyToOne( fetch = FetchType.LAZY )
+	@JoinColumn( name = "ID_EVENTO", nullable = false )
 	private Evento evento;
 
+	@Column( name = "NOME", nullable = false, length = 100 )
 	private String nome;
 
+	@Column( name = "TIPO_RELATORIO", length = 7 )
 	private String tipoRelatorio;
 
+	@OneToMany( fetch = FetchType.LAZY, mappedBy = "servico" )
 	private Set<Atendimento> atendimentos = new HashSet<Atendimento>( 0 );
 
 	public Servico() {
+		//
 	}
 
 	public Servico( Evento evento, String nome ) {
@@ -50,10 +59,6 @@ public class Servico implements Serializable {
 		this.atendimentos = atendimentos;
 	}
 
-	@Id
-	@GeneratedValue( strategy = IDENTITY )
-
-	@Column( name = "ID", unique = true, nullable = false )
 	public Long getId() {
 		return this.id;
 	}
@@ -62,8 +67,6 @@ public class Servico implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne( fetch = FetchType.LAZY )
-	@JoinColumn( name = "ID_EVENTO", nullable = false )
 	public Evento getEvento() {
 		return this.evento;
 	}
@@ -72,7 +75,6 @@ public class Servico implements Serializable {
 		this.evento = evento;
 	}
 
-	@Column( name = "NOME", nullable = false, length = 100 )
 	public String getNome() {
 		return this.nome;
 	}
@@ -81,7 +83,6 @@ public class Servico implements Serializable {
 		this.nome = nome;
 	}
 
-	@Column( name = "TIPO_RELATORIO", length = 7 )
 	public String getTipoRelatorio() {
 		return this.tipoRelatorio;
 	}
@@ -90,7 +91,6 @@ public class Servico implements Serializable {
 		this.tipoRelatorio = tipoRelatorio;
 	}
 
-	@OneToMany( fetch = FetchType.LAZY, mappedBy = "servico" )
 	public Set<Atendimento> getAtendimentos() {
 		return this.atendimentos;
 	}

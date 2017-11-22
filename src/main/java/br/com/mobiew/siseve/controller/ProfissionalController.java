@@ -27,211 +27,188 @@ import br.com.mobiew.siseve.util.scopes.Scopes;
 @Scope( Scopes.SESSION )
 public class ProfissionalController {
 
-    private static final Logger LOG = Logger.getLogger( ProfissionalController.class );
+	private static final Logger LOG = Logger.getLogger( ProfissionalController.class );
 
-    private String entidade = "Profissional";
+	private String entidade = "Profissional";
 
-    @Autowired
-    private ProfissionalService service;
+	@Autowired
+	private ProfissionalService service;
 
-    private List<Profissional> entities;
+	private List<Profissional> entities;
 
-    private List<Profissional> listaEntity;
+	private List<Profissional> listaEntity;
 
-    private Profissional entity = new Profissional();
+	private Profissional entity = new Profissional();
 
-    private String nome;
+	private String nome;
 
-    private String cpf;
+	private Date dataAtual = new Date();
 
-    private Date dataAtual = new Date();
+	@Autowired
+	private UsuarioService usuarioService;
 
-    private String tipoPessoa = "T";
+	private Long idUsuarioSelecionado;
 
-    @Autowired
-    private UsuarioService usuarioService;
+	private List<Usuario> usuarios;
 
-    private Long idUsuarioSelecionado;
+	@PostConstruct
+	public void inicializar() {
+		this.entity = new Profissional();
+		this.nome = null;
+		this.listaEntity = this.service.findAll();
+		this.usuarios = this.usuarioService.findAll();
+		this.idUsuarioSelecionado = null;
+		consultar();
+	}
 
-    private List<Usuario> usuarios;
+	public String entrar() {
+		inicializar();
+		return "profissional-index?faces-redirect=true";
+	}
 
-    @PostConstruct
-    public void inicializar() {
-        this.entity = new Profissional();
-        this.nome = null;
-        this.cpf = null;
-        this.tipoPessoa = "T";
-        this.listaEntity = this.service.findAll();
-        this.usuarios = this.usuarioService.findAll();
-        this.idUsuarioSelecionado = null;
-        consultar();
-    }
+	public void limparEdit() {
+		inicializar();
+	}
 
-    public String entrar() {
-        inicializar();
-        return "profissional-index?faces-redirect=true";
-    }
+	public void consultar() {
+		try {
+			this.entities = this.service.findAll( this.nome );
+			Collections.sort( this.entities );
+		} catch ( Exception e ) {
+			LOG.error( e.getMessage() );
+			ControllerUtil.addErrorMessage( null, "Erro ao consultar os profissionais." );
+		}
+	}
 
-    public void limparEdit() {
-        inicializar();
-    }
+	public List<Profissional> completeProfissional( String query ) {
+		List<Profissional> results = new ArrayList<Profissional>();
+		if ( query != null && this.listaEntity != null && !this.listaEntity.isEmpty() ) {
+			for ( Profissional item: this.listaEntity ) {
+				if ( item.getNome().toUpperCase().indexOf( query.toUpperCase() ) >= 0 ) {
+					results.add( item );
+				}
+			}
+		}
+		return results;
+	}
 
-    public void consultar() {
-        try {
-            this.entities = this.service.findAll( this.nome, this.cpf );
-            Collections.sort( this.entities );
-        } catch ( Exception e ) {
-            LOG.error( e.getMessage() );
-            ControllerUtil.addErrorMessage( null, "Erro ao consultar os profissionais." );
-        }
-    }
+	public List<String> completeEntity( String query ) {
+		List<String> results = new ArrayList<String>();
+		if ( query != null && this.listaEntity != null && !this.listaEntity.isEmpty() ) {
+			for ( Profissional a: this.listaEntity ) {
+				String nome1 = Util.convertToNormalize( a.getNome().toUpperCase( Constantes.LOCALE_PT_BR ) );
+				String nome2 = Util.convertToNormalize( query.toUpperCase( Constantes.LOCALE_PT_BR ) );
+				if ( nome1.indexOf( nome2 ) >= 0 ) {
+					results.add( a.getNome() );
+				}
+			}
+		}
+		return results;
+	}
 
-    public List<Profissional> completeProfissional( String query ) {
-        List<Profissional> results = new ArrayList<Profissional>();
-        if ( query != null && this.listaEntity != null && !this.listaEntity.isEmpty() ) {
-            for ( Profissional item: this.listaEntity ) {
-                if ( item.getNome().toUpperCase().indexOf( query.toUpperCase() ) >= 0 ) {
-                    results.add( item );
-                }
-            }
-        }
-        return results;
-    }
+	public String incluir() {
+		this.entity = new Profissional();
+		return editar();
+	}
 
-    public List<String> completeEntity( String query ) {
-        List<String> results = new ArrayList<String>();
-        if ( query != null && this.listaEntity != null && !this.listaEntity.isEmpty() ) {
-            for ( Profissional a: this.listaEntity ) {
-                String nome1 = Util.convertToNormalize( a.getNome().toUpperCase( Constantes.LOCALE_PT_BR ) ); 
-                String nome2 = Util.convertToNormalize( query.toUpperCase( Constantes.LOCALE_PT_BR ) ); 
-                if ( nome1.indexOf( nome2 ) >= 0 ) {
-                    results.add( a.getNome() );
-                }
-            }
-        }
-        return results;
-    }
+	public String editar() {
+		return "profissional-edit?faces-redirect=true";
+	}
 
-    public String incluir() {
-        this.entity = new Profissional();
-        this.tipoPessoa = "F";
-        return editar();
-    }
+	public String salvar() {
+		try {
+			this.service.save( this.entity );
+			ControllerUtil.addInfoMessage( null, this.entidade + " atualizado com sucesso." );
+			inicializar();
+			return "profissional-index?faces-redirect=true";
+		} catch ( Exception e ) {
+			ControllerUtil.addErrorMessage( null, "Erro ao salvar " + this.entidade + "." );
+			return null;
+		}
+	}
 
-    public String editar() {
-        return "profissional-edit?faces-redirect=true";
-    }
+	public void excluir() {
+		try {
+			this.service.delete( this.entity );
+			inicializar();
+			ControllerUtil.addInfoMessage( null, this.entidade + " excluído com sucesso." );
+		} catch ( Exception e ) {
+			ControllerUtil.addErrorMessage( null, "Erro ao excluir " + this.entidade + "." );
+		}
+	}
 
-    public String salvar() {
-        try {
-            this.service.save( this.entity );
-            ControllerUtil.addInfoMessage( null, this.entidade + " atualizado com sucesso." );
-            inicializar();
-            return "profissional-index?faces-redirect=true";
-        } catch ( Exception e ) {
-            ControllerUtil.addErrorMessage( null, "Erro ao salvar " + this.entidade + "." );
-            return null;
-        }
-    }
+	public static List<UFEnum> getAllUFs() {
+		return Arrays.asList( UFEnum.values() );
+	}
 
-    public void excluir() {
-        try {
-            this.service.delete( this.entity );
-            inicializar();
-            ControllerUtil.addInfoMessage( null, this.entidade + " excluído com sucesso." );
-        } catch ( Exception e ) {
-            ControllerUtil.addErrorMessage( null, "Erro ao excluir " + this.entidade + "." );
-        }
-    }
+	public String getEntidade() {
+		return entidade;
+	}
 
-    public static List<UFEnum> getAllUFs() {
-        return Arrays.asList( UFEnum.values() );
-    }
+	public void setEntidade( String entidadeParam ) {
+		entidade = entidadeParam;
+	}
 
-    public String getEntidade() {
-        return entidade;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public void setEntidade( String entidadeParam ) {
-        entidade = entidadeParam;
-    }
+	public void setNome( String nomeParam ) {
+		nome = nomeParam;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public Date getDataAtual() {
+		return dataAtual;
+	}
 
-    public void setNome( String nomeParam ) {
-        nome = nomeParam;
-    }
+	public void setDataAtual( Date dataAtualParam ) {
+		dataAtual = dataAtualParam;
+	}
 
-    public String getCpf() {
-        return cpf;
-    }
+	public List<Profissional> getEntities() {
+		return this.entities;
+	}
 
-    public void setCpf( String cpfParam ) {
-        cpf = cpfParam;
-    }
+	public void setEntities( List<Profissional> entitiesParam ) {
+		this.entities = entitiesParam;
+	}
 
-    public Date getDataAtual() {
-        return dataAtual;
-    }
+	public List<Profissional> getListaEntity() {
+		return this.listaEntity;
+	}
 
-    public void setDataAtual( Date dataAtualParam ) {
-        dataAtual = dataAtualParam;
-    }
+	public void setListaEntity( List<Profissional> listaEntityParam ) {
+		this.listaEntity = listaEntityParam;
+	}
 
-    public String getTipoPessoa() {
-        return this.tipoPessoa;
-    }
+	public Profissional getEntity() {
+		return this.entity;
+	}
 
-    public void setTipoPessoa( String tipoPessoaParam ) {
-        this.tipoPessoa = tipoPessoaParam;
-    }
+	public void setEntity( Profissional entityParam ) {
+		this.entity = entityParam;
+	}
 
-    public List<Profissional> getEntities() {
-        return this.entities;
-    }
+	public Long getTotalRegistros() {
+		if ( CollectionUtils.isEmpty( this.entities ) ) {
+			this.entities = this.service.findAll();
+		}
+		return Long.valueOf( this.entities.size() );
+	}
 
-    public void setEntities( List<Profissional> entitiesParam ) {
-        this.entities = entitiesParam;
-    }
+	public List<Usuario> getUsuarios() {
+		return this.usuarios;
+	}
 
-    public List<Profissional> getListaEntity() {
-        return this.listaEntity;
-    }
+	public void setUsuarios( List<Usuario> usuariosParam ) {
+		this.usuarios = usuariosParam;
+	}
 
-    public void setListaEntity( List<Profissional> listaEntityParam ) {
-        this.listaEntity = listaEntityParam;
-    }
+	public Long getIdUsuarioSelecionado() {
+		return this.idUsuarioSelecionado;
+	}
 
-    public Profissional getEntity() {
-        return this.entity;
-    }
-
-    public void setEntity( Profissional entityParam ) {
-        this.entity = entityParam;
-    }
-
-    public Long getTotalRegistros() {
-        if ( CollectionUtils.isEmpty( this.entities ) ) {
-            this.entities = this.service.findAll();
-        }
-        return Long.valueOf( this.entities.size() );
-    }
-
-    public List<Usuario> getUsuarios() {
-        return this.usuarios;
-    }
-
-    public void setUsuarios( List<Usuario> usuariosParam ) {
-        this.usuarios = usuariosParam;
-    }
-
-    public Long getIdUsuarioSelecionado() {
-        return this.idUsuarioSelecionado;
-    }
-
-    public void setIdUsuarioSelecionado( Long idUsuarioSelecionadoParam ) {
-        this.idUsuarioSelecionado = idUsuarioSelecionadoParam;
-    }
+	public void setIdUsuarioSelecionado( Long idUsuarioSelecionadoParam ) {
+		this.idUsuarioSelecionado = idUsuarioSelecionadoParam;
+	}
 }

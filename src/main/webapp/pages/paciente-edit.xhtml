@@ -25,103 +25,28 @@
 			</h:panelGrid>
 
 			<p:panel header="Dados Gerais" styleClass="boxSubtit">
-				<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
+				<h:panelGrid columns="3" cellpadding="2" cellspacing="5">
 					<h:outputLabel value="Nome *: " for="nome" />
-					<h:outputLabel value="CPF :" />
-					<h:outputLabel value="RG :" />
-					<h:outputLabel value="Data de Inclusão: " for="dtinclusao" />
-					<p:inputText id="nome" maxlength="60" size="45" value="#{clienteController.cliente.pessoa.nome}" />
-					<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
-						<p:inputMask id='cpf' mask="999.999.999-99" value="#{clienteController.cliente.pessoa.pessoaFisica.cpf}" 
-							converter="delstrmask" size="20" />
-						<p:spacer width="2" />
-					</h:panelGrid>
-					<p:inputText id='ident' value="#{clienteController.cliente.pessoa.pessoaFisica.identidade}" size='23'
-						maxlength="20" />
-                    <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
-						<p:calendar id='dtinclusao' value="#{clienteController.cliente.pessoa.dataInclusao}" showOn="both"
-							maxdate="#{clienteController.dataAtual}" pattern="dd/MM/yyyy"
-							maxlength="10" size="11" popupIconOnly="true" 
-							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-						<p:spacer width="5" />
-					</h:panelGrid>
-					
 	        		<h:outputLabel value="Data de Nascimento: " />
 					<h:outputLabel value="Sexo: " />
-					<h:outputLabel value="Convênio:" />
-					<h:outputLabel value="Plano:" />
-					<p:calendar id='dtnasc' value="#{clienteController.cliente.pessoa.pessoaFisica.dataNascimento}" showOn="both"
+					<p:inputText id="nome" maxlength="60" size="45" value="#{clienteController.entity.nome}" />
+					<p:calendar id='dtnasc' value="#{clienteController.entity.dataNascimento}" showOn="both"
 						maxdate="#{clienteController.dataAtual}" pattern="dd/MM/yyyy"
-						maxlength="10" size="11" popupIconOnly="true" yearRange="1900"
+						maxlength="10" size="11" popupIconOnly="true"
 						readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-					<p:selectOneRadio id="sexo" value="#{clienteController.cliente.pessoa.pessoaFisica.sexo}" converter="convsex">
+					<p:selectOneRadio id="sexo" value="#{clienteController.entity.sexo}" converter="convsex">
 						<f:selectItem itemLabel="Masculino" itemValue="M" />
 						<f:selectItem itemLabel="Feminino" itemValue="F" />
 					</p:selectOneRadio>
-					<p:selectOneMenu value="#{clienteController.idConvenio}" 
-						style="width:186px; margin-left: 0;" height="150">
-						<f:selectItem itemLabel="Selecione" itemValue="" />
-						<f:selectItems value="#{clienteController.convenios}" var="ent" 
-							itemValue="#{ent.idConvenio}" itemLabel="#{ent.pessoa.nome}" />
-					</p:selectOneMenu>
-					<p:inputText value="#{clienteController.cliente.planoConvenio}" maxlength="100" size="17" />
-
-					<h:outputLabel value="Nome do Titular do plano:" />
-					<h:outputLabel value="Nº Carteira:" />
-					<h:outputLabel value="Escolaridade:" />
-					<h:outputLabel value="Estado civil:" />
-					<p:inputText value="#{clienteController.cliente.nomeTitularPlano}" maxlength="100" size="45" />
-					<p:inputText value="#{clienteController.cliente.numeroCarteira}" maxlength="12" size="20" />
-					<p:inputText value="#{clienteController.cliente.pessoa.pessoaFisica.escolaridade}" size="23" />
-					<p:selectOneMenu value="#{clienteController.cliente.pessoa.pessoaFisica.estadoCivil}" 
-						style="width:145px; margin-left: 0;" height="150">
-						<f:selectItem itemLabel="Selecione" itemValue="" />
-						<f:selectItem itemLabel="Solteiro" itemValue="SOLTEIRO" />
-						<f:selectItem itemLabel="Casado" itemValue="CASADO" />
-						<f:selectItem itemLabel="Viúvo" itemValue="VIUVO" />
-						<f:selectItem itemLabel="Divorciado" itemValue="DIVORCIADO" />
-						<f:selectItem itemLabel="Desquitado" itemValue="DESQUITADO" />
-						<f:selectItem itemLabel="Separado judicialmente" itemValue="SEPARADO JUDICIALMENTE" />
-					</p:selectOneMenu>
-
-					<h:outputLabel value="Data última visita:" />
-					<h:outputLabel value="Data próxima visita:" />
-					<h:outputLabel value="Indicado por:" />
-					<h:outputText value="" />
-					<p:calendar id='ultvisita' value="#{clienteController.cliente.dataUltimaVisita}" showOn="both"
-						pattern="dd/MM/yyyy" maxlength="10" size="11" popupIconOnly="true" yearRange="1900"
-						readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-					<p:calendar id='proxvisita' value="#{clienteController.cliente.dataProximaVisita}" showOn="both"
-						pattern="dd/MM/yyyy" maxlength="10" size="11" popupIconOnly="true"
-						readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-					<p:inputText id="indcadopor" maxlength="100" size="23" value="#{clienteController.cliente.indicadoPor}" />
 				</h:panelGrid>
 				
 				<p:panel id="pnEnd" header="Endereço" styleClass="boxSubtit">
 					<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
-				        <h:outputLabel value="CEP: " for="cep" />
 						<h:outputLabel value="Endereço: " for="endereco" />
-				        <h:outputLabel value="Número: " for="numero" />
-				        <h:outputLabel value="Complemento: " for="complemento" />
-				        <h:panelGroup>
-							<p:inputMask id='cep' mask="99999-999" value="#{clienteController.endereco.cep}"
-				        		maxlength="8" converter="delstrmask" size="8" />
-				        	<p:spacer width="5" height="10" />
-				        	<p:commandButton icon="ui-icon-search" actionListener="#{clienteController.obterEnderecoPorCep}"
-				        		update=":formcadCliente:endereco,:formcadCliente:bairro,:formcadCliente:cidade,:formcadCliente:uf" />
-				        </h:panelGroup>
-						<p:inputText id="endereco" maxlength="60" size="60" value="#{clienteController.endereco.logradouro}" />
-						<p:inputText id="numero" maxlength="45" size="13" value="#{clienteController.endereco.numero}" />
-						<p:inputText id="complemento" maxlength="45" size="13" value="#{clienteController.endereco.complemento}" />
-				        <h:outputText value="" />
-						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
-					        <h:outputLabel value="Bairro: " for="bairro" />
-				        	<p:spacer width="170" height="10" />
-							<h:outputLabel value="Cidade: " for="cidade" />
-						</h:panelGrid>
+				        <h:outputLabel value="Bairro: " for="bairro" />
+						<h:outputLabel value="Cidade: " for="cidade" />
 				        <h:outputLabel value="UF: " for="uf"/>
-				        <h:outputText value="" />
-				        <h:outputText value="" />
+						<p:inputText id="endereco" maxlength="60" size="60" value="#{clienteController.entity.endereco}" />
 						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
 							<p:inputText id="bairro" maxlength="45" size="25" value="#{clienteController.endereco.bairro}" />
 				        	<p:spacer width="13" height="10" />
@@ -136,167 +61,13 @@
 				</p:panel>
 				
 				<p:panel id="pnContatos" header="Contatos" styleClass="boxSubtit">
- 					<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
-				        <h:outputLabel value="Telefones Residenciais : " />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneResidencial}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneResidencial2}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneResidencial3}" />
-				        <h:outputLabel value="Telefones Comerciais : " />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneComercial}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneComercial2}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneComercial3}" />
-				        <h:outputLabel value="Telefones Móveis : " />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneMovel}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneMovel2}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.telefoneMovel3}" />
-				        <h:outputLabel value="Emails : " />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.email}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.email2}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.pessoa.email3}" />
+ 					<h:panelGrid columns="2" cellpadding="2" cellspacing="5">
+				        <h:outputLabel value="Telefone : " />
+				        <h:outputLabel value="Email : " />
+						<p:inputText maxlength="45" size="25" value="#{clienteController.entity.telefone}" />
+						<p:inputText maxlength="45" size="25" value="#{clienteController.entity.email}" />
 				    </h:panelGrid>
 				</p:panel>
-			</p:panel>
-		</h:form>
-		
-		<h:form id="formcadDocs" enctype="multipart/form-data" styleClass="form-contour">
-			<p:panel id="pnDocumento" header="Documentação" styleClass="boxSubtit">
-				<h:panelGrid columns="2" cellpadding="2" cellspacing="5" style="display: inline-block;">
-			        <h:outputLabel value="Data : " />
-			        <h:outputLabel value="Arquivo : " />
-					<p:calendar id='datadoc' value="#{clienteController.pacienteDocumento.dataDocumento}" showOn="both"
-						maxdate="#{clienteController.dataAtual}" pattern="dd/MM/yyyy"
-						maxlength="10" size="11" popupIconOnly="true" 
-						readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-					<p:fileUpload id='arq' style="float:left;" update=":formcadDocs:outNomeArq"
-						fileUploadListener="#{clienteController.handleFileUploader}"  
-			            mode="advanced" sizeLimit="5000000" allowTypes="/(\.)(jp?g|jpe?g|png|pdf|bpt)$/"
-			            auto="true" label="Importar arquivo" />
-				</h:panelGrid>
-
-				<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5" style="display: inline-block;">
-					<h:outputText id="outNomeArq" value="#{clienteController.pacienteDocumento.nomeArquivo}" />
-					<p:commandButton id="btnAddDoc" oncomplete="if($('#idmsg').html()!=''){goTopPage();}" 
-						value="Incluir" process="@this, datadoc, arq" 
-						action="#{clienteController.addDocumento}"
-						update=":idmsg,:formcadDocs:datadoc,:formcadDocs:arq,:formcadDocs:dtDocs,:formcadDocs:outNomeArq" />
-				</h:panelGrid>
-
-				<p:dataTable id="dtDocs" var="it" paginator="true" rows="5"
-					emptyMessage="Nenhum registro selecionado" paginatorPosition="bottom"
-					value="#{clienteController.cliente.pacienteDocumentosList}"
-                	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                	styleClass="gridContour" style="width:600px;"
-	                rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
-					<p:column headerText="Data" styleClass="gridHeaderName" style="width:70px; max-width:70px; min-width:70px;">
-						<h:outputText value="#{it.dataDocumento}">
-	                    	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
-	                    </h:outputText>
-					</p:column>					                 
-					<p:column headerText="Nome do arquivo">
-						<h:outputText value="#{it.nomeArquivo}" />
-					</p:column>
-					<p:column headerText="Ações" style="width:10px;">
-   	    				<p:commandButton action="#{clienteController.deleteDocumento}" icon="ui-icon ui-icon-close" 
-							update=":formcadDocs:dtDocs" ajax="true" immediate="true">
-							<f:setPropertyActionListener value="#{it}" target="#{clienteController.pacienteDocumentoSelecionado}"/>
-						</p:commandButton>
-   	    				<p:commandButton action="#{clienteController.verDocumento}" icon="ui-icon ui-icon-search" 
-							update=":formcadDocs:dtDocs" ajax="false" immediate="true" onclick= "this.form.target='_blank'">
-							<f:setPropertyActionListener value="#{it}" target="#{clienteController.pacienteDocumentoSelecionado}"/>
-						</p:commandButton>
-   	    				<p:commandButton action="#{clienteController.baixarDocumento}" icon="ui-icon ui-icon-arrowthickstop-1-s" 
-							update=":formcadDocs:dtDocs" ajax="false">
-							<f:setPropertyActionListener value="#{it}" target="#{clienteController.pacienteDocumentoSelecionado}"/>
-						</p:commandButton>
-   	    			</p:column>						
-				</p:dataTable>					
-				
-			</p:panel>
-		</h:form>
-		
-		<h:form id="formcadEventos" styleClass="form-contour">
-			<p:panel id="pnEvento" header="Eventos" styleClass="textAreaTotal boxSubtit">
-				<h:panelGrid>
-					<p:selectManyCheckbox id='evento' value="#{clienteController.eventosSelecionados}" 
-						converter="#{eventoConverter}" layout="responsive" columns="4" 
-						style="width:auto!important;min-width:100px!important;">
-						<f:selectItems value="#{clienteController.eventos}" var="item" 
-							itemLabel="#{item.descricao}" itemValue="#{item}" />
-		           	</p:selectManyCheckbox>
-				</h:panelGrid>
-			</p:panel>
-		</h:form>
-		
-		<h:form id="formcadDemaisInfos" styleClass="form-contour">
-			<p:panel id="pnBanco" header="Dados Bancários" styleClass="textAreaTotal boxSubtit">
-				<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
-			        <h:outputLabel value="Banco : " />
-			        <h:outputLabel value="Agência : " />
-			        <h:outputLabel value="Conta : " />
-					<h:outputLabel value="Dia de Vencimento: " for="diaVencimento"/>
-					<p:selectOneMenu id='banco' value="#{clienteController.bancoSelecionado}" 
-						effect="fade" style="width:200px!important;" >
-						<f:selectItem itemLabel="Selecione..." itemValue="" />
-						<f:selectItems value="#{clienteController.bancos}" var="item" 
-							itemLabel="#{item.nome}" itemValue="#{item.codigo}" />
-		           	</p:selectOneMenu>
-		           	<p:inputText id="agencia" value="#{clienteController.cliente.pessoa.agencia}" />
-		           	<p:inputText id="conta" value="#{clienteController.cliente.pessoa.conta}" />
-			      	<p:selectOneMenu id='diaVencimento' value="#{clienteController.cliente.pessoa.diaVencimento}" 
-			      		effect="fade" styleClass="combo100" >
-						<f:selectItem itemLabel="Selecione..." itemValue="" />
-						<f:selectItem itemLabel="01" itemValue="1" />
-						<f:selectItem itemLabel="02" itemValue="2" />
-						<f:selectItem itemLabel="03" itemValue="3" />
-						<f:selectItem itemLabel="04" itemValue="4" />
-						<f:selectItem itemLabel="05" itemValue="5" />
-						<f:selectItem itemLabel="06" itemValue="6" />
-						<f:selectItem itemLabel="07" itemValue="7" />
-						<f:selectItem itemLabel="08" itemValue="8" />
-						<f:selectItem itemLabel="09" itemValue="9" />
-						<f:selectItem itemLabel="10" itemValue="10" />
-						<f:selectItem itemLabel="11" itemValue="11" />
-						<f:selectItem itemLabel="12" itemValue="12" />
-						<f:selectItem itemLabel="13" itemValue="13" />
-						<f:selectItem itemLabel="14" itemValue="14" />
-						<f:selectItem itemLabel="15" itemValue="15" />
-						<f:selectItem itemLabel="16" itemValue="16" />
-						<f:selectItem itemLabel="17" itemValue="17" />
-						<f:selectItem itemLabel="18" itemValue="18" />
-						<f:selectItem itemLabel="19" itemValue="19" />
-						<f:selectItem itemLabel="20" itemValue="20" />
-						<f:selectItem itemLabel="21" itemValue="21" />
-						<f:selectItem itemLabel="22" itemValue="22" />
-						<f:selectItem itemLabel="23" itemValue="23" />
-						<f:selectItem itemLabel="24" itemValue="24" />
-						<f:selectItem itemLabel="25" itemValue="25" />
-						<f:selectItem itemLabel="26" itemValue="26" />
-						<f:selectItem itemLabel="27" itemValue="27" />
-						<f:selectItem itemLabel="28" itemValue="28" />
-						<f:selectItem itemLabel="29" itemValue="29" />
-						<f:selectItem itemLabel="30" itemValue="30" />
-						<f:selectItem itemLabel="31" itemValue="31" />
-					</p:selectOneMenu>
-				</h:panelGrid>
-			</p:panel>
-			
-			<p:panel id="pnObs" header="Informações Adicionais" styleClass="textAreaTotal boxSubtit">
-		        <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
-			        <h:panelGrid columns="1" cellpadding="2" cellspacing="5">
-				        <h:outputLabel value="Comentários : " />
-						<p:inputTextarea id="obs" value="#{clienteController.cliente.observacao}" 
-							maxlength="2000" cols="120" maxHeight="100" rows="4" autoResize="false"
-							style="margin:3px; max-width:550px;" />
-					</h:panelGrid>
-			        <h:panelGrid columns="1" cellpadding="2" cellspacing="5">
-				        <h:outputLabel value="Data / hora da Última Atualização : " />
-						<p:calendar value="#{clienteController.cliente.pessoa.dataAtualizacao}" showOn="both"
-							pattern="dd/MM/yyyy HH:mm:ss" size="18" popupIconOnly="true" disabled="true"
-							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-				        <h:outputLabel value="Usuário da Última Atualização : " />
-						<p:inputText value="#{clienteController.cliente.pessoa.usuario.nomeUsuario}" size="40" disabled="true" />
-					</h:panelGrid>
-				</h:panelGrid>
 			</p:panel>
 		
 			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">

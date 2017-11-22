@@ -8,346 +8,296 @@ import br.com.mobiew.siseve.model.enuns.StatusEnum;
 
 public class FiltroDTO implements Serializable {
 
-    private static final long serialVersionUID = -6879112043149944258L;
+	private static final long serialVersionUID = -6879112043149944258L;
 
-    private String nome;
+	private String nome;
 
-    private Long idPaciente;
+	private Long idPaciente;
 
-    private String nomePaciente;
+	private String nomePaciente;
 
-    private String nomeDentista;
+	private String nomeProfissional;
 
-    private String nomeConvenio;
+	private String endereco;
 
-    private String nomeArquivo;
+	private Double valorIndice;
 
-    private String endereco;
+	private Double valorPago;
 
-    private Double valorIndice;
+	private Double valorLancamento;
 
-    private Double valorPago;
+	private Integer quantidade;
 
-    private Double valorLancamento;
+	private InputStream inputStream;
 
-    private Integer quantidade;
+	private String numeroCarteira;
 
-    private InputStream inputStream;
+	private String numeroGuia;
 
-    private String numeroCarteira;
+	private Integer numeroParcelas;
 
-    private String numeroGuia;
+	private Date dataPagamento;
 
-    private Integer numeroParcelas;
+	private Date dataInicio;
 
-    private Date dataPagamento;
+	private Date dataFim;
 
-    private Date dataInicio;
+	private Date dataAtendimento;
 
-    private Date dataFim;
+	private Boolean glosado;
 
-    private Date dataAtendimento;
+	private StatusEnum status;
 
-    private Boolean glosado;
+	private Double valorLaboratorio;
 
-    private StatusEnum status;
+	private Double valorCompImplante;
 
-    private Double valorLaboratorio;
+	private Double valorNF;
 
-    private Double valorCompImplante;
+	private String cnpj;
 
-    private Double valorNF;
+	private String mesReferencia;
 
-    private String cnpj;
+	private String tipo;
 
-    private Long idConvenio;
+	private PacienteDTO pacienteSelecionado;
 
-    private String mesReferencia;
+	private Date dataRequisicao;
 
-    private String tipo;
+	private String motivo;
 
-    private PacienteDTO pacienteSelecionado;
+	private Long idProfissional;
 
-    private Date dataRequisicao;
+	public String getNomePaciente() {
+		return this.nomePaciente;
+	}
 
-    private Long idProduto;
+	public void setNomePaciente( String nomePacienteParam ) {
+		this.nomePaciente = nomePacienteParam;
+	}
 
-    private String nomeProduto;
+	public String getEndereco() {
+		return this.endereco;
+	}
 
-    private String motivo;
+	public void setEndereco( String enderecoParam ) {
+		this.endereco = enderecoParam;
+	}
 
-    private Long idDentista;
+	public Double getValorIndice() {
+		return this.valorIndice;
+	}
 
-    public String getNomePaciente() {
-        return this.nomePaciente;
-    }
+	public void setValorIndice( Double valorIndiceParam ) {
+		this.valorIndice = valorIndiceParam;
+	}
 
-    public void setNomePaciente( String nomePacienteParam ) {
-        this.nomePaciente = nomePacienteParam;
-    }
+	public Double getValorPago() {
+		return this.valorPago;
+	}
 
-    public String getNomeDentista() {
-        return this.nomeDentista;
-    }
+	public void setValorPago( Double valorPagoParam ) {
+		this.valorPago = valorPagoParam;
+	}
 
-    public void setNomeDentista( String nomeDentistaParam ) {
-        this.nomeDentista = nomeDentistaParam;
-    }
+	public Double getValorLancamento() {
+		return this.valorLancamento;
+	}
 
-    public String getNomeConvenio() {
-        return this.nomeConvenio;
-    }
+	public void setValorLancamento( Double valorLancamentoParam ) {
+		this.valorLancamento = valorLancamentoParam;
+	}
 
-    public void setNomeConvenio( String nomeConvenioParam ) {
-        this.nomeConvenio = nomeConvenioParam;
-    }
-
-    public String getNomeArquivo() {
-        return this.nomeArquivo;
-    }
-
-    public void setNomeArquivo( String nomeArquivoParam ) {
-        this.nomeArquivo = nomeArquivoParam;
-    }
-
-    public String getEndereco() {
-        return this.endereco;
-    }
-
-    public void setEndereco( String enderecoParam ) {
-        this.endereco = enderecoParam;
-    }
-
-    public Double getValorIndice() {
-        return this.valorIndice;
-    }
-
-    public void setValorIndice( Double valorIndiceParam ) {
-        this.valorIndice = valorIndiceParam;
-    }
-
-    public Double getValorPago() {
-        return this.valorPago;
-    }
-
-    public void setValorPago( Double valorPagoParam ) {
-        this.valorPago = valorPagoParam;
-    }
-
-    public Double getValorLancamento() {
-        return this.valorLancamento;
-    }
-
-    public void setValorLancamento( Double valorLancamentoParam ) {
-        this.valorLancamento = valorLancamentoParam;
-    }
-
-    public Integer getQuantidade() {
-        return this.quantidade;
-    }
-
-    public void setQuantidade( Integer quantidadeParam ) {
-        this.quantidade = quantidadeParam;
-    }
-
-    public InputStream getInputStream() {
-        return this.inputStream;
-    }
-
-    public void setInputStream( InputStream inputStreamParam ) {
-        this.inputStream = inputStreamParam;
-    }
-
-    public String getNumeroCarteira() {
-        return this.numeroCarteira;
-    }
-
-    public void setNumeroCarteira( String numeroCarteiraParam ) {
-        this.numeroCarteira = numeroCarteiraParam;
-    }
-
-    public String getNumeroGuia() {
-        return this.numeroGuia;
-    }
-
-    public void setNumeroGuia( String numeroGuiaParam ) {
-        this.numeroGuia = numeroGuiaParam;
-    }
-
-    public Integer getNumeroParcelas() {
-        return this.numeroParcelas;
-    }
-
-    public void setNumeroParcelas( Integer numeroParcelasParam ) {
-        this.numeroParcelas = numeroParcelasParam;
-    }
-
-    public Date getDataPagamento() {
-        return this.dataPagamento;
-    }
-
-    public void setDataPagamento( Date dataPagamentoParam ) {
-        this.dataPagamento = dataPagamentoParam;
-    }
-
-    public Date getDataAtendimento() {
-        return this.dataAtendimento;
-    }
-
-    public void setDataAtendimento( Date dataAtendimentoParam ) {
-        this.dataAtendimento = dataAtendimentoParam;
-    }
-
-    public Boolean getGlosado() {
-        return this.glosado;
-    }
-
-    public void setGlosado( Boolean glosadoParam ) {
-        this.glosado = glosadoParam;
-    }
-
-    public StatusEnum getStatus() {
-        return this.status;
-    }
-
-    public void setStatus( StatusEnum statusParam ) {
-        this.status = statusParam;
-    }
-
-    public Double getValorLaboratorio() {
-        return this.valorLaboratorio;
-    }
-
-    public void setValorLaboratorio( Double valorLaboratorioParam ) {
-        this.valorLaboratorio = valorLaboratorioParam;
-    }
-
-    public Double getValorCompImplante() {
-        return this.valorCompImplante;
-    }
-
-    public void setValorCompImplante( Double valorCompImplanteParam ) {
-        this.valorCompImplante = valorCompImplanteParam;
-    }
-
-    public Double getValorNF() {
-        return this.valorNF;
-    }
-
-    public void setValorNF( Double valorNFParam ) {
-        this.valorNF = valorNFParam;
-    }
-
-    public String getCnpj() {
-        return this.cnpj;
-    }
-
-    public void setCnpj( String cnpjParam ) {
-        this.cnpj = cnpjParam;
-    }
-
-    public Long getIdConvenio() {
-        return this.idConvenio;
-    }
-
-    public void setIdConvenio( Long idConvenioParam ) {
-        this.idConvenio = idConvenioParam;
-    }
-
-    public String getMesReferencia() {
-        return this.mesReferencia;
-    }
-
-    public void setMesReferencia( String mesReferenciaParam ) {
-        this.mesReferencia = mesReferenciaParam;
-    }
-
-    public Date getDataInicio() {
-        return this.dataInicio;
-    }
-
-    public void setDataInicio( Date dataInicioParam ) {
-        this.dataInicio = dataInicioParam;
-    }
-
-    public Date getDataFim() {
-        return this.dataFim;
-    }
-
-    public void setDataFim( Date dataFimParam ) {
-        this.dataFim = dataFimParam;
-    }
-
-    public String getNome() {
-        return this.nome;
-    }
-
-    public void setNome( String nomeParam ) {
-        this.nome = nomeParam;
-    }
-
-    public String getTipo() {
-        return this.tipo;
-    }
-
-    public void setTipo( String tipoParam ) {
-        this.tipo = tipoParam;
-    }
-
-    public Long getIdPaciente() {
-        return this.idPaciente;
-    }
-
-    public void setIdPaciente( Long idPacienteParam ) {
-        this.idPaciente = idPacienteParam;
-    }
-
-    public PacienteDTO getPacienteSelecionado() {
-        return this.pacienteSelecionado;
-    }
-
-    public void setPacienteSelecionado( PacienteDTO pacienteSelecionadoParam ) {
-        this.pacienteSelecionado = pacienteSelecionadoParam;
-    }
-
-    public Date getDataRequisicao() {
-        return this.dataRequisicao;
-    }
-
-    public void setDataRequisicao( Date dataRequisicaoParam ) {
-        this.dataRequisicao = dataRequisicaoParam;
-    }
-
-    public Long getIdProduto() {
-        return this.idProduto;
-    }
-
-    public void setIdProduto( Long idProdutoParam ) {
-        this.idProduto = idProdutoParam;
-    }
-
-    public String getNomeProduto() {
-        return this.nomeProduto;
-    }
-
-    public void setNomeProduto( String nomeProdutoParam ) {
-        this.nomeProduto = nomeProdutoParam;
-    }
-
-    public String getMotivo() {
-        return this.motivo;
-    }
-
-    public void setMotivo( String motivoParam ) {
-        this.motivo = motivoParam;
-    }
-
-    public Long getIdDentista() {
-        return this.idDentista;
-    }
-
-    public void setIdDentista( Long idDentistaParam ) {
-        this.idDentista = idDentistaParam;
-    }
+	public Integer getQuantidade() {
+		return this.quantidade;
+	}
+
+	public void setQuantidade( Integer quantidadeParam ) {
+		this.quantidade = quantidadeParam;
+	}
+
+	public InputStream getInputStream() {
+		return this.inputStream;
+	}
+
+	public void setInputStream( InputStream inputStreamParam ) {
+		this.inputStream = inputStreamParam;
+	}
+
+	public String getNumeroCarteira() {
+		return this.numeroCarteira;
+	}
+
+	public void setNumeroCarteira( String numeroCarteiraParam ) {
+		this.numeroCarteira = numeroCarteiraParam;
+	}
+
+	public String getNumeroGuia() {
+		return this.numeroGuia;
+	}
+
+	public void setNumeroGuia( String numeroGuiaParam ) {
+		this.numeroGuia = numeroGuiaParam;
+	}
+
+	public Integer getNumeroParcelas() {
+		return this.numeroParcelas;
+	}
+
+	public void setNumeroParcelas( Integer numeroParcelasParam ) {
+		this.numeroParcelas = numeroParcelasParam;
+	}
+
+	public Date getDataPagamento() {
+		return this.dataPagamento;
+	}
+
+	public void setDataPagamento( Date dataPagamentoParam ) {
+		this.dataPagamento = dataPagamentoParam;
+	}
+
+	public Date getDataAtendimento() {
+		return this.dataAtendimento;
+	}
+
+	public void setDataAtendimento( Date dataAtendimentoParam ) {
+		this.dataAtendimento = dataAtendimentoParam;
+	}
+
+	public Boolean getGlosado() {
+		return this.glosado;
+	}
+
+	public void setGlosado( Boolean glosadoParam ) {
+		this.glosado = glosadoParam;
+	}
+
+	public StatusEnum getStatus() {
+		return this.status;
+	}
+
+	public void setStatus( StatusEnum statusParam ) {
+		this.status = statusParam;
+	}
+
+	public Double getValorLaboratorio() {
+		return this.valorLaboratorio;
+	}
+
+	public void setValorLaboratorio( Double valorLaboratorioParam ) {
+		this.valorLaboratorio = valorLaboratorioParam;
+	}
+
+	public Double getValorCompImplante() {
+		return this.valorCompImplante;
+	}
+
+	public void setValorCompImplante( Double valorCompImplanteParam ) {
+		this.valorCompImplante = valorCompImplanteParam;
+	}
+
+	public Double getValorNF() {
+		return this.valorNF;
+	}
+
+	public void setValorNF( Double valorNFParam ) {
+		this.valorNF = valorNFParam;
+	}
+
+	public String getCnpj() {
+		return this.cnpj;
+	}
+
+	public void setCnpj( String cnpjParam ) {
+		this.cnpj = cnpjParam;
+	}
+
+	public String getMesReferencia() {
+		return this.mesReferencia;
+	}
+
+	public void setMesReferencia( String mesReferenciaParam ) {
+		this.mesReferencia = mesReferenciaParam;
+	}
+
+	public Date getDataInicio() {
+		return this.dataInicio;
+	}
+
+	public void setDataInicio( Date dataInicioParam ) {
+		this.dataInicio = dataInicioParam;
+	}
+
+	public Date getDataFim() {
+		return this.dataFim;
+	}
+
+	public void setDataFim( Date dataFimParam ) {
+		this.dataFim = dataFimParam;
+	}
+
+	public String getNome() {
+		return this.nome;
+	}
+
+	public void setNome( String nomeParam ) {
+		this.nome = nomeParam;
+	}
+
+	public String getTipo() {
+		return this.tipo;
+	}
+
+	public void setTipo( String tipoParam ) {
+		this.tipo = tipoParam;
+	}
+
+	public Long getIdPaciente() {
+		return this.idPaciente;
+	}
+
+	public void setIdPaciente( Long idPacienteParam ) {
+		this.idPaciente = idPacienteParam;
+	}
+
+	public PacienteDTO getPacienteSelecionado() {
+		return this.pacienteSelecionado;
+	}
+
+	public void setPacienteSelecionado( PacienteDTO pacienteSelecionadoParam ) {
+		this.pacienteSelecionado = pacienteSelecionadoParam;
+	}
+
+	public Date getDataRequisicao() {
+		return this.dataRequisicao;
+	}
+
+	public void setDataRequisicao( Date dataRequisicaoParam ) {
+		this.dataRequisicao = dataRequisicaoParam;
+	}
+
+	public String getMotivo() {
+		return this.motivo;
+	}
+
+	public void setMotivo( String motivoParam ) {
+		this.motivo = motivoParam;
+	}
+
+	public String getNomeProfissional() {
+		return this.nomeProfissional;
+	}
+
+	public void setNomeProfissional( String nomeProfissionalParam ) {
+		this.nomeProfissional = nomeProfissionalParam;
+	}
+
+	public Long getIdProfissional() {
+		return this.idProfissional;
+	}
+
+	public void setIdProfissional( Long idProfissionalParam ) {
+		this.idProfissional = idProfissionalParam;
+	}
 
 }

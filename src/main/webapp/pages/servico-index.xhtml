@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<style>
+			table thead tr th {
+				font-weight: bold;
+			}
+		</style>
+ 		
+ 		<h2>Cadastro de Servico</h2>
+		<h:form id="cadastro" styleClass="form-contour">
+            <p:panel header="Filtro de consulta" styleClass="boxSubtit" id="panel">
+            	<h:panelGrid columns="2" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Nome :" />
+					<p:inputText id='descricao' maxlength="100" size="50" value="#{servicoController.descricao}" />
+					<h:outputLabel value="Tipo :" />
+					<p:selectOneRadio id="tipo" value="#{servicoControlller.tipoServico}">
+						<f:selectItem itemLabel="Médico" itemValue="M" />
+						<f:selectItem itemLabel="Outros" itemValue="O" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+            </p:panel>
+
+			<h:panelGrid styleClass="btnForm" columns="6" cellpadding="2" cellspacing="5">
+	   	    	<p:commandButton id="consultarCad" value="Consultar" update=":idmsg,:frmtab" 
+					action="#{servicoController.consultar}" icon="ui-icon-search"
+					title="Consultar dados do serviço" />
+				<p:commandButton id="btnLimparSave" value="#{msg['button.clear']}" update="@form,:frmtab:dtable" 
+					action="#{servicoController.inicializar}" icon="botao-limpar-campos"
+					title="Limpar Campos do filtro" />
+				<p:commandButton value="Novo Servico" update=":idmsg,@form" ajax="false"
+					action="#{servicoController.incluir}" icon="ui-icon-plus"
+					title="Incluir um novo serviço" />
+		    </h:panelGrid>
+
+			<p:focus for=":cadastro:descricao" />
+		</h:form>
+		
+		<h:form id='frmtab' styleClass="gridContour" style="margin:0; height:auto;">
+			<h:panelGroup id='gruposervico'>
+			<p:dataTable id='dtable' var="ent" paginator="true" rows="50" 
+				emptyMessage="#{msg['search.noResults']}" 
+				value="#{servicoController.servicos}"
+	            paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}    {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+	            currentPageReportTemplate="Total de registros: {totalRecords}"
+	            rowsPerPageTemplate="10,50,100,500,1000"
+                rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}"
+                sortBy="ent.evento.nome">
+				<p:column headerText="Nome" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.nome}" >
+                    <h:outputText value="#{ent.nome}" />
+                </p:column>
+				<p:column headerText="Tipo" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.tipoRelatorio}" >
+                    <h:outputText value="#{ent.tipoRelatorio}" />
+                </p:column>
+				<p:column headerText="Evento" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.evento.nome}" >
+                    <h:outputText value="#{ent.evento.nome}" />
+                </p:column>
+                <p:column headerText="Ações" style="width:40px;max-width:40px;min-width:40px">
+					<h:panelGrid columns="6" styleClass="actions" cellpadding="2">
+						<p:commandButton action="#{servicoController.editar}" update=":cadastro" ajax="false" icon="ui-icon-pencil" immediate="true" title="Alterar">
+							<f:setPropertyActionListener value="#{ent.id}" target="#{servicoController.servico}" />
+						</p:commandButton>
+                        <p:commandButton update=":frmtab:displayexc" icon="ui-icon ui-icon-close"
+                        	oncomplete ="confirmationExcluir.show()" title="Excluir"
+                        	style="background-color:red !important; background:none;">
+                            <f:setPropertyActionListener value="#{ent}" target="#{servicoController.servico}" />
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:column>
+            </p:dataTable>
+            </h:panelGroup>
+            
+            <h:panelGrid id="displayexc" columns="2" cellpadding="4" style="margin:0 auto;">  
+				<p:confirmDialog message="Confirma a exclusão do serviço #{servicoController.servico.nome}?" width="350"
+					showEffect="explode" hideEffect="explode"
+					header="Confirmação" severity="alert" widgetVar="confirmationExcluir">
+                	<p:commandButton value="Sim" update=":idmsg,:frmtab" actionListener="#{servicoController.excluir}" 
+                		icon="ui-icon ui-icon-check" onclick="confirmationExcluir.hide()" />
+                	<p:commandButton value="Não" onclick="confirmationExcluir.hide()" type="button" icon="ui-icon ui-icon-close"/>
+				</p:confirmDialog>
+            </h:panelGrid>
+
+	 	</h:form>
+	</ui:define>
+</ui:composition>

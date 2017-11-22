@@ -14,16 +14,11 @@
  		<h2>Cadastro de Evento</h2>
 		<h:form id="cadastro" styleClass="form-contour">
             <p:panel header="Filtro de consulta" styleClass="boxSubtit" id="panel">
-            	<h:panelGrid columns="4" cellpadding="2" cellspacing="7">
-	           		<h:outputLabel value="Descrição :" />
+            	<h:panelGrid columns="2" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Nome :" />
+					<h:outputLabel value="Local :" />
 					<p:inputText id='descricao' maxlength="100" size="50" value="#{eventoController.descricao}" />
-					<h:outputLabel value="Data Evento :" />
-					<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
-						<p:calendar value="#{eventoController.dtEvento}" showOn="both"
-							pattern="dd/MM/yyyy" maxlength="10" size="11" popupIconOnly="true" 
-							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-						<p:spacer width="5" />
-					</h:panelGrid>
+					<p:inputText id='local' maxlength="100" size="50" value="#{eventoController.local}" />
 				</h:panelGrid>
             </p:panel>
 
@@ -52,25 +47,29 @@
 	            currentPageReportTemplate="Total de registros: {totalRecords}"
 	            rowsPerPageTemplate="10,50,100,500,1000"
                 rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
-				<p:column headerText="Descrição" style="text-align:left;width:100px;max-width:100px;;min-width:100px;" sortBy="#{ent.descricao}" >
-                    <h:outputText value="#{ent.descricao}" />
+				<p:column headerText="Nome" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.nome}" >
+                    <h:outputText value="#{ent.nome}" />
                 </p:column>
-				<p:column headerText="Data Evento" style="width:30px; max-width:30px; min-width:30px;">
-                    <h:outputText value="-" rendered="#{ent.dtEvento == null}" />
-                    <h:outputText value="#{ent.dtEvento}" rendered="#{ent.dtEvento != null}">
-                    	<f:convertDateTime pattern="dd/MM" locale="pt_BR" timeZone="America/Sao_Paulo" />
+				<p:column headerText="Local" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.local}" >
+                    <h:outputText value="#{ent.local}" />
+                </p:column>
+				<p:column headerText="Data Inicio" style="width:30px; max-width:30px; min-width:30px;">
+                    <h:outputText value="#{ent.dataInicio}">
+                    	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
                     </h:outputText>
 				</p:column>
-				<p:column headerText="Observação" style="text-align:left; width:140px; max-width:140px;">
-                    <h:outputText value="#{ent.observacao}" />
-                </p:column>
+				<p:column headerText="Data Fim" style="width:30px; max-width:30px; min-width:30px;">
+                    <h:outputText value="#{ent.dataFim}">
+                    	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+                    </h:outputText>
+				</p:column>
                 <p:column headerText="Ações" style="width:40px;max-width:40px;min-width:40px">
 					<h:panelGrid columns="6" styleClass="actions" cellpadding="2">
 						<p:commandButton action="#{eventoController.editar}" update=":cadastro" ajax="false" icon="ui-icon-pencil" immediate="true" title="Alterar">
-							<f:setPropertyActionListener value="#{ent.id}" target="#{eventoController.idEvento}" />
+							<f:setPropertyActionListener value="#{ent.id}" target="#{eventoController.evento}" />
 						</p:commandButton>
                         <p:commandButton update=":frmtabevento:displayexc" icon="ui-icon ui-icon-close"
-                        	oncomplete ="confirmationExcuir.show()" title="Excluir"
+                        	oncomplete ="confirmationExcluir.show()" title="Excluir"
                         	style="background-color:red !important; background:none;">
                             <f:setPropertyActionListener value="#{ent.id}" target="#{eventoController.idEvento}" />
                             <f:setPropertyActionListener value="#{ent}" target="#{eventoController.evento}" />
@@ -81,12 +80,12 @@
             </h:panelGroup>
             
             <h:panelGrid id="displayexc" columns="2" cellpadding="4" style="margin:0 auto;">  
-				<p:confirmDialog message="Confirma a exclusão do evento #{eventoController.evento.descricao}?" width="350"
+				<p:confirmDialog message="Confirma a exclusão do evento #{eventoController.evento.nome}?" width="350"
 					showEffect="explode" hideEffect="explode"
-					header="Confirmação" severity="alert" widgetVar="confirmationExcuir">
+					header="Confirmação" severity="alert" widgetVar="confirmationExcluir">
                 	<p:commandButton value="Sim" update=":idmsg,:frmtabevento" actionListener="#{eventoController.excluir}" 
-                		icon="ui-icon ui-icon-check" onclick="confirmationExcuir.hide()" />
-                	<p:commandButton value="Não" onclick="confirmationExcuir.hide()" type="button" icon="ui-icon ui-icon-close"/>
+                		icon="ui-icon ui-icon-check" onclick="confirmationExcluir.hide()" />
+                	<p:commandButton value="Não" onclick="confirmationExcluir.hide()" type="button" icon="ui-icon ui-icon-close"/>
 				</p:confirmDialog>
             </h:panelGrid>
 

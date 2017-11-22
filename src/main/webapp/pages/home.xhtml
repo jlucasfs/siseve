@@ -19,15 +19,40 @@
 		<h:form id="frmhome" styleClass="form-contour">
 			<h:panelGrid columns="1" cellpadding="0" cellspacing="0">
 					<h:panelGrid columns="4" cellpadding="0" cellspacing="0">
-						<p:panel header="Paciente" style="text-align:center;height:120px;width:225px;margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
+						<p:panel header="Evento" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
 							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
-								<!-- 
 								<h:panelGroup>
-									<a title="Cadastro de Paciente" href="#{request.contextPath}/pages/paciente-index.jsf">
-										<p:graphicImage value="/static/img/patient.png" width="70" />
+									<a title="Cadastro de Evento" href="#{request.contextPath}/pages/evento-index.jsf">
+										<p:graphicImage value="/static/img/evento.png" width="70" /> <br />
 									</a>
 								</h:panelGroup>
-								 -->
+								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
+									<h:panelGroup styleClass="txt-color-purple">
+										<h:outputText value="#{eventoController.totalRegistros}">
+										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
+										</h:outputText>
+									</h:panelGroup>
+								</h:panelGrid>
+							</h:panelGrid>
+						</p:panel>
+						<p:panel header="Serviço" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
+							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
+								<h:panelGroup>
+									<a title="Cadastro de Serviço" href="#{request.contextPath}/pages/servico-index.jsf">
+										<p:graphicImage value="/static/img/servicos.png" width="70" /> <br />
+									</a>
+								</h:panelGroup>
+								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
+									<h:panelGroup styleClass="txt-color-purple">
+										<h:outputText value="#{servicoController.totalRegistros}">
+										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
+										</h:outputText>
+									</h:panelGroup>
+								</h:panelGrid>
+							</h:panelGrid>
+						</p:panel>
+						<p:panel header="Paciente" style="text-align:center;height:120px;width:225px;margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
+							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
 								<h:panelGroup>
 									<h:commandLink value="" action="#{clienteController.entrar}" title="Cadastro de Paciente">
 										<p:graphicImage value="/static/img/patient.png" width="70" /> <br />
@@ -39,210 +64,36 @@
 										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
 										</h:outputText>
 									</h:panelGroup>
-									<h:panelGroup>
-										<h:outputText value="#{sessionBean.pacienteDto.totalConvenio}">
-										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
-										</h:outputText>
-										<h:outputText value=" Conveniados" />
-									</h:panelGroup>
-									<h:panelGroup>
-										<h:outputText value="#{sessionBean.pacienteDto.totalPrivado}">
-										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
-										</h:outputText>
-										<h:outputText value=" Privados" />
-									</h:panelGroup>
 								</h:panelGrid>
 							</h:panelGrid>
 						</p:panel>
-
-						<p:panel header="Dentista" style="text-align:center;height:120px;width:225px;margin: 5px 0 2px 0!important;" styleClass="boxSubtit2"
-							rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
+						<p:panel header="Profissional" style="text-align:center;height:120px;width:225px;margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
 							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
 								<h:panelGroup>
-									<a title="Cadastro de Dentista" href="#{request.contextPath}/pages/dentista-index.jsf">
+									<a title="Cadastro de Profissional" href="#{request.contextPath}/pages/profissional-index.jsf">
 										<p:graphicImage value="/static/img/doctor.png" width="70" /> <br />
 									</a>
 								</h:panelGroup>
 								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
 									<h:panelGroup styleClass="txt-color-purple">
-										<h:outputText value="#{dentistaController.totalRegistros}">
+										<h:outputText value="#{profissionalController.totalRegistros}">
 										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
 										</h:outputText>
 									</h:panelGroup>
-								</h:panelGrid>
-							</h:panelGrid>
-						</p:panel>
-
-						<p:panel header="Convênio" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2"
-							rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
-							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
-								<h:panelGroup>
-									<a title="Cadastro de Convênio" href="#{request.contextPath}/pages/convenio-index.jsf">
-										<p:graphicImage value="/static/img/convenio.png" width="70" /> <br />
-									</a>
-								</h:panelGroup>
-								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
-									<h:panelGroup styleClass="txt-color-purple">
-										<h:outputText value="#{convenioController.totalRegistros}">
-										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
-										</h:outputText>
-									</h:panelGroup>
-								</h:panelGrid>
-							</h:panelGrid>
-						</p:panel>
-
-						<p:panel header="Estoque" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2"
-							rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
-							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
-								<h:panelGroup>
-									<a title="Lançar movimentações" href="#{request.contextPath}/pages/estoque/movimentacaoProd-index.jsf">
-										<p:graphicImage value="/static/img/cad-procedimento.png" width="70" /> <br />
-									</a>
-								</h:panelGroup>
-								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
-									<h:panelGroup styleClass="txt-color-purple">
-										<h:outputText value="#{produtoController.totalRegistros}">
-										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
-										</h:outputText>
-									</h:panelGroup>
-								</h:panelGrid>
-							</h:panelGrid>
-						</p:panel>
-						
-						<p:panel header="#{sessionScope.perfilUsuarioAutenticado == 'ADM'? 'Lançar' : 'Consultar'} Procedimentos" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
-							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
-								<h:panelGroup>
-									<h:commandLink value="" action="#{lanctoProcedimentosController.entrar}" title="Lançar Procedimentos">
-										<p:graphicImage value="/static/img/lanc-procedimento.png" width="70" /> <br />
-									</h:commandLink>
-								</h:panelGroup>
-								<h:panelGrid columns="2" cellpadding="2" cellspacing="4" columnClasses="td-align-left">
-									<h:panelGroup styleClass="txt-color-purple">
-										<h:outputText value="#{sessionBean.procedDto.quantidade}">
-										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
-										</h:outputText>
-									</h:panelGroup>
-									<h:outputText value=" - mês atual" />
-									<h:panelGroup styleClass="txt-color-purple">
-										<h:outputText value="#{sessionBean.procedDto.quantidadeAnterior}">
-										    <f:convertNumber pattern="#,##0" locale="pt_BR" /> 
-										</h:outputText>
-									</h:panelGroup>
-									<h:outputText value=" - mês anterior" />
-								</h:panelGrid>
-							</h:panelGrid>
-						</p:panel>
-						
-						<p:panel header="Comparar Procedimentos" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2"
-							rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
-							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
-								<h:panelGroup>
-									<h:commandLink value="" action="#{comparativoProcedimentosController.entrar}" title="Importar arquivo texto e comparar com procedimentos lançados no sistema">
-										<p:graphicImage value="/static/img/indice-financeiro.png" width="70" /> <br/>
-									</h:commandLink>
-								</h:panelGroup>
-								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
-									<h:outputText value="Comparativo dos procedimentos lançados no sistema." />
-								</h:panelGrid>
-							</h:panelGrid>
-						</p:panel>
-
-						<p:panel header="Fechamento Financeiro" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2"
-							rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
-							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
-								<h:panelGroup>
-									<a title="Fechamento financeiro mensal" href="#{request.contextPath}/pages/fechamentoFinanceiro-index.jsf">
-										<p:graphicImage value="/static/img/fechamento.png" width="70" /> <br />
-									</a>
-								</h:panelGroup>
-								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
-									<h:outputText value="Fechamento mensal e relatório de repasse." />
-								</h:panelGrid>
-							</h:panelGrid>
-						</p:panel>
-
-						<p:panel header="Movimentações financeiras" style="text-align:center;height:120px;width:225px;margin: 5px 0 2px 0!important;" styleClass="boxSubtit2"
-							rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
-							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
-								<h:panelGroup>
-									<a title="Manutenção de movimentações financeiras" href="#{request.contextPath}/pages/financeiro/financeiro-movimentacoes.jsf">
-										<p:graphicImage value="/static/img/pay1.png" width="70" /> <br />
-									</a>
-								</h:panelGroup>
-								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
-									<h:outputText value="Lançamento de contas a pagar e a receber da empresa." />
 								</h:panelGrid>
 							</h:panelGrid>
 						</p:panel>
 					</h:panelGrid>
 
-					<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
-						<p:panel header="Atendimentos (30 dias)" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:525px;">
-							<p:barChart id="trinta" value="#{sessionBean.listaProcedimentosTrintaDias}"
-								legendPosition="ne" style="width:520px;height:200px;margin:5px;"
+					<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+						<p:panel header="Atendimentos últimos 6 meses" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:470px;">
+							<p:barChart id="sixmonths" value="#{sessionBean.listaAtendimentosSeisMeses}"
+								legendPosition="ne" style="width:400px;height:200px;margin:5px;"
 								barMargin="10" barPadding="10" xaxisAngle="-40" stacked="true" />
 						</p:panel>
-						<p:panel header="Atendimentos (6 meses)" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;">
-							<p:barChart id="seis" value="#{sessionBean.listaProcedimentosSeisMeses}"
-								legendPosition="ne" style="width:380px;height:200px;margin:5px;"
-								barMargin="10" barPadding="10" xaxisAngle="-40" />
-						</p:panel>
-					</h:panelGrid>
-					
-					<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
-						<p:panel header="Aniversariantes nos próximos 15 dias" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:300px;height:203px;">
-							<table class="table-home table-striped table-hover table-condensed" style="font-size:80%;">
-								<thead>
-									<tr>
-										<th>Data</th>
-										<th style="text-align:left;">Nome</th>
-									</tr>
-								</thead>
-								<tbody>
-									<c:forEach var="item" items="#{sessionBean.aniversariantesDto}" varStatus="status">
-										<tr>
-											<td>${item.dataInclusaoFormatada}</td>
-											<td>${item.nome}</td>
-										</tr>
-									</c:forEach>
-								</tbody>
-							</table>
-						</p:panel>
-						<p:panel header="Revisões nos próximos 15 dias" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:300px;height:203px;">
-							<table class="table-home table-striped table-hover table-condensed" style="font-size:80%;">
-								<thead>
-									<tr>
-										<th>Data</th>
-										<th style="text-align:left;">Nome</th>
-									</tr>
-								</thead>
-								<tbody>
-									<c:forEach var="item" items="#{sessionBean.revisoesDto}" varStatus="status">
-										<tr>
-											<td>${item.dataRevisaoFormatada}</td>
-											<td>${item.nome}</td>
-										</tr>
-									</c:forEach>
-								</tbody>
-							</table>
-						</p:panel>
-						<p:panel header="Eventos do ano" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:300px;height:203px;">
-							<table class="table-home table-striped table-hover table-condensed" style="font-size:80%;">
-								<thead>
-									<tr>
-										<th>Data</th>
-										<th style="text-align:left;">Evento</th>
-									</tr>
-								</thead>
-								<tbody>
-									<c:forEach var="item" items="#{sessionBean.eventos}" varStatus="status">
-										<tr>
-											<td>${item.dataEventoFormatada}</td>
-											<td>${item.descricao}</td>
-										</tr>
-									</c:forEach>
-								</tbody>
-							</table>
+						<p:panel header="Atendimentos eventos atual por serviço" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:445px;">
+							<p:pieChart id="atendporserv" value="#{sessionBean.listaAtendimentosPorServico}"
+								legendPosition="e" style="width:400px;height:200px;margin:5px;" />
 						</p:panel>
 					</h:panelGrid>
 			</h:panelGrid>

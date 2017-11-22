@@ -22,7 +22,10 @@ public class SistemaException extends RuntimeException {
         super( mensagem );
     }
     
-    public SistemaException( List mensagens ) {
+    @SuppressWarnings( {
+			"rawtypes", "unchecked"
+	} )
+	public SistemaException( List mensagens ) {
         this.messages = mensagens;
     }
     

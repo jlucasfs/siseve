@@ -22,7 +22,7 @@
 					<p:selectManyMenu id="usuariosSelect" value="#{perfilController.usuariosSelecionados}"
 						converter="usuarioConverter" style="width:100%;height:100%">
 						<f:selectItems id="usuarioItens" value="#{perfilController.usuarios}" var="usuario"
-							itemLabel="#{usuario.nomeUsuario}" itemValue="#{usuario}" />
+							itemLabel="#{usuario.nmUsuario}" itemValue="#{usuario}" />
 					</p:selectManyMenu>
 				</h:panelGrid>
 			</p:panel>

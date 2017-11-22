@@ -26,20 +26,31 @@ import javax.persistence.TemporalType;
 public class Evento implements Serializable {
 
 	private static final long serialVersionUID = -7137946645292507308L;
-
+	
+	@Id
+	@GeneratedValue( strategy = IDENTITY )
+	@Column( name = "ID", unique = true, nullable = false )
 	private Long id;
 
+	@Column( name = "NOME", nullable = false, length = 100 )
 	private String nome;
 
+	@Temporal( TemporalType.DATE )
+	@Column( name = "DATA_INICIO", nullable = false, length = 10 )
 	private Date dataInicio;
 
+	@Temporal( TemporalType.DATE )
+	@Column( name = "DATA_FIM", length = 10 )
 	private Date dataFim;
 
+	@Column( name = "LOCAL", length = 200 )
 	private String local;
 
+	@OneToMany( fetch = FetchType.LAZY, mappedBy = "evento" )
 	private Set<Servico> servicos = new HashSet<Servico>( 0 );
 
 	public Evento() {
+		//
 	}
 
 	public Evento( String nome, Date dataInicio ) {
@@ -55,10 +66,6 @@ public class Evento implements Serializable {
 		this.servicos = servicos;
 	}
 
-	@Id
-	@GeneratedValue( strategy = IDENTITY )
-
-	@Column( name = "ID", unique = true, nullable = false )
 	public Long getId() {
 		return this.id;
 	}
@@ -67,7 +74,6 @@ public class Evento implements Serializable {
 		this.id = id;
 	}
 
-	@Column( name = "NOME", nullable = false, length = 100 )
 	public String getNome() {
 		return this.nome;
 	}
@@ -76,8 +82,6 @@ public class Evento implements Serializable {
 		this.nome = nome;
 	}
 
-	@Temporal( TemporalType.DATE )
-	@Column( name = "DATA_INICIO", nullable = false, length = 10 )
 	public Date getDataInicio() {
 		return this.dataInicio;
 	}
@@ -86,8 +90,6 @@ public class Evento implements Serializable {
 		this.dataInicio = dataInicio;
 	}
 
-	@Temporal( TemporalType.DATE )
-	@Column( name = "DATA_FIM", length = 10 )
 	public Date getDataFim() {
 		return this.dataFim;
 	}
@@ -96,7 +98,6 @@ public class Evento implements Serializable {
 		this.dataFim = dataFim;
 	}
 
-	@Column( name = "LOCAL", length = 200 )
 	public String getLocal() {
 		return this.local;
 	}
@@ -105,7 +106,6 @@ public class Evento implements Serializable {
 		this.local = local;
 	}
 
-	@OneToMany( fetch = FetchType.LAZY, mappedBy = "evento" )
 	public Set<Servico> getServicos() {
 		return this.servicos;
 	}

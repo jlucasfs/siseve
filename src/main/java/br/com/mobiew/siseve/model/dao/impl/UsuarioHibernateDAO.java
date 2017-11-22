@@ -31,8 +31,8 @@ public class UsuarioHibernateDAO extends GenericHibernateDAO<Usuario, Long> impl
     public Usuario findByLoginSenha( final String loginParam, final String senhaParam ) {
         Usuario result = null;
         DetachedCriteria criteria = DetachedCriteria.forClass( Usuario.class, "u" )
-                .add( Restrictions.eq( "u.codUsuario", loginParam ) )
-                .add( Restrictions.eq( "u.senha", senhaParam ) )
+                .add( Restrictions.eq( "u.cdLogin", loginParam ) )
+                .add( Restrictions.eq( "u.cdSenha", senhaParam ) )
                 .setResultTransformer( Criteria.DISTINCT_ROOT_ENTITY );
         List<Usuario> usuarios = getHibernateTemplate().findByCriteria(criteria);
         if ( CollectionUtils.isNotEmpty( usuarios ) ) {

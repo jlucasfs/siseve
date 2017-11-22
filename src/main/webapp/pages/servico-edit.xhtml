@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+			function goTopPage() {
+				$( 'html, body' ).animate( { scrollTop: 0 }, 'slow' );
+			}
+		</script>
+		
+		<h2>Cadastro de Serviço</h2>
+
+		<h:form id="formcadEnt" styleClass="form-contour">
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{servicoController.entrar}" immediate="true" />
+				<p:commandButton value="#{msg['button.clear']}" update=":formcadEnt" 
+					action="#{servicoController.limpar}" icon="botao-limpar-campos" process="@this" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form,:formcadEnt" ajax="true"
+					action="#{servicoController.salvar}" icon="ui-icon ui-icon-disk"
+					process=":formcadEnt" oncomplete="goTopPage();" partialSubmit="true"/>
+			</h:panelGrid>
+
+			<p:panel header="Serviço" styleClass="boxSubtit" id="panel">
+            	<h:panelGrid columns="2" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Evento *:" />
+	           		<h:outputLabel value="Nome serviço *:" />
+					<h:outputLabel value="Tipo :" />
+					<p:inputText id='nome' maxlength="100" size="69" value="#{servicoController.servico.nome}" 
+						required="true" requiredMessage="O campo 'Nome' é obrigatório"/>
+					<p:selectOneRadio id="tipo" value="#{servicoControlller.servico.tipoServico}" converter="tipoEventoConverter">
+						<f:selectItem itemLabel="Médico" itemValue="M" />
+						<f:selectItem itemLabel="Outros" itemValue="O" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+            </p:panel>
+			<p:focus for=":formcadEnt:cbevento" />
+		
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{servicoController.entrar}" immediate="true" />
+				<p:commandButton value="#{msg['button.clear']}" update=":formcadEnt" 
+					action="#{servicoController.limpar}" icon="botao-limpar-campos" process="@this" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,:formcadEnt" ajax="true"
+					action="#{servicoController.salvar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
+					process=":formcadEnt" oncomplete="goTopPage();" />
+			</h:panelGrid>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

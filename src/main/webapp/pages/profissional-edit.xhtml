@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+			function goTopPage() {
+				$( 'html, body' ).animate( { scrollTop: 0 }, 'slow' );
+				$('#nome').focus();
+			}
+		</script>
+		
+		<h2>Cadastro de #{profissionalController.entidade}</h2>
+
+		<h:form id="formCadastro" styleClass="form-contour">
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{profissionalController.entrar}" immediate="true" />
+				<p:commandButton value="#{msg['button.clear']}" update=":formCadastro:nome" 
+					action="#{profissionalController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form" ajax="false"
+					action="#{profissionalController.salvar}" icon="ui-icon ui-icon-disk"
+					process="@this,:formCadastro" oncomplete="goTopPage();" />
+			</h:panelGrid>
+
+			<p:panel header="Dados Gerais" styleClass="boxSubtit">
+				<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+					<h:outputLabel value="Nome *: " for="nome" />
+					<p:inputText id="nome" maxlength="60" size="45" value="#{profissionalController.entity.nome}" />
+				</h:panelGrid>
+				
+			</p:panel>
+			
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{profissionalController.entrar}" immediate="true" />
+				<p:commandButton id="btnLimpar2" value="#{msg['button.clear']}" update=":formCadastro:nome" 
+					action="#{profissionalController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form" ajax="false"
+					action="#{profissionalController.salvar}" icon="ui-icon ui-icon-disk"
+					process="@this,:formCadastro" oncomplete="goTopPage();" />
+			</h:panelGrid>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -25,16 +25,28 @@ public class Atendimento implements Serializable {
 
 	private static final long serialVersionUID = -1297433269605983729L;
 
+	@Id
+	@GeneratedValue( strategy = IDENTITY )
+	@Column( name = "ID", unique = true, nullable = false )
 	private Long id;
 
+	@ManyToOne( fetch = FetchType.LAZY )
+	@JoinColumn( name = "ID_CLIENTE", nullable = false )
 	private Cliente cliente;
 
+	@ManyToOne( fetch = FetchType.LAZY )
+	@JoinColumn( name = "ID_PROFISSIONAL" )
 	private Profissional profissional;
 
+	@ManyToOne( fetch = FetchType.LAZY )
+	@JoinColumn( name = "ID_SERVICO", nullable = false )
 	private Servico servico;
 
+	@Temporal( TemporalType.TIMESTAMP )
+	@Column( name = "DATA_ATENDIMENTO", nullable = false, length = 19 )
 	private Date dataAtendimento;
 
+	@Column( name = "OBSERVACAO", length = 4000 )
 	private String observacao;
 
 	public Atendimento() {
@@ -54,10 +66,6 @@ public class Atendimento implements Serializable {
 		this.observacao = observacao;
 	}
 
-	@Id
-	@GeneratedValue( strategy = IDENTITY )
-
-	@Column( name = "ID", unique = true, nullable = false )
 	public Long getId() {
 		return this.id;
 	}
@@ -66,8 +74,6 @@ public class Atendimento implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne( fetch = FetchType.LAZY )
-	@JoinColumn( name = "ID_CLIENTE", nullable = false )
 	public Cliente getCliente() {
 		return this.cliente;
 	}
@@ -76,8 +82,6 @@ public class Atendimento implements Serializable {
 		this.cliente = cliente;
 	}
 
-	@ManyToOne( fetch = FetchType.LAZY )
-	@JoinColumn( name = "ID_PROFISSIONAL" )
 	public Profissional getProfissional() {
 		return this.profissional;
 	}
@@ -86,8 +90,6 @@ public class Atendimento implements Serializable {
 		this.profissional = profissional;
 	}
 
-	@ManyToOne( fetch = FetchType.LAZY )
-	@JoinColumn( name = "ID_SERVICO", nullable = false )
 	public Servico getServico() {
 		return this.servico;
 	}
@@ -96,8 +98,6 @@ public class Atendimento implements Serializable {
 		this.servico = servico;
 	}
 
-	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "DATA_ATENDIMENTO", nullable = false, length = 19 )
 	public Date getDataAtendimento() {
 		return this.dataAtendimento;
 	}
@@ -106,7 +106,6 @@ public class Atendimento implements Serializable {
 		this.dataAtendimento = dataAtendimento;
 	}
 
-	@Column( name = "OBSERVACAO", length = 4000 )
 	public String getObservacao() {
 		return this.observacao;
 	}

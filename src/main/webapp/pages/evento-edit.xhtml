@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<script type="text/javascript">
+			function goTopPage() {
+				$( 'html, body' ).animate( { scrollTop: 0 }, 'slow' );
+			}
+		</script>
+		
+		<h2>Cadastro de Evento</h2>
+
+		<h:form id="formcadEvento" styleClass="form-contour">
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+				<p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{eventoController.entrar}" immediate="true" />
+				<p:commandButton value="#{msg['button.clear']}" update=":formcadEvento" 
+					action="#{eventoController.limpar}" icon="botao-limpar-campos" process="@this" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form,:formcadEvento" ajax="true"
+					action="#{eventoController.salvar}" icon="ui-icon ui-icon-disk"
+					process=":formcadEvento" oncomplete="goTopPage();" partialSubmit="true"/>
+			</h:panelGrid>
+
+			<p:panel header="Evento" styleClass="boxSubtit" id="panel">
+            	<h:panelGrid columns="3" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Nome *:" />
+					<h:outputLabel value="Data Inicio :" />
+					<h:outputLabel value="Data Fim :" />
+					<p:inputText id='nome' maxlength="100" size="69" value="#{eventoController.evento.nome}" 
+						required="true" requiredMessage="O campo 'Nome' é obrigatório"/>
+					<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+						<p:calendar value="#{eventoController.evento.dataInicio}" showOn="both"
+							pattern="dd/MM/yyyy" maxlength="10" size="11" popupIconOnly="true" 
+							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
+						<p:spacer width="5" />
+					</h:panelGrid>
+					<h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+						<p:calendar value="#{eventoController.evento.dataFim}" showOn="both"
+							pattern="dd/MM/yyyy" maxlength="10" size="11" popupIconOnly="true" 
+							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
+						<p:spacer width="5" />
+					</h:panelGrid>
+	           		<h:outputLabel value="Local :" />
+	           		<h:outputText value="" />
+	           		<h:outputText value="" />
+					<p:inputText id='local' maxlength="100" size="69" value="#{eventoController.evento.local}" />
+				</h:panelGrid>
+            </p:panel>
+			<p:focus for=":formcadEvento:nome" />
+		
+			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
+	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
+	               	action="#{eventoController.entrar}" immediate="true" />
+				<p:commandButton value="#{msg['button.clear']}" update=":formcadEvento" 
+					action="#{eventoController.limpar}" icon="botao-limpar-campos" process="@this" immediate="false" />
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,:formcadEvento" ajax="true"
+					action="#{eventoController.salvar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
+					process=":formcadEvento" oncomplete="goTopPage();" />
+			</h:panelGrid>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

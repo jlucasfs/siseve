@@ -1,6 +1,5 @@
 package br.com.mobiew.siseve.service;
 
-import java.util.Date;
 import java.util.List;
 
 import br.com.mobiew.siseve.dto.PacienteDTO;
@@ -11,11 +10,11 @@ public interface ClienteService extends CRUDService<Cliente, Long> {
 
     List<Cliente> findAll( Cliente cliente );
 
-    List<Cliente> findAll( String nome, String cpf, String tipo );
+    List<Cliente> findAll( String nome, String sexo, Integer idadeInicial, Integer idadeFinal );
 
     PacienteDTO findPacientes();
 
-    List<PacienteDTO> findAllPacientes( Long id, String cpf, String tipo, Long idConvenio, Date dataInicio, Date dataFim );
+    List<PacienteDTO> findAllPacientes();
 
     PacienteDTO findDadosGenericosById( Long idParam );
 }

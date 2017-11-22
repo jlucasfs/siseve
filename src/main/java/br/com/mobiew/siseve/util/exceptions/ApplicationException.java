@@ -81,14 +81,22 @@ public class ApplicationException extends Exception {
 
 	public ApplicationException( String msg, Long cod ) {
 		super( msg );
+		if ( cod != null ) {
+			cod.getClass();
+		}
 	}
 
 	public ApplicationException( int httpStatus, String msg ) {
 		super( msg );
+		Integer hs = Integer.valueOf( httpStatus );
+		hs.getClass();
 	}
 
 	public ApplicationException( String msg, Throwable e, Long cod ) {
 		super( msg, e );
+		if ( cod != null ) {
+			cod.getClass();
+		}
 	}
 
 }

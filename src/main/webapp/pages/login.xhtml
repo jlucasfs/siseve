@@ -17,14 +17,14 @@
 							<h:panelGrid class="loginFormGrid" cellpadding="0" cellspacing="3" style="margin-top:45px;">
 								<h:outputLabel for="codigoUsuario" value="Código do usuário" />
 								<h:inputText class="fields" id="codigoUsuario" maxlength="10"
-									value="#{loginController.usuario.codUsuario}"
+									value="#{loginController.usuario.cdLogin}"
 									required="true" requiredMessage="O campo Código é obrigatório."
 									style="font-size:16px !important;" />
 								<h:outputText value=" " />
 								<h:outputText value=" " />
 								<h:outputLabel for="senhaUsuario" value="Senha" />
 								<h:inputSecret class="fields" id="senhaUsuario" maxlength="8" 
-									value="#{loginController.usuario.senha}"
+									value="#{loginController.usuario.cdSenha}"
 									required="true" requiredMessage="O campo Senha é obrigatório."
 									style="font-size:16px !important;" />
 							</h:panelGrid>

@@ -67,11 +67,8 @@
 				<p:column headerText="Tipo" style="text-align:left;width:90px;max-width:90px;min-width:90px;">
                     <h:outputText value="#{ent.tipoAtendimento}" />
                 </p:column>
-				<p:column headerText="Dentista" style="text-align:left;width:210px;max-width:210px;min-width:210px;">
-                    <h:outputText value="#{ent.nomeDentista}" />
-                </p:column>
-				<p:column headerText="Convênio" style="text-align:left;width:100px;max-width:100px;min-width:100px;">
-                    <h:outputText value="#{ent.tipoPlano == 'P' ? 'Particular' : ent.convenio }" />
+				<p:column headerText="Profissional" style="text-align:left;width:210px;max-width:210px;min-width:210px;">
+                    <h:outputText value="#{ent.nomeProfissional}" />
                 </p:column>
                 <p:column headerText="Ações" style="width:60px;max-width:60px;min-width:60px;">
 					<h:panelGrid columns="3" styleClass="actions" cellpadding="2">

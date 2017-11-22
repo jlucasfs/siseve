@@ -17,17 +17,11 @@ public class PacienteDTO implements Serializable {
 
     private String numeroCarteira;
 
-    private String convenio;
-
     private String cpf;
 
     private String cnpj;
 
     private Long totalPacientes;
-
-    private Long totalPrivado;
-
-    private Long totalConvenio;
 
     private String endereco;
 
@@ -73,30 +67,6 @@ public class PacienteDTO implements Serializable {
 
     public void setNumeroCarteira( String numeroCarteiraParam ) {
         this.numeroCarteira = numeroCarteiraParam;
-    }
-
-    public String getConvenio() {
-        return this.convenio;
-    }
-
-    public void setConvenio( String convenioParam ) {
-        this.convenio = convenioParam;
-    }
-
-    public Long getTotalPrivado() {
-        return this.totalPrivado;
-    }
-
-    public void setTotalPrivado( Long totalPrivadoParam ) {
-        this.totalPrivado = totalPrivadoParam;
-    }
-
-    public Long getTotalConvenio() {
-        return this.totalConvenio;
-    }
-
-    public void setTotalConvenio( Long totalConvenioParam ) {
-        this.totalConvenio = totalConvenioParam;
     }
 
     public Long getTotalPacientes() {

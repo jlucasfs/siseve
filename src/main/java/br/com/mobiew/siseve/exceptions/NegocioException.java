@@ -22,7 +22,10 @@ public class NegocioException extends RuntimeException {
         super( mensagem );
     }
     
-    public NegocioException( List mensagens ) {
+    @SuppressWarnings( {
+			"rawtypes", "unchecked"
+	} )
+	public NegocioException( List mensagens ) {
         this.messages = mensagens;
     }
     

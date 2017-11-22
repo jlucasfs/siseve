@@ -25,13 +25,19 @@ public class Profissional implements Serializable, Comparable<Profissional> {
 
 	private static final long serialVersionUID = 7834335018485901190L;
 
+	@Id
+	@GeneratedValue( strategy = IDENTITY )
+	@Column( name = "ID", unique = true, nullable = false )
 	private Long id;
 
+	@Column( name = "NOME", nullable = false, length = 100 )
 	private String nome;
 
+	@OneToMany( fetch = FetchType.LAZY, mappedBy = "profissional" )
 	private Set<Atendimento> atendimentos = new HashSet<Atendimento>( 0 );
 
 	public Profissional() {
+		//
 	}
 
 	public Profissional( String nome ) {
@@ -43,10 +49,6 @@ public class Profissional implements Serializable, Comparable<Profissional> {
 		this.atendimentos = atendimentos;
 	}
 
-	@Id
-	@GeneratedValue( strategy = IDENTITY )
-
-	@Column( name = "ID", unique = true, nullable = false )
 	public Long getId() {
 		return this.id;
 	}
@@ -55,7 +57,6 @@ public class Profissional implements Serializable, Comparable<Profissional> {
 		this.id = id;
 	}
 
-	@Column( name = "NOME", nullable = false, length = 100 )
 	public String getNome() {
 		return this.nome;
 	}
@@ -64,7 +65,6 @@ public class Profissional implements Serializable, Comparable<Profissional> {
 		this.nome = nome;
 	}
 
-	@OneToMany( fetch = FetchType.LAZY, mappedBy = "profissional" )
 	public Set<Atendimento> getAtendimentos() {
 		return this.atendimentos;
 	}

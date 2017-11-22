@@ -2,7 +2,6 @@ package br.com.mobiew.siseve.service;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -70,22 +69,22 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public List<Cliente> findAll( String nomeParam, String cpfParam, String tipoPessoaParam ) {
-        List<Cliente> lista = this.clienteDAO.findAll( nomeParam, cpfParam, tipoPessoaParam );
+    public List<Cliente> findAll( String nome, String sexo, Integer idadeInicial, Integer idadeFinal ) {
+        List<Cliente> lista = this.clienteDAO.findAll( nome, sexo,  idadeInicial, idadeFinal );
         return lista;
     }
 
     @Override
     public PacienteDTO findPacientes() {
         PacienteDTO result = new PacienteDTO();
-        result.setTotalPrivado( 0L );
-        result.setTotalConvenio( 0L );
-        result.setTotalPacientes( result.getTotalConvenio() + result.getTotalPrivado() );
+        List<PacienteDTO> lista = this.clienteDAO.findAllPacientes();
+        Long total = lista == null ? 0L : lista.size();
+        result.setTotalPacientes( total );
         return result;
     }
     
-    public List<PacienteDTO> findAllPacientes( Long idParam, String cpfParam, String tipoPessoaParam, Long idConvenio, Date dataInicio, Date dataFim ) {
-    	List<PacienteDTO> result = this.clienteDAO.findAllPacientes( idParam, cpfParam, tipoPessoaParam, idConvenio, dataInicio, dataFim );
+    public List<PacienteDTO> findAllPacientes() {
+    	List<PacienteDTO> result = this.clienteDAO.findAllPacientes();
     	Collections.sort( result, new Comparator<PacienteDTO>() {
     		@Override
     		public int compare( PacienteDTO o1Param, PacienteDTO o2Param ) {

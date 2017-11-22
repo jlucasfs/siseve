@@ -10,6 +10,9 @@ public class ApplicationIllegalArgumentDaoException extends ApplicationDaoExcept
 
     public ApplicationIllegalArgumentDaoException( String msg, Throwable e, Long cod ) {
         super( msg, e );
+        if ( cod != null ) {
+			cod.getClass();
+		}
     }
 
     public ApplicationIllegalArgumentDaoException( String msg ) {

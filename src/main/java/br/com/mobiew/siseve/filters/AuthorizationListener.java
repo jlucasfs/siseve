@@ -20,7 +20,7 @@ public class AuthorizationListener implements PhaseListener {
         Object currentUser = Util.obterAtributoSessao( Constantes.USUARIO_AUTENTICADO );
         if ( !isLoginPage && currentUser == null ) {
             NavigationHandler nh = facesContext.getApplication().getNavigationHandler();
-            nh.handleNavigation( facesContext, null, "login?faces-redirect=true" );
+            nh.handleNavigation( facesContext, null, "home?faces-redirect=true" );
         }
     }
 

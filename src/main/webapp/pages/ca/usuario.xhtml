@@ -13,13 +13,13 @@
 					<p:inputText id="nome" maxlength="60" size="60" 
 						required='true'
 						requiredMessage="#{msg['usuario.nome.obrigatorio']}"
-						value="#{usuarioController.usuario.nomeUsuario}" />
+						value="#{usuarioController.usuario.nmUsuario}" />
 					
 					<h:outputLabel value="Login" for="login"/>
 					<p:inputText id="login" maxlength="20" size="20"
 						required='true'
 						requiredMessage="#{msg['usuario.login.obrigatorio']}"
-						value="#{usuarioController.usuario.codUsuario}" />
+						value="#{usuarioController.usuario.cdLogin}" />
 				</h:panelGrid>
 			</p:panel>
 			<p:panel id="panelSenha" header="Alterar Senha" styleClass="boxSubtit">
@@ -28,7 +28,7 @@
 					<p:password id="senhaNova" label="Nova Senha" minLength="4" maxlength="8" size="8" 
 						required='true'
 						requiredMessage="#{msg['usuario.senhanova.obrigatorio']}"
-						value="#{usuarioController.usuario.senha}" 
+						value="#{usuarioController.usuario.cdSenha}" 
 						match="confirmNovaSenha"
 						validatorMessage="#{msg['usuario.senhas.diferente']}"
 						promptLabel="Informe a nova senha"
@@ -40,7 +40,7 @@
 					<p:password id="confirmNovaSenha" label="Confirmar Nova Senha" minLength="4" maxlength="8" size="8" 
 						required='true'
 						requiredMessage="#{msg['usuario.confirmacaoNovaSenha.obrigatorio']}"
-						value="#{usuarioController.usuario.senha}"
+						value="#{usuarioController.usuario.cdSenha}"
 						promptLabel="Confirme a nova senha"
 						weakLabel="Fraca"
 						goodLabel="Boa"
@@ -65,13 +65,13 @@
 				paginator="true" rows="10" paginatorPosition="bottom" emptyMessage="Nenhum registro encontrado"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
                 rowsPerPageTemplate="10,20,50,100"
-                sortBy="#{usuario.nomeUsuario}"
+                sortBy="#{usuario.nmUsuario}"
 				rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
                 <p:column headerText="Login" style="text-align:left;width:200px">
-                    <h:outputText value="#{usuario.codUsuario}" />
+                    <h:outputText value="#{usuario.cdLogin}" />
                 </p:column>
-                <p:column sortBy="#{usuario.nomeUsuario}" headerText="Nome" style="text-align:left;">
-                    <h:outputText value="#{usuario.nomeUsuario}" />
+                <p:column sortBy="#{usuario.nmUsuario}" headerText="Nome" style="text-align:left;">
+                    <h:outputText value="#{usuario.nmUsuario}" />
                 </p:column>
                 <p:column style="width:80px" headerText="Ações">
                     <h:panelGrid columns="3" styleClass="actions" cellpadding="2">
@@ -85,7 +85,7 @@
 				</p:column>
 			</p:dataTable>
 			<h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">
-				<p:confirmDialog message="Deseja Realmente Excluir o Usuário #{usuarioController.usuario.nomeUsuario} ?" width="280"
+				<p:confirmDialog message="Deseja Realmente Excluir o Usuário #{usuarioController.usuario.nmUsuario} ?" width="280"
 					showEffect="explode" hideEffect="explode"
 					header="Confirmar Exclusão de Usuário" severity="alert" widgetVar="confirmation">
 	            	<p:commandButton value="Sim" update=":idmsg,@form,:formUsuario" actionListener="#{usuarioController.excluir}" 

@@ -8,7 +8,7 @@ import br.com.mobiew.siseve.service.base.CRUDService;
 
 public interface ProfissionalService extends CRUDService<Profissional, Long> {
 
-	List<Profissional> findAll( String nome, String cpf );
+	List<Profissional> findAll( String nome );
 
 	Profissional findByUsuario( Usuario usuario );
 }

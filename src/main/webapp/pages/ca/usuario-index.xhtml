@@ -12,17 +12,17 @@
 					<p:inputText id="nome" maxlength="60" size="60" 
 						required='true'
 						requiredMessage="#{msg['usuario.nome.obrigatorio']}"
-						value="#{usuarioController.usuario.nomeUsuario}" />
+						value="#{usuarioController.usuario.nmUsuario}" />
 					<h:outputLabel value="Login" for="login"/>
 					<p:inputText id="login" maxlength="20" size="20"
 						required='true'
 						requiredMessage="#{msg['usuario.login.obrigatorio']}"
-						value="#{usuarioController.usuario.codUsuario}" />
+						value="#{usuarioController.usuario.cdLogin}" />
 					<h:outputLabel value="Nova Senha:" for="senhaNova"/>
 					<p:password id="senhaNova" label="Nova Senha" minLength="4" maxlength="8" size="8" 
 						required='true'
 						requiredMessage="#{msg['usuario.passwordnova.obrigatorio']}"
-						value="#{usuarioController.usuario.senha}" 
+						value="#{usuarioController.usuario.cdSenha}" 
 						match="confirmNovaSenha"
 						validatorMessage="#{msg['usuario.passwords.diferente']}"
 						promptLabel="Informe a nova senha"
@@ -33,7 +33,7 @@
 					<p:password id="confirmNovaSenha" label="Confirmar Nova Senha" minLength="4" maxlength="8" size="8" 
 						required='true'
 						requiredMessage="#{msg['usuario.confirmacaoNovaSenha.obrigatorio']}"
-						value="#{usuarioController.usuario.senha}"
+						value="#{usuarioController.usuario.cdSenha}"
 						promptLabel="Confirme a nova senha"
 						weakLabel="Fraca"
 						goodLabel="Boa"
@@ -55,19 +55,19 @@
 				emptyMessage="Nenhum Usuário Cadastrado"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
                 rowsPerPageTemplate="5,10,20"
-                sortBy="#{usuario.nomeUsuario}">
+                sortBy="#{usuario.nmUsuario}">
 				<f:facet name="header">Usuários</f:facet>  
-                <p:column sortBy="#{usuario.nomeUsuario}">
+                <p:column sortBy="#{usuario.nmUsuario}">
                     <f:facet name="header">
                 			<h:outputText value="Nome" />
                  	</f:facet>
-                    <h:outputText value="#{usuario.nomeUsuario}" />
+                    <h:outputText value="#{usuario.nmUsuario}" />
                 </p:column>
                 <p:column>
                     <f:facet name="header">
                 			<h:outputText value="Login" />
  	               	</f:facet>
-                    <h:outputText value="#{usuario.codUsuario}" />
+                    <h:outputText value="#{usuario.cdLogin}" />
                 </p:column>
                 <p:column style="width:80px">
 					<f:facet name="header">
@@ -84,7 +84,7 @@
 				</p:column>
 			</p:dataTable>
 			<h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">
-				<p:confirmDialog message="Deseja Realmente Excluir o Usuário #{usuarioController.usuario.nomeUsuario} ?" width="280"
+				<p:confirmDialog message="Deseja Realmente Excluir o Usuário #{usuarioController.usuario.nmUsuario} ?" width="280"
 					showEffect="explode" hideEffect="explode"
 					header="Confirmar Exclusão de Usuário" severity="alert" widgetVar="confirmation">
 	            	<p:commandButton value="Sim" update=":idmsg,@form,:formUsuario" actionListener="#{usuarioController.excluir}" 
