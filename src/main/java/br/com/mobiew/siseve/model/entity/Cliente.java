@@ -3,10 +3,13 @@ package br.com.mobiew.siseve.model.entity;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -61,28 +64,15 @@ public class Cliente implements Serializable {
 	@Column( name = "EMAIL", length = 45 )
 	private String email;
 
-	@OneToMany( fetch = FetchType.LAZY, mappedBy = "cliente" )
+    @OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "cliente", orphanRemoval = true )
 	private Set<Atendimento> atendimentos = new HashSet<Atendimento>( 0 );
 
 	public Cliente() {
+		//
 	}
 
 	public Cliente( String nome ) {
 		this.nome = nome;
-	}
-
-	public Cliente( String nome, Date dataNascimento, String sexo, String endereco, String bairro, String cidade, String uf, String telefone, String email,
-			Set<Atendimento> atendimentos ) {
-		this.nome = nome;
-		this.dataNascimento = dataNascimento;
-		this.sexo = sexo;
-		this.endereco = endereco;
-		this.bairro = bairro;
-		this.cidade = cidade;
-		this.uf = uf;
-		this.telefone = telefone;
-		this.email = email;
-		this.atendimentos = atendimentos;
 	}
 
 	public Long getId() {
@@ -179,5 +169,9 @@ public class Cliente implements Serializable {
             idade = DateUtil.diffDate( this.dataNascimento, new Date(), 3 );
         }
         return idade;
+    }
+
+	public List<Atendimento> getListAtendimentos() {
+        return new ArrayList<Atendimento>( this.atendimentos );
     }
 }

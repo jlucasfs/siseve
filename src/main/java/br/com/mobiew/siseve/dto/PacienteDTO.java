@@ -7,137 +7,157 @@ import br.com.mobiew.siseve.util.ConstantesData;
 
 public class PacienteDTO implements Serializable {
 
-    private static final long serialVersionUID = -7253532759622254533L;
+	private static final long serialVersionUID = -7253532759622254533L;
 
-    private Long id;
+	private Long id;
 
-    private Date dataInclusao;
+	private Date dataInclusao;
 
-    private String nome;
+	private Date dataNascimento;
 
-    private String numeroCarteira;
+	private String nome;
 
-    private String cpf;
+	private String numeroCarteira;
 
-    private String cnpj;
+	private String cpf;
 
-    private Long totalPacientes;
+	private String cnpj;
 
-    private String endereco;
+	private Long totalPacientes;
 
-    private String numero;
+	private String sexo;
 
-    private String complemento;
+	private String endereco;
 
-    public Long getId() {
-        return this.id;
-    }
+	private String numero;
 
-    public void setId( Long idParam ) {
-        this.id = idParam;
-    }
+	private String complemento;
 
-    public Date getDataInclusao() {
-        return this.dataInclusao;
-    }
+	public Long getId() {
+		return this.id;
+	}
 
-    public String getDataInclusaoFormatada() {
-    	String result = null;
-    	if ( this.dataInclusao != null ) {
-    		result = ConstantesData.FMT_DATA.format( this.dataInclusao );
-    	}
-    	return result;
-    }
+	public void setId( Long idParam ) {
+		this.id = idParam;
+	}
 
-    public void setDataInclusao( Date dataInclusaoParam ) {
-        this.dataInclusao = dataInclusaoParam;
-    }
+	public Date getDataInclusao() {
+		return this.dataInclusao;
+	}
 
-    public String getNome() {
-        return this.nome;
-    }
+	public String getDataInclusaoFormatada() {
+		String result = null;
+		if ( this.dataInclusao != null ) {
+			result = ConstantesData.FMT_DATA.format( this.dataInclusao );
+		}
+		return result;
+	}
 
-    public void setNome( String nomeParam ) {
-        this.nome = nomeParam;
-    }
+	public void setDataInclusao( Date dataInclusaoParam ) {
+		this.dataInclusao = dataInclusaoParam;
+	}
 
-    public String getNumeroCarteira() {
-        return this.numeroCarteira;
-    }
+	public String getNome() {
+		return this.nome;
+	}
 
-    public void setNumeroCarteira( String numeroCarteiraParam ) {
-        this.numeroCarteira = numeroCarteiraParam;
-    }
+	public void setNome( String nomeParam ) {
+		this.nome = nomeParam;
+	}
 
-    public Long getTotalPacientes() {
-        return this.totalPacientes;
-    }
+	public String getNumeroCarteira() {
+		return this.numeroCarteira;
+	}
 
-    public void setTotalPacientes( Long totalPacientesParam ) {
-        this.totalPacientes = totalPacientesParam;
-    }
+	public void setNumeroCarteira( String numeroCarteiraParam ) {
+		this.numeroCarteira = numeroCarteiraParam;
+	}
 
-    public String getCpf() {
-        return this.cpf;
-    }
+	public Long getTotalPacientes() {
+		return this.totalPacientes;
+	}
 
-    public void setCpf( String cpfParam ) {
-        this.cpf = cpfParam;
-    }
+	public void setTotalPacientes( Long totalPacientesParam ) {
+		this.totalPacientes = totalPacientesParam;
+	}
 
-    public String getCnpj() {
-        return this.cnpj;
-    }
+	public String getCpf() {
+		return this.cpf;
+	}
 
-    public void setCnpj( String cnpjParam ) {
-        this.cnpj = cnpjParam;
-    }
+	public void setCpf( String cpfParam ) {
+		this.cpf = cpfParam;
+	}
 
-    public String getEndereco() {
-        return this.endereco;
-    }
+	public String getCnpj() {
+		return this.cnpj;
+	}
 
-    public void setEndereco( String enderecoParam ) {
-        this.endereco = enderecoParam;
-    }
+	public void setCnpj( String cnpjParam ) {
+		this.cnpj = cnpjParam;
+	}
 
-    public String getNumero() {
-        return this.numero;
-    }
+	public String getEndereco() {
+		return this.endereco;
+	}
 
-    public void setNumero( String numeroParam ) {
-        this.numero = numeroParam;
-    }
+	public void setEndereco( String enderecoParam ) {
+		this.endereco = enderecoParam;
+	}
 
-    public String getComplemento() {
-        return this.complemento;
-    }
+	public String getNumero() {
+		return this.numero;
+	}
 
-    public void setComplemento( String complementoParam ) {
-        this.complemento = complementoParam;
-    }
+	public void setNumero( String numeroParam ) {
+		this.numero = numeroParam;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ( ( this.id == null ) ? 0 : this.id.hashCode() );
-        result = prime * result + ( ( this.nome == null ) ? 0 : this.nome.hashCode() );
-        return result;
-    }
+	public String getComplemento() {
+		return this.complemento;
+	}
 
-    @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        PacienteDTO other = (PacienteDTO) obj;
-        if ( this.id == null ) {
-            if ( other.id != null ) return false;
-        } else if ( !this.id.equals( other.id ) ) return false;
-        if ( this.nome == null ) {
-            if ( other.nome != null ) return false;
-        } else if ( !this.nome.equals( other.nome ) ) return false;
-        return true;
-    }
+	public void setComplemento( String complementoParam ) {
+		this.complemento = complementoParam;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( this.id == null ) ? 0 : this.id.hashCode() );
+		result = prime * result + ( ( this.nome == null ) ? 0 : this.nome.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if ( this == obj ) return true;
+		if ( obj == null ) return false;
+		if ( getClass() != obj.getClass() ) return false;
+		PacienteDTO other = (PacienteDTO) obj;
+		if ( this.id == null ) {
+			if ( other.id != null ) return false;
+		} else if ( !this.id.equals( other.id ) ) return false;
+		if ( this.nome == null ) {
+			if ( other.nome != null ) return false;
+		} else if ( !this.nome.equals( other.nome ) ) return false;
+		return true;
+	}
+
+	public String getSexo() {
+		return this.sexo;
+	}
+
+	public void setSexo( String sexoParam ) {
+		this.sexo = sexoParam;
+	}
+
+	public Date getDataNascimento() {
+		return this.dataNascimento;
+	}
+
+	public void setDataNascimento( Date dataNascimentoParam ) {
+		this.dataNascimento = dataNascimentoParam;
+	}
 }

@@ -8,4 +8,8 @@ import br.com.mobiew.siseve.model.entity.Evento;
 public interface EventoDAO extends GenericDAO<Evento, Long> {
 
 	List<Evento> find( String descricao, Date dtEvento );
+	
+	Evento findEventoAtual();
+
+	Evento findEventoAnterior( Evento eventoParam );
 }

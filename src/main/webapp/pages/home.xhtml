@@ -38,9 +38,9 @@
 						<p:panel header="Serviço" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
 							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
 								<h:panelGroup>
-									<a title="Cadastro de Serviço" href="#{request.contextPath}/pages/servico-index.jsf">
+									<h:commandLink value="" action="#{servicoController.entrar}" title="Cadastro de Serviço">
 										<p:graphicImage value="/static/img/servicos.png" width="70" /> <br />
-									</a>
+									</h:commandLink>
 								</h:panelGroup>
 								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
 									<h:panelGroup styleClass="txt-color-purple">
@@ -51,10 +51,10 @@
 								</h:panelGrid>
 							</h:panelGrid>
 						</p:panel>
-						<p:panel header="Paciente" style="text-align:center;height:120px;width:225px;margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
+						<p:panel header="Atendimento" style="text-align:center;height:120px;width:225px;margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
 							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
 								<h:panelGroup>
-									<h:commandLink value="" action="#{clienteController.entrar}" title="Cadastro de Paciente">
+									<h:commandLink value="" action="#{clienteController.entrar}" title="Controle de atendimentos a pacientes">
 										<p:graphicImage value="/static/img/patient.png" width="70" /> <br />
 									</h:commandLink>
 								</h:panelGroup>

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -35,23 +36,48 @@ public class EventoDAOImpl extends GenericHibernateDAO<Evento, Long> implements 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Evento> findAll() {
-		DetachedCriteria criteria = DetachedCriteria.forClass( Evento.class, "evt" );
+		DetachedCriteria criteria = DetachedCriteria.forClass( Evento.class, "e" );
+		criteria.setResultTransformer( Criteria.DISTINCT_ROOT_ENTITY );
         return getHibernateTemplate().findByCriteria( criteria );
 	}	
 
 	@Override
-	public List<Evento> find(String descricao, Date dtEvento) {
+	public List<Evento> find( String nomeParam, Date dataParam ) {
 		DetachedCriteria dc = DetachedCriteria.forClass( Evento.class, "ev" );
-		if( StringUtils.isNotBlank(descricao) ) {
-			dc.add(Restrictions.ilike( "ev.descricao", descricao, MatchMode.ANYWHERE ) );
+		if ( StringUtils.isNotBlank( nomeParam ) ) {
+			dc.add( Restrictions.ilike( "ev.nome", nomeParam, MatchMode.ANYWHERE ) );
 		}
-		if( dtEvento != null ) {
-			dc.add(Restrictions.eq( "ev.dtEvento", dtEvento ) );
+		if ( dataParam != null ) {
+			dc.add( Restrictions.eq( "ev.dataInicio", dataParam ) );
 		}
-		dc.addOrder( Order.asc("ev.descricao"));
+		dc.addOrder( Order.desc( "ev.dataInicio" ) );
+		dc.setResultTransformer( Criteria.DISTINCT_ROOT_ENTITY );
+		return this.findByCriteria( dc );
+	}
 
+	@Override
+	public Evento findEventoAtual() {
+		Evento result = null;
+		DetachedCriteria dc = DetachedCriteria.forClass( Evento.class, "e" );
+		dc.addOrder( Order.desc( "e.dataInicio" ) );
 		List<Evento> eventos = this.findByCriteria( dc );
+		if ( eventos != null && !eventos.isEmpty() ) {
+			result = eventos.get( 0 );
+		}
+		return result;
+	}
 
-		return eventos;
+	@Override
+	public Evento findEventoAnterior( Evento eventoParam ) {
+		Evento result = null;
+		DetachedCriteria dc = DetachedCriteria.forClass( Evento.class, "e" );
+		dc.add( Restrictions.lt( "e.dataInicio", eventoParam.getDataInicio() ) );
+		dc.addOrder( Order.desc( "e.dataInicio" ) );
+		dc.setResultTransformer( Criteria.DISTINCT_ROOT_ENTITY );
+		List<Evento> eventos = this.findByCriteria( dc );
+		if ( eventos != null && !eventos.isEmpty() && eventos.get( 0 ).getServicos() != null && !eventos.get( 0 ).getServicos().isEmpty() ) {
+			result = eventos.get( 0 );
+		}
+		return result;
 	}
 }

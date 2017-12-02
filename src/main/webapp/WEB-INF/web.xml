@@ -95,4 +95,7 @@
 		<session-timeout>-1</session-timeout>
 	</session-config>
 
+	<welcome-file-list>
+	    <welcome-file>pages/home.jsf</welcome-file>
+	</welcome-file-list>
 </web-app>

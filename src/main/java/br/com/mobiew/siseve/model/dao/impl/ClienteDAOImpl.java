@@ -71,7 +71,7 @@ public class ClienteDAOImpl extends GenericHibernateDAO<Cliente, Long> implement
         sql.append( " select cli.id id, " );
         sql.append( "        cli.nome nome,  " );
         sql.append( "        cli.sexo sexo, " );
-        sql.append( "        pfi.data_nascimento dataNascimento " );
+        sql.append( "        cli.data_nascimento dataNascimento " );
         sql.append( " from cliente cli " );
         final SQLQuery query = getSession().createSQLQuery( sql.toString() );
         try {

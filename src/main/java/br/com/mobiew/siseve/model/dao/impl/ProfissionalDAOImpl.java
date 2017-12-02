@@ -40,7 +40,7 @@ public class ProfissionalDAOImpl extends GenericHibernateDAO<Profissional, Long>
         	if ( StringUtils.isNotBlank( nomeParam ) ) {
         		criteria.add( Restrictions.ilike( "a.nome", nomeParam.trim(), MatchMode.ANYWHERE ) );
         	}
-        	criteria.addOrder(Order.asc("p.nome"));
+        	criteria.addOrder(Order.asc("a.nome"));
         	criteria.setResultTransformer( Criteria.DISTINCT_ROOT_ENTITY );
         	result = getHibernateTemplate().findByCriteria( criteria );
         } catch ( Exception e ) {

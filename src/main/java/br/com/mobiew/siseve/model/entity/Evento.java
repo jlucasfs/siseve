@@ -1,6 +1,5 @@
 package br.com.mobiew.siseve.model.entity;
 
-
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
@@ -8,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
 public class Evento implements Serializable {
 
 	private static final long serialVersionUID = -7137946645292507308L;
-	
+
 	@Id
 	@GeneratedValue( strategy = IDENTITY )
 	@Column( name = "ID", unique = true, nullable = false )
@@ -46,7 +46,7 @@ public class Evento implements Serializable {
 	@Column( name = "LOCAL", length = 200 )
 	private String local;
 
-	@OneToMany( fetch = FetchType.LAZY, mappedBy = "evento" )
+	@OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "evento", orphanRemoval = true )
 	private Set<Servico> servicos = new HashSet<Servico>( 0 );
 
 	public Evento() {
@@ -56,14 +56,6 @@ public class Evento implements Serializable {
 	public Evento( String nome, Date dataInicio ) {
 		this.nome = nome;
 		this.dataInicio = dataInicio;
-	}
-
-	public Evento( String nome, Date dataInicio, Date dataFim, String local, Set<Servico> servicos ) {
-		this.nome = nome;
-		this.dataInicio = dataInicio;
-		this.dataFim = dataFim;
-		this.local = local;
-		this.servicos = servicos;
 	}
 
 	public Long getId() {
@@ -112,6 +104,34 @@ public class Evento implements Serializable {
 
 	public void setServicos( Set<Servico> servicos ) {
 		this.servicos = servicos;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( this.dataInicio == null ) ? 0 : this.dataInicio.hashCode() );
+		result = prime * result + ( ( this.id == null ) ? 0 : this.id.hashCode() );
+		result = prime * result + ( ( this.nome == null ) ? 0 : this.nome.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if ( this == obj ) return true;
+		if ( obj == null ) return false;
+		if ( getClass() != obj.getClass() ) return false;
+		Evento other = (Evento) obj;
+		if ( this.dataInicio == null ) {
+			if ( other.dataInicio != null ) return false;
+		} else if ( !this.dataInicio.equals( other.dataInicio ) ) return false;
+		if ( this.id == null ) {
+			if ( other.id != null ) return false;
+		} else if ( !this.id.equals( other.id ) ) return false;
+		if ( this.nome == null ) {
+			if ( other.nome != null ) return false;
+		} else if ( !this.nome.equals( other.nome ) ) return false;
+		return true;
 	}
 
 }

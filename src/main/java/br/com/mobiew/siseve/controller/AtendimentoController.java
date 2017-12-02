@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import br.com.mobiew.siseve.dto.AtendimentoDTO;
+import br.com.mobiew.siseve.model.entity.Atendimento;
 import br.com.mobiew.siseve.model.entity.Cliente;
 import br.com.mobiew.siseve.service.AtendimentoService;
 import br.com.mobiew.siseve.service.ClienteService;
@@ -23,119 +24,175 @@ import br.com.mobiew.siseve.util.scopes.Scopes;
 @Scope( Scopes.SESSION )
 public class AtendimentoController {
 
-    private static final Logger LOG = Logger.getLogger( AtendimentoController.class );
+	private static final Logger LOG = Logger.getLogger( AtendimentoController.class );
 
-    private String tituloTela = "Atendimentos";
+	private String tituloTela = "Atendimentos";
 
-    @Autowired
-    private AtendimentoService atendimentoService;
-    
-    @Autowired
-    private ClienteService clienteService;
+	@Autowired
+	private AtendimentoService atendimentoService;
 
-    private List<Cliente> clientes;
+	@Autowired
+	private ClienteService clienteService;
 
-    private List<Cliente> listaCliente;
+	private List<Cliente> clientes;
 
-    private Cliente cliente = new Cliente();
+	private List<Cliente> listaCliente;
 
-    private String nomePaciente;
+	private Cliente cliente = new Cliente();
 
-    private Date dataAtual = new Date();
+	private String nomePaciente;
 
-    private List<AtendimentoDTO> atendimentos;
+	private Date dataAtual = new Date();
 
-    @PostConstruct
-    public void inicializar() {
-        this.cliente = new Cliente();
-        this.nomePaciente = null;
-        this.listaCliente = this.clienteService.findAll();
-        consultar();
+	private boolean chamadaDePaciente;
+
+	private List<AtendimentoDTO> atendimentos;
+
+	private Cliente pacienteSelecionado;
+
+	private Long idCliente;
+
+	private List<Atendimento> listaAtendimentos;
+
+	@PostConstruct
+	public void inicializar() {
+		this.cliente = new Cliente();
+		this.nomePaciente = null;
+		this.listaCliente = this.clienteService.findAll();
+		consultar();
+	}
+
+	private void obterAtendimentos() {
+		if ( this.pacienteSelecionado != null ) {
+			this.listaAtendimentos = this.atendimentoService.findAllAtendimentosByPaciente( this.pacienteSelecionado.getId() );
+		}
+	}
+
+	public void limparEdit() {
+		inicializar();
+	}
+	
+    private void limpar() {
+    	this.pacienteSelecionado = null;
+    	this.nomePaciente = null;
+    	this.atendimentos = null;
+    	this.listaAtendimentos = null;
     }
 
-    public String entrar() {
-        inicializar();
-        return "/pages/atendimento/atendimento-index?faces-redirect=true";
-    }
+	public void consultar() {
+		try {
+			this.atendimentoService.findAllByNomePaciente( this.nomePaciente );
+		} catch ( Exception e ) {
+			LOG.error( e.getMessage() );
+			FacesContext.getCurrentInstance().addMessage( null, new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao consultar os pacientes. ", null ) );
+		}
+	}
 
-    public void limparEdit() {
-        inicializar();
-    }
+	public List<String> completePaciente( String query ) {
+		List<String> results = new ArrayList<String>();
+		if ( query != null && this.listaCliente != null && !this.listaCliente.isEmpty() ) {
+			for ( Cliente a: this.listaCliente ) {
+				if ( a.getNome().toUpperCase().indexOf( query.toUpperCase() ) >= 0 ) {
+					results.add( a.getNome() );
+				}
+			}
+		}
+		return results;
+	}
 
-    public void consultar() {
-        try {
-            this.atendimentoService.findAllByNomePaciente( this.nomePaciente );
-        } catch ( Exception e ) {
-            LOG.error( e.getMessage() );
-            FacesContext.getCurrentInstance().addMessage( null, new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao consultar os pacientes. ", null ) );
-        }
-    }
+	public List<Cliente> getClientes() {
+		return clientes;
+	}
 
-    public List<String> completePaciente( String query ) {
-        List<String> results = new ArrayList<String>();
-        if ( query != null && this.listaCliente != null && !this.listaCliente.isEmpty() ) {
-            for ( Cliente a: this.listaCliente ) {
-                if ( a.getNome().toUpperCase().indexOf( query.toUpperCase() ) >= 0 ) {
-                    results.add( a.getNome() );
-                }
-            }
-        }
-        return results;
-    }
+	public void setClientes( List<Cliente> clientesParam ) {
+		clientes = clientesParam;
+	}
 
-    public List<Cliente> getClientes() {
-        return clientes;
-    }
+	public Cliente getCliente() {
+		return cliente;
+	}
 
-    public void setClientes( List<Cliente> clientesParam ) {
-        clientes = clientesParam;
-    }
+	public void setCliente( Cliente clienteParam ) {
+		cliente = clienteParam;
+	}
 
-    public Cliente getCliente() {
-        return cliente;
-    }
+	public Date getDataAtual() {
+		return dataAtual;
+	}
 
-    public void setCliente( Cliente clienteParam ) {
-        cliente = clienteParam;
-    }
+	public void setDataAtual( Date dataAtualParam ) {
+		dataAtual = dataAtualParam;
+	}
 
-    public Date getDataAtual() {
-        return dataAtual;
-    }
+	public List<Cliente> getListaCliente() {
+		return this.listaCliente;
+	}
 
-    public void setDataAtual( Date dataAtualParam ) {
-        dataAtual = dataAtualParam;
-    }
+	public void setListaCliente( List<Cliente> listaClienteParam ) {
+		this.listaCliente = listaClienteParam;
+	}
 
-    public List<Cliente> getListaCliente() {
-        return this.listaCliente;
-    }
+	public String getNomePaciente() {
+		return this.nomePaciente;
+	}
 
-    public void setListaCliente( List<Cliente> listaClienteParam ) {
-        this.listaCliente = listaClienteParam;
-    }
+	public void setNomePaciente( String nomePacienteParam ) {
+		this.nomePaciente = nomePacienteParam;
+	}
 
-    public String getNomePaciente() {
-        return this.nomePaciente;
-    }
+	public List<AtendimentoDTO> getAtendimentos() {
+		return this.atendimentos;
+	}
 
-    public void setNomePaciente( String nomePacienteParam ) {
-        this.nomePaciente = nomePacienteParam;
-    }
+	public void setAtendimentos( List<AtendimentoDTO> atendimentosParam ) {
+		this.atendimentos = atendimentosParam;
+	}
 
-    public List<AtendimentoDTO> getAtendimentos() {
-        return this.atendimentos;
-    }
+	public String getTituloTela() {
+		return this.tituloTela;
+	}
 
-    public void setAtendimentos( List<AtendimentoDTO> atendimentosParam ) {
-        this.atendimentos = atendimentosParam;
-    }
+	public void setTituloTela( String tituloTelaParam ) {
+		this.tituloTela = tituloTelaParam;
+	}
 
-    public String getTituloTela() {
-        return this.tituloTela;
-    }
+	public ClienteService getClienteService() {
+		return this.clienteService;
+	}
 
-    public void setTituloTela( String tituloTelaParam ) {
-        this.tituloTela = tituloTelaParam;
-    }
+	public void setClienteService( ClienteService clienteServiceParam ) {
+		this.clienteService = clienteServiceParam;
+	}
+
+	public boolean isChamadaDePaciente() {
+		return this.chamadaDePaciente;
+	}
+
+	public void setChamadaDePaciente( boolean chamadaDePacienteParam ) {
+		this.chamadaDePaciente = chamadaDePacienteParam;
+	}
+
+	public Cliente getPacienteSelecionado() {
+		return this.pacienteSelecionado;
+	}
+
+	public void setPacienteSelecionado( Cliente pacienteSelecionadoParam ) {
+		this.pacienteSelecionado = pacienteSelecionadoParam;
+	}
+
+	public Long getIdCliente() {
+		return this.idCliente;
+	}
+
+	public void setIdCliente( Long idClienteParam ) {
+		this.idCliente = idClienteParam;
+	}
+
+	public List<Atendimento> getListaAtendimentos() {
+		return this.listaAtendimentos;
+	}
+
+	public void setListaAtendimentos( List<Atendimento> listaAtendimentosParam ) {
+		this.listaAtendimentos = listaAtendimentosParam;
+	}
 }

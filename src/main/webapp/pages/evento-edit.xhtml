@@ -21,6 +21,10 @@
 				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form,:formcadEvento" ajax="true"
 					action="#{eventoController.salvar}" icon="ui-icon ui-icon-disk"
 					process=":formcadEvento" oncomplete="goTopPage();" partialSubmit="true"/>
+				<p:commandButton value="Copiar Serviços do Evento anterior" update=":idmsg,:formcadEvento" ajax="true"
+					action="#{eventoController.copiar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
+					process=":formcadEvento" oncomplete="goTopPage();"
+					rendered="#{eventoController.copiaServicos}" />
 			</h:panelGrid>
 
 			<p:panel header="Evento" styleClass="boxSubtit" id="panel">
@@ -58,6 +62,10 @@
 				<p:commandButton value="#{msg['button.save']}" update=":idmsg,:formcadEvento" ajax="true"
 					action="#{eventoController.salvar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
 					process=":formcadEvento" oncomplete="goTopPage();" />
+				<p:commandButton value="Copiar Serviços do Evento anterior" update=":idmsg,:formcadEvento" ajax="true"
+					action="#{eventoController.copiar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
+					process=":formcadEvento" oncomplete="goTopPage();"
+					rendered="#{eventoController.copiaServicos}" />
 			</h:panelGrid>
 
 		</h:form>

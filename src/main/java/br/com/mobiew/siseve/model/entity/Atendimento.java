@@ -43,27 +43,20 @@ public class Atendimento implements Serializable {
 	private Servico servico;
 
 	@Temporal( TemporalType.TIMESTAMP )
-	@Column( name = "DATA_ATENDIMENTO", nullable = false, length = 19 )
+	@Column( name = "DATA_ATENDIMENTO", length = 19 )
 	private Date dataAtendimento;
 
 	@Column( name = "OBSERVACAO", length = 4000 )
 	private String observacao;
 
 	public Atendimento() {
+		//
 	}
 
 	public Atendimento( Cliente cliente, Servico servico, Date dataAtendimento ) {
 		this.cliente = cliente;
 		this.servico = servico;
 		this.dataAtendimento = dataAtendimento;
-	}
-
-	public Atendimento( Cliente cliente, Profissional profissional, Servico servico, Date dataAtendimento, String observacao ) {
-		this.cliente = cliente;
-		this.profissional = profissional;
-		this.servico = servico;
-		this.dataAtendimento = dataAtendimento;
-		this.observacao = observacao;
 	}
 
 	public Long getId() {

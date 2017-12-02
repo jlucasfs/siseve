@@ -5,12 +5,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.mobiew.siseve.dto.PacienteDTO;
 import br.com.mobiew.siseve.model.dao.ClienteDAO;
+import br.com.mobiew.siseve.model.entity.Atendimento;
 import br.com.mobiew.siseve.model.entity.Cliente;
 
 @Service
@@ -30,6 +32,10 @@ public class ClienteServiceImpl implements ClienteService {
     	Cliente result = null;
     	try {
         	result = this.clienteDAO.findById( id );
+			Hibernate.initialize( result.getAtendimentos() );
+			for ( Atendimento atend : result.getAtendimentos() ) {
+				Hibernate.initialize( atend.getServico() );
+			}
 		} catch ( Exception e ) {
 			LOG.error( "Erro ao obter cliente pelo id - " + (id==null? "" : id) + " - " + e.getMessage() );
 		}
@@ -38,8 +44,27 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public List<Cliente> findAll() {
-        return this.clienteDAO.findAll();
+        List<Cliente> lista = this.clienteDAO.findAll();
+        inicializarOrdenarListaClientes( lista );
+        return lista;
     }
+
+	private void inicializarOrdenarListaClientes( List<Cliente> lista ) {
+		if ( lista != null ) {
+	        for ( Cliente cliente: lista ) {
+				Hibernate.initialize( cliente.getAtendimentos() );
+				for ( Atendimento atend : cliente.getAtendimentos() ) {
+					Hibernate.initialize( atend.getServico() );
+				}
+			}
+        }
+        Collections.sort( lista, new Comparator<Cliente>() {
+			@Override
+			public int compare( Cliente o1Param, Cliente o2Param ) {
+				return o1Param.getNome().compareTo( o2Param.getNome() );
+			}
+		});
+	}
 
     @Override
     @Transactional
@@ -70,7 +95,8 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public List<Cliente> findAll( String nome, String sexo, Integer idadeInicial, Integer idadeFinal ) {
-        List<Cliente> lista = this.clienteDAO.findAll( nome, sexo,  idadeInicial, idadeFinal );
+        List<Cliente> lista = this.clienteDAO.findAll( nome, sexo, idadeInicial, idadeFinal );
+        inicializarOrdenarListaClientes( lista );
         return lista;
     }
 

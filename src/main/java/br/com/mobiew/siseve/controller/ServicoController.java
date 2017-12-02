@@ -1,5 +1,6 @@
 package br.com.mobiew.siseve.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -13,8 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import br.com.mobiew.siseve.model.entity.Evento;
 import br.com.mobiew.siseve.model.entity.Servico;
+import br.com.mobiew.siseve.model.enuns.TipoRelatorioEnum;
+import br.com.mobiew.siseve.service.EventoService;
 import br.com.mobiew.siseve.service.ServicoService;
+import br.com.mobiew.siseve.util.Constantes;
+import br.com.mobiew.siseve.util.Util;
 import br.com.mobiew.siseve.util.scopes.Scopes;
 
 @Controller
@@ -38,11 +44,30 @@ public class ServicoController {
 
 	private String tipoServico;
 
+	private List<Evento> eventos;
+
+	private Long idEvento;
+
+	private Long idEventoSelecionado;
+
+	@Autowired
+	private EventoService eventoService;
+
+	private Evento eventoAtual;
+
+	private String tipoRelatorio;
+	
 	@PostConstruct
 	public void inicializar() {
 		try {
 			limpar();
 			this.servicos = this.servicoService.findAll();
+			this.eventos = this.eventoService.findAll();
+			this.eventoAtual = this.eventoService.findEventoAtual();
+			if ( eventoAtual != null ) {
+				this.idEvento = eventoAtual.getId();
+			}
+			this.tipoServico = "T";
 		} catch ( Exception e ) {
 			ControllerUtil.addWarnMessage( null, "Erro ao carregar Servicos" );
 		}
@@ -51,6 +76,8 @@ public class ServicoController {
 	public void limpar() {
 		this.servico = new Servico();
 		this.descricao = null;
+		this.idEvento = null;
+		this.idEventoSelecionado = null;
 	}
 
 	public String entrar() {
@@ -69,11 +96,18 @@ public class ServicoController {
 
 	public String incluir() {
 		this.servico = new Servico();
+		if ( this.eventoAtual == null ) {
+			this.servico.setEvento( new Evento() );
+		} else {
+			this.servico.setEvento( this.eventoAtual );
+		}
+		this.tipoRelatorio = "M";
 		this.idServico = null;
 		return "servico-edit?faces-redirect=true";
 	}
 
 	public String editar() {
+		this.tipoRelatorio = this.servico.getTipoRelatorio().getCodigo();
 		return "servico-edit?faces-redirect=true";
 	}
 
@@ -84,10 +118,14 @@ public class ServicoController {
 				return null;
 			}
 			boolean inclusao = this.servico.getId() == null;
+			if ( inclusao ) {
+				this.servico.setEvento( this.eventoService.findById( this.servico.getEvento().getId() ) );
+			}
+			this.servico.setTipoRelatorio( TipoRelatorioEnum.getEnumFromValue( this.tipoRelatorio ) );
 			this.servicoService.save( this.servico );
 			ControllerUtil.addInfoMessage( null, "Servico " + ( inclusao ? "incluído" : "alterado" ) + " com sucesso." );
 			inicializar();
-			return "evento-index?faces-redirect=true";
+			return "servico-index?faces-redirect=true";
 		} catch ( Exception e ) {
 			ControllerUtil.addErrorMessage( null, "Erro ao salvar o Servico." );
 			e.getMessage();
@@ -104,6 +142,21 @@ public class ServicoController {
 			e.getMessage();
 			ControllerUtil.addErrorMessage( null, "Erro ao excluir o Servico." );
 		}
+	}
+
+	public List<String> completeServico( String query ) {
+		List<String> results = new ArrayList<String>();
+		this.servicos = this.servicoService.findAll();
+		if ( query != null && this.servicos != null && !this.servicos.isEmpty() ) {
+			for ( Servico a: this.servicos ) {
+				String nome1 = Util.convertToNormalize( a.getNome().toUpperCase( Constantes.LOCALE_PT_BR ) );
+				String nome2 = Util.convertToNormalize( query.toUpperCase( Constantes.LOCALE_PT_BR ) );
+				if ( nome1.indexOf( nome2 ) >= 0 ) {
+					results.add( a.getNome() );
+				}
+			}
+		}
+		return results;
 	}
 
 	public String getDescricao() {
@@ -159,5 +212,45 @@ public class ServicoController {
 
 	public void setTipoServico( String tipoServicoParam ) {
 		this.tipoServico = tipoServicoParam;
+	}
+
+	public List<Evento> getEventos() {
+		return this.eventos;
+	}
+
+	public void setEventos( List<Evento> eventosParam ) {
+		this.eventos = eventosParam;
+	}
+
+	public Long getIdEvento() {
+		return this.idEvento;
+	}
+
+	public void setIdEvento( Long idEventoParam ) {
+		this.idEvento = idEventoParam;
+	}
+
+	public Long getIdEventoSelecionado() {
+		return this.idEventoSelecionado;
+	}
+
+	public void setIdEventoSelecionado( Long idEventoSelecionadoParam ) {
+		this.idEventoSelecionado = idEventoSelecionadoParam;
+	}
+
+	public Evento getEventoAtual() {
+		return this.eventoAtual;
+	}
+
+	public void setEventoAtual( Evento eventoAtualParam ) {
+		this.eventoAtual = eventoAtualParam;
+	}
+
+	public String getTipoRelatorio() {
+		return this.tipoRelatorio;
+	}
+
+	public void setTipoRelatorio( String tipoRelatorioParam ) {
+		this.tipoRelatorio = tipoRelatorioParam;
 	}
 }

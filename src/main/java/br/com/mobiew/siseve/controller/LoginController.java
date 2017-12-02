@@ -31,9 +31,11 @@ public class LoginController implements Serializable {
 
     @PostConstruct
     public void init() {
-    	this.usuario = this.usuarioService.findByLoginSenha( "admin", "admin" );
     	HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession( true );
-    	session.setAttribute( Constantes.USUARIO_AUTENTICADO, usuario );
+    	if ( session.getAttribute( Constantes.USUARIO_AUTENTICADO ) == null ) {
+	    	this.usuario = this.usuarioService.findByLoginSenha( "admin", "admin" );
+	    	session.setAttribute( Constantes.USUARIO_AUTENTICADO, usuario );
+    	}
     }
 
     /**

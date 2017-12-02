@@ -11,7 +11,7 @@
 			}
 		</script>
 		
-		<h2>Cadastro de #{clienteController.entidade}</h2>
+		<h2>Atendimento - cadastro</h2>
 
 		<h:form id="formcadCliente" styleClass="form-contour">
 			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
@@ -19,9 +19,9 @@
 	               	action="#{clienteController.voltar}" immediate="true" />
 				<p:commandButton value="#{msg['button.clear']}" update=":formcadCliente:nome" 
 					action="#{clienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
-				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form,:formcadCliente,:formcadDocs,:formcadEventos,:formcadDemaisInfos" ajax="true"
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form,:formcadCliente" ajax="true"
 					action="#{clienteController.salvar}" icon="ui-icon ui-icon-disk"
-					process=":formcadCliente,:formcadDocs,:formcadEventos,:formcadDemaisInfos" oncomplete="goTopPage();" partialSubmit="true"/>
+					process=":formcadCliente" oncomplete="goTopPage();" partialSubmit="true"/>
 			</h:panelGrid>
 
 			<p:panel header="Dados Gerais" styleClass="boxSubtit">
@@ -29,44 +29,83 @@
 					<h:outputLabel value="Nome *: " for="nome" />
 	        		<h:outputLabel value="Data de Nascimento: " />
 					<h:outputLabel value="Sexo: " />
-					<p:inputText id="nome" maxlength="60" size="45" value="#{clienteController.entity.nome}" />
-					<p:calendar id='dtnasc' value="#{clienteController.entity.dataNascimento}" showOn="both"
+					<p:inputText id="nome" maxlength="60" size="45" value="#{clienteController.cliente.nome}" />
+					<p:calendar id='dtnasc' value="#{clienteController.cliente.dataNascimento}" showOn="both"
 						maxdate="#{clienteController.dataAtual}" pattern="dd/MM/yyyy"
 						maxlength="10" size="11" popupIconOnly="true"
 						readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />
-					<p:selectOneRadio id="sexo" value="#{clienteController.entity.sexo}" converter="convsex">
+					<p:selectOneRadio id="sexo" value="#{clienteController.cliente.sexo}" converter="convsex">
 						<f:selectItem itemLabel="Masculino" itemValue="M" />
 						<f:selectItem itemLabel="Feminino" itemValue="F" />
 					</p:selectOneRadio>
 				</h:panelGrid>
 				
-				<p:panel id="pnEnd" header="Endereço" styleClass="boxSubtit">
+				<p:panel id="pnEnd" header="Endereço e Contatos" styleClass="boxSubtit">
 					<h:panelGrid columns="4" cellpadding="2" cellspacing="5">
 						<h:outputLabel value="Endereço: " for="endereco" />
 				        <h:outputLabel value="Bairro: " for="bairro" />
 						<h:outputLabel value="Cidade: " for="cidade" />
 				        <h:outputLabel value="UF: " for="uf"/>
-						<p:inputText id="endereco" maxlength="60" size="60" value="#{clienteController.entity.endereco}" />
-						<h:panelGrid columns="3" cellpadding="0" cellspacing="0">
-							<p:inputText id="bairro" maxlength="45" size="25" value="#{clienteController.endereco.bairro}" />
-				        	<p:spacer width="13" height="10" />
-							<p:inputText id="cidade" maxlength="45" size="25" value="#{clienteController.endereco.cidade}" />
-						</h:panelGrid>
-						<p:selectOneMenu id="uf" value="#{clienteController.endereco.uf}" 
+						<p:inputText id="endereco" maxlength="60" size="60" value="#{clienteController.cliente.endereco}" />
+						<p:inputText id="bairro" maxlength="45" size="25" value="#{clienteController.cliente.bairro}" />
+						<p:inputText id="cidade" maxlength="45" size="25" value="#{clienteController.cliente.cidade}" />
+						<p:selectOneMenu id="uf" value="#{clienteController.cliente.uf}" 
 							styleClass="push-l" style="width:100px; margin-left: 0;" height="200">
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 							<f:selectItems value="#{clienteController.getAllUFs()}" var="uf" itemValue="#{uf}" itemLabel="#{uf}" />
 						</p:selectOneMenu>
 					</h:panelGrid>
-				</p:panel>
-				
-				<p:panel id="pnContatos" header="Contatos" styleClass="boxSubtit">
  					<h:panelGrid columns="2" cellpadding="2" cellspacing="5">
 				        <h:outputLabel value="Telefone : " />
 				        <h:outputLabel value="Email : " />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.entity.telefone}" />
-						<p:inputText maxlength="45" size="25" value="#{clienteController.entity.email}" />
+						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.telefone}" />
+						<p:inputText maxlength="45" size="25" value="#{clienteController.cliente.email}" />
 				    </h:panelGrid>
+				</p:panel>
+				
+				<p:panel id="pnAtendimentos" header="Atendimentos" styleClass="boxSubtit">
+					<h:panelGrid columns="3" cellpadding="2" cellspacing="5">
+						<h:outputLabel value="Serviço :" for="serv" />
+						<h:outputLabel value="Data : " for="dtserv" />
+						<h:outputText value="" />
+						<p:selectOneMenu id="serv" value="#{clienteController.idServico}" 
+							styleClass="push-l" style="width:300px; margin-left: 0;" height="200">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems value="#{clienteController.servicos}" var="en" itemValue="#{en.id}" itemLabel="#{en.nome}" />
+						</p:selectOneMenu>
+			        	<p:calendar id='dtserv' value="#{clienteController.dataAtendimento}" showOn="both"
+							maxdate="#{clienteController.dataAtual}" pattern="dd/MM/yyyy"
+							maxlength="10" size="11" popupIconOnly="true"
+							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />	
+						<p:commandButton id="btnAddServ" oncomplete="if($('#idmsg').html()!=''){goTopPage();}" 
+							value="Incluir" process="@this, dtserv, serv" 
+							action="#{clienteController.incluirAtendimento}"
+							update=":idmsg,:formcadCliente:dtserv,:formcadCliente:serv,:formcadCliente:dataTableServicos" />
+					</h:panelGrid>
+					<p:separator />					
+					<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
+						<p:dataTable id="dataTableServicos" var="atd" paginator="true" rows="10"
+							emptyMessage="Nenhum registro selecionado" paginatorPosition="bottom"
+							value="#{clienteController.cliente.listAtendimentos}"
+		                	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		                	styleClass="gridContour" 
+			                rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
+							<p:column headerText="Serviço" style="text-align:left; width:450px;min-width:450px;max-width:450px;">
+								<h:outputText value="#{atd.servico.nome}" />
+							</p:column>
+							<p:column headerText="Data" styleClass="gridHeaderName" style="width:100px;min-width:100px;max-width:100px;">
+								<h:outputText value="#{atd.dataAtendimento}">
+		                            <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
+		                        </h:outputText>
+							</p:column>					                 
+							<p:column headerText="Ações" style="width:50px;min-width:50px;max-width:50px;">
+	    	    				<p:commandButton action="#{clienteController.removerAtendimento}" icon="ui-icon ui-icon-close" 
+									update=":formcadCliente:dataTableServicos" ajax="true" immediate="true">
+									<f:setPropertyActionListener value="#{atd}" target="#{clienteController.atendimentoSelecionado}" />
+								</p:commandButton>
+	    	    			</p:column>						
+						</p:dataTable>
+					</h:panelGrid>
 				</p:panel>
 			</p:panel>
 		
@@ -75,9 +114,9 @@
 	               	action="#{clienteController.voltar}" immediate="true" />
 				<p:commandButton id="btnLimpar2" value="#{msg['button.clear']}" update=":formcadCliente:nome" 
 					action="#{clienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
-				<p:commandButton value="#{msg['button.save']}" update=":idmsg,:formcadCliente,:formcadDocs,:formcadEventos,:formcadDemaisInfos" ajax="true"
+				<p:commandButton value="#{msg['button.save']}" update=":idmsg,:formcadCliente" ajax="true"
 					action="#{clienteController.salvar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
-					process=":formcadCliente,:formcadDocs,:formcadEventos,:formcadDemaisInfos" oncomplete="goTopPage();" />
+					process=":formcadCliente" oncomplete="goTopPage();" />
 			</h:panelGrid>
 
 		</h:form>

@@ -9,4 +9,7 @@ public interface EventoService extends CRUDService<Evento, Long> {
 
 	List<Evento> findAll( String nome );
 
+	Evento findEventoAtual();
+	
+	Evento copiarServicos( Evento evento );
 }

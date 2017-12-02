@@ -11,14 +11,26 @@
 			}
 		</style>
  		
- 		<h2>Cadastro de Servico</h2>
+ 		<h2>Cadastro de Serviço</h2>
 		<h:form id="cadastro" styleClass="form-contour">
             <p:panel header="Filtro de consulta" styleClass="boxSubtit" id="panel">
-            	<h:panelGrid columns="2" cellpadding="2" cellspacing="7">
-	           		<h:outputLabel value="Nome :" />
-					<p:inputText id='descricao' maxlength="100" size="50" value="#{servicoController.descricao}" />
-					<h:outputLabel value="Tipo :" />
-					<p:selectOneRadio id="tipo" value="#{servicoControlller.tipoServico}">
+            	<h:panelGrid columns="3" cellpadding="2" cellspacing="7">
+	           		<h:outputLabel value="Evento :" />
+	           		<h:outputLabel value="Nome Serviço :" />
+					<h:outputLabel value="Tipo Serviço :" />
+					<p:selectOneMenu id="eve" value="#{servicoController.idEvento}" 
+						styleClass="push-l" style="width:240px; margin-left:0;">
+						<f:selectItem itemLabel="Selecione" itemValue="" />
+						<f:selectItems value="#{servicoController.eventos}" var="ent" itemValue="#{ent.id}" itemLabel="#{ent.nome}" />
+					</p:selectOneMenu>
+					<h:panelGroup>
+						<p:autoComplete id="descricao" value="#{servicoController.descricao}" 
+							completeMethod="#{servicoController.completeServico}" 
+							dropdown="true" scrollHeight="150" size="50" />
+						<p:spacer width="15" height="10" />
+					</h:panelGroup>
+					<p:selectOneRadio id="tipo" value="#{servicoController.tipoServico}">
+						<f:selectItem itemLabel="Todos" itemValue="T" />
 						<f:selectItem itemLabel="Médico" itemValue="M" />
 						<f:selectItem itemLabel="Outros" itemValue="O" />
 					</p:selectOneRadio>
@@ -32,7 +44,7 @@
 				<p:commandButton id="btnLimparSave" value="#{msg['button.clear']}" update="@form,:frmtab:dtable" 
 					action="#{servicoController.inicializar}" icon="botao-limpar-campos"
 					title="Limpar Campos do filtro" />
-				<p:commandButton value="Novo Servico" update=":idmsg,@form" ajax="false"
+				<p:commandButton value="Novo Serviço" update=":idmsg,@form" ajax="false"
 					action="#{servicoController.incluir}" icon="ui-icon-plus"
 					title="Incluir um novo serviço" />
 		    </h:panelGrid>
@@ -54,16 +66,16 @@
 				<p:column headerText="Nome" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.nome}" >
                     <h:outputText value="#{ent.nome}" />
                 </p:column>
-				<p:column headerText="Tipo" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.tipoRelatorio}" >
+				<p:column headerText="Tipo" style="text-align:left;width:80px;max-width:80px;;min-width:80px;" sortBy="#{ent.tipoRelatorio}" >
                     <h:outputText value="#{ent.tipoRelatorio}" />
                 </p:column>
-				<p:column headerText="Evento" style="text-align:left;width:200px;max-width:200px;;min-width:100px;" sortBy="#{ent.evento.nome}" >
+				<p:column headerText="Evento" style="text-align:left;width:120px;max-width:120px;;min-width:120px;" sortBy="#{ent.evento.nome}" >
                     <h:outputText value="#{ent.evento.nome}" />
                 </p:column>
-                <p:column headerText="Ações" style="width:40px;max-width:40px;min-width:40px">
+                <p:column headerText="Ações" style="width:50px;max-width:50px;min-width:50px">
 					<h:panelGrid columns="6" styleClass="actions" cellpadding="2">
 						<p:commandButton action="#{servicoController.editar}" update=":cadastro" ajax="false" icon="ui-icon-pencil" immediate="true" title="Alterar">
-							<f:setPropertyActionListener value="#{ent.id}" target="#{servicoController.servico}" />
+							<f:setPropertyActionListener value="#{ent}" target="#{servicoController.servico}" />
 						</p:commandButton>
                         <p:commandButton update=":frmtab:displayexc" icon="ui-icon ui-icon-close"
                         	oncomplete ="confirmationExcluir.show()" title="Excluir"

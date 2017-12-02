@@ -1,9 +1,15 @@
 package br.com.mobiew.siseve.controller;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -17,15 +23,22 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import br.com.mobiew.siseve.dto.PacienteDTO;
+import br.com.mobiew.siseve.model.entity.Atendimento;
 import br.com.mobiew.siseve.model.entity.Cliente;
 import br.com.mobiew.siseve.model.entity.Evento;
+import br.com.mobiew.siseve.model.entity.Servico;
 import br.com.mobiew.siseve.model.enuns.UFEnum;
 import br.com.mobiew.siseve.service.ClienteService;
 import br.com.mobiew.siseve.service.EventoService;
+import br.com.mobiew.siseve.service.ServicoService;
 import br.com.mobiew.siseve.util.Constantes;
 import br.com.mobiew.siseve.util.MessagesHelper;
 import br.com.mobiew.siseve.util.Util;
 import br.com.mobiew.siseve.util.scopes.Scopes;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 @Scope( Scopes.SESSION )
@@ -60,12 +73,17 @@ public class ClienteController {
 
 	@Autowired
 	private EventoService eventoService;
+	
+	@Autowired
+	private ServicoService servicoService;
 
 	private List<Evento> eventosSelecionados;
 
 	private List<Evento> eventos;
 
 	private Long idCliente;
+
+	private Long idServico;
 
 	@Autowired
 	private MessagesHelper messages;
@@ -84,9 +102,18 @@ public class ClienteController {
 
 	private Integer idadeFinal;
 
+	private Atendimento atendimento;
+
+	private Atendimento atendimentoSelecionado;
+
+	private Date dataAtendimento;
+	
+	private List<Servico> servicos;
+
 	@PostConstruct
 	public void inicializar() {
 		this.cliente = new Cliente();
+		this.cliente.setUf( "RJ" );
 		this.nome = null;
 		this.cpf = null;
 		this.cnpj = null;
@@ -96,6 +123,14 @@ public class ClienteController {
 		this.eventos = eventoService.findAll();
 		this.eventosSelecionados = new ArrayList<Evento>();
 		this.dataMinima = new DateTime().withDate( 1900, 1, 1 ).toDate();
+		this.servicos = servicoService.findAll();
+		Collections.sort( servicos, new Comparator<Servico>() {
+			@Override
+			public int compare( Servico o1Param, Servico o2Param ) {
+				return o1Param.getNome().compareTo( o2Param.getNome() );
+			}
+		});
+		this.atendimento = new Atendimento( this.cliente, new Servico(), null );
 	}
 
 	public String entrar() {
@@ -152,9 +187,12 @@ public class ClienteController {
 
 	public String incluir() {
 		this.cliente = new Cliente();
+		this.cliente.setUf( "RJ" );
 		this.tipoPessoa = "F";
 		this.idCliente = null;
 		this.eventosSelecionados = new ArrayList<Evento>();
+		this.atendimento = new Atendimento( this.cliente, new Servico(), null );
+		this.idServico = null;
 		return editar();
 	}
 
@@ -162,13 +200,7 @@ public class ClienteController {
 		if ( this.idCliente != null ) {
 			this.cliente = this.clienteService.findById( this.idCliente );
 			this.eventosSelecionados = new ArrayList<Evento>();
-			// for (PacienteEvento pacEvento : this.cliente.getPacienteEventos()) {
-			// if ( pacEvento.getEvento().getDtEvento() != null ) {
-			// this.eventosSelecionados.add( pacEvento.getEvento() );
-			// }
-			// }
 		}
-
 		return "paciente-edit?faces-redirect=true";
 	}
 
@@ -179,6 +211,9 @@ public class ClienteController {
 				return null;
 			}
 			boolean inclusao = this.cliente.getId() == null;
+			if ( StringUtils.isBlank( this.cliente.getSexo() ) ) {
+				this.cliente.setSexo( null );
+			}
 			this.clienteService.save( this.cliente );
 			ControllerUtil.addInfoMessage( null, "Paciente " + ( inclusao ? "incluído" : "alterado" ) + " com sucesso." );
 			inicializar();
@@ -205,9 +240,63 @@ public class ClienteController {
 		}
 	}
 
+	public void incluirAtendimento() {
+		if ( this.idServico == null || Long.valueOf( 0L ).equals( this.idServico ) ) {
+			FacesContext.getCurrentInstance().addMessage( null, new FacesMessage( FacesMessage.SEVERITY_ERROR, "O campo serviço deve ser selecionado", null ) );
+			return;
+		}
+		this.atendimento.setServico( this.servicoService.findById( this.idServico ) );
+		this.atendimento.setCliente( this.cliente );
+		if ( cliente.getAtendimentos().contains( atendimento ) ) {
+			FacesContext.getCurrentInstance().addMessage( null, new FacesMessage( FacesMessage.SEVERITY_ERROR,
+					"O atendimento do serviço " + atendimento.getServico().getNome() + " já se encontra na lista.", atendimento.getServico().getNome() ) );
+			return;
+		}
+		this.cliente.getAtendimentos().add( atendimento );
+		this.atendimento = new Atendimento( this.cliente, new Servico(), null );
+		this.idServico = null;
+	}
+
+	public void removerAtendimento() {
+		this.cliente.getAtendimentos().remove( this.atendimentoSelecionado );
+	}
+
 	public static List<UFEnum> getAllUFs() {
 		return Arrays.asList( UFEnum.values() );
 	}
+
+    public void imprimirProntuario() {
+		this.cliente = this.clienteService.findById( this.idCliente );
+    	if ( this.cliente == null ) {
+    		ControllerUtil.addErrorMessage( null, "Cliente não selecionado." );
+    		return;
+    	}
+        if ( this.cliente.getAtendimentos() == null || this.cliente.getAtendimentos().isEmpty() ) {
+            ControllerUtil.addErrorMessage( null, "Não há dados para gerar prontuário do paciente." );
+            return;
+        }
+        String nomeRelatorio = "prontuario.jasper";
+        InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/" + nomeRelatorio );
+        try {
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put( "SUBREPORT_DIR", "report/" );
+            parameters.put( Constantes.PARAMETRO_REPORT_LOCALE, Constantes.LOCALE_PT_BR );
+            List<Cliente> lista = new ArrayList<>();
+            lista.add( this.cliente );
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource( lista );
+            JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, dataSource );
+            OutputStream ous = Util.createOutputStreamPDFPagina( "prontuario.pdf" );
+            JasperExportManager.exportReportToPdfStream( print, ous );
+            ous.flush();
+            ous.close();
+            FacesContext.getCurrentInstance().renderResponse();
+            FacesContext.getCurrentInstance().responseComplete();
+        } catch ( Exception e ) {
+            LOG.error( e.getMessage() );
+            FacesContext.getCurrentInstance().addMessage( FacesMessage.FACES_MESSAGES,
+                    new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao gerar prontuário do paciente", e.getMessage() ) );
+        }
+    }
 
 	public String getEntidade() {
 		return entidade;
@@ -383,5 +472,45 @@ public class ClienteController {
 
 	public void setPacientes( List<Cliente> pacientesParam ) {
 		this.pacientes = pacientesParam;
+	}
+
+	public Atendimento getAtendimentoSelecionado() {
+		return this.atendimentoSelecionado;
+	}
+
+	public void setAtendimentoSelecionado( Atendimento atendimentoSelecionadoParam ) {
+		this.atendimentoSelecionado = atendimentoSelecionadoParam;
+	}
+
+	public Atendimento getAtendimento() {
+		return this.atendimento;
+	}
+
+	public void setAtendimento( Atendimento atendimentoParam ) {
+		this.atendimento = atendimentoParam;
+	}
+
+	public Date getDataAtendimento() {
+		return this.dataAtendimento;
+	}
+
+	public void setDataAtendimento( Date dataAtendimentoParam ) {
+		this.dataAtendimento = dataAtendimentoParam;
+	}
+
+	public List<Servico> getServicos() {
+		return this.servicos;
+	}
+
+	public void setServicos( List<Servico> servicosParam ) {
+		this.servicos = servicosParam;
+	}
+
+	public Long getIdServico() {
+		return this.idServico;
+	}
+
+	public void setIdServico( Long idServicoParam ) {
+		this.idServico = idServicoParam;
 	}
 }

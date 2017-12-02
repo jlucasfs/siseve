@@ -37,25 +37,27 @@ public class EventoController {
 	private Long idEvento;
 
 	private String local;
+	
+	private boolean copiaServicos;
 
 	@PostConstruct
 	public void inicializar() {
 		try {
 			limpar();
-			this.eventos = this.eventoService.findAll();
+			consultar();
 		} catch ( Exception e ) {
 			ControllerUtil.addWarnMessage( null, "Erro ao carregar Eventos" );
 		}
 	}
 
+	public String entrar() {
+		inicializar();
+		return "/pages/evento-index?faces-redirect=true";
+	}
+
 	public void limpar() {
 		this.evento = new Evento();
 		this.descricao = null;
-	}
-
-	public String entrar() {
-		inicializar();
-		return "/pages/ca/evento-index?faces-redirect=true";
 	}
 
 	public void consultar() {
@@ -70,10 +72,12 @@ public class EventoController {
 	public String incluir() {
 		this.evento = new Evento();
 		this.idEvento = null;
+		this.copiaServicos = false;
 		return "evento-edit?faces-redirect=true";
 	}
 
 	public String editar() {
+		this.copiaServicos = this.evento.getServicos().isEmpty();
 		return "evento-edit?faces-redirect=true";
 	}
 
@@ -90,6 +94,23 @@ public class EventoController {
 			return "evento-index?faces-redirect=true";
 		} catch ( Exception e ) {
 			ControllerUtil.addErrorMessage( null, "Erro ao salvar o Evento." );
+			e.getMessage();
+			return null;
+		}
+	}
+	
+	public String copiar() {
+		try {
+			Evento eventoCopia = this.eventoService.copiarServicos( this.evento );
+			if ( eventoCopia == null ) {
+				ControllerUtil.addWarnMessage( null, "Não existe Evento anterior ou não há serviços a copiar." );
+				return "evento-index?faces-redirect=true";
+			}
+			ControllerUtil.addInfoMessage( null, "Serviços do evento anterior copiados com sucesso." );
+			inicializar();
+			return "evento-index?faces-redirect=true";
+		} catch ( Exception e ) {
+			ControllerUtil.addErrorMessage( null, "Erro ao copiar os serviços do evento anterior." );
 			e.getMessage();
 			return null;
 		}
@@ -159,6 +180,14 @@ public class EventoController {
 
 	public void setLocal( String localParam ) {
 		this.local = localParam;
+	}
+
+	public boolean isCopiaServicos() {
+		return this.copiaServicos;
+	}
+
+	public void setCopiaServicos( boolean copiaServicosParam ) {
+		this.copiaServicos = copiaServicosParam;
 	}
 
 }

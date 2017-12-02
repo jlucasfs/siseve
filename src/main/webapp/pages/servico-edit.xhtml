@@ -24,19 +24,26 @@
 			</h:panelGrid>
 
 			<p:panel header="Serviço" styleClass="boxSubtit" id="panel">
-            	<h:panelGrid columns="2" cellpadding="2" cellspacing="7">
+            	<h:panelGrid columns="3" cellpadding="2" cellspacing="7">
 	           		<h:outputLabel value="Evento *:" />
 	           		<h:outputLabel value="Nome serviço *:" />
 					<h:outputLabel value="Tipo :" />
+					<p:selectOneMenu id="eve" value="#{servicoController.servico.evento.id}" 
+						styleClass="push-l" style="width:240px; margin-left:0;">
+						<f:selectItem itemLabel="Selecione" itemValue="" />
+						<f:selectItems value="#{servicoController.eventos}" var="ent" itemValue="#{ent.id}" itemLabel="#{ent.nome}" />
+					</p:selectOneMenu>
 					<p:inputText id='nome' maxlength="100" size="69" value="#{servicoController.servico.nome}" 
 						required="true" requiredMessage="O campo 'Nome' é obrigatório"/>
-					<p:selectOneRadio id="tipo" value="#{servicoControlller.servico.tipoServico}" converter="tipoEventoConverter">
+					<p:selectOneRadio id="tipo" value="#{servicoController.tipoRelatorio}">
 						<f:selectItem itemLabel="Médico" itemValue="M" />
 						<f:selectItem itemLabel="Outros" itemValue="O" />
 					</p:selectOneRadio>
 				</h:panelGrid>
             </p:panel>
+            <!-- 
 			<p:focus for=":formcadEnt:cbevento" />
+             -->
 		
 			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
 	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
