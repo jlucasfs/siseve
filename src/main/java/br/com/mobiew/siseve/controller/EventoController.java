@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +57,7 @@ public class EventoController {
 	public void limpar() {
 		this.evento = new Evento();
 		this.descricao = null;
+		this.local = null;
 	}
 
 	public void consultar() {
@@ -168,9 +168,7 @@ public class EventoController {
 	}
 
 	public Long getTotalRegistros() {
-		if ( CollectionUtils.isEmpty( this.eventos ) ) {
-			this.eventos = this.eventoService.findAll();
-		}
+		this.eventos = this.eventoService.findAll();
 		return Long.valueOf( this.eventos.size() );
 	}
 

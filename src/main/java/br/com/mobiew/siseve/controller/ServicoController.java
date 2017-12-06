@@ -87,7 +87,7 @@ public class ServicoController {
 
 	public void consultar() {
 		try {
-			this.servicos = servicoService.findAll( descricao );
+			this.servicos = servicoService.findAll( idEvento, descricao, tipoServico );
 		} catch ( Exception e ) {
 			LOG.error( e.getMessage() );
 			FacesContext.getCurrentInstance().addMessage( null, new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao consultar os eventos. ", null ) );
@@ -124,8 +124,11 @@ public class ServicoController {
 			this.servico.setTipoRelatorio( TipoRelatorioEnum.getEnumFromValue( this.tipoRelatorio ) );
 			this.servicoService.save( this.servico );
 			ControllerUtil.addInfoMessage( null, "Servico " + ( inclusao ? "incluído" : "alterado" ) + " com sucesso." );
+			if ( inclusao ) {
+				return incluir();
+			}
 			inicializar();
-			return "servico-index?faces-redirect=true";
+			return "/pages/servico-index?faces-redirect=true";
 		} catch ( Exception e ) {
 			ControllerUtil.addErrorMessage( null, "Erro ao salvar o Servico." );
 			e.getMessage();

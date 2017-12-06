@@ -48,6 +48,9 @@
 				<p:commandButton value="Novo #{clienteController.entidade}" update=":idmsg,@form" ajax="false"
 					action="#{clienteController.incluir}" icon="ui-icon-plus"
 					title="Incluir um novo #{clienteController.entidade}" />
+				<p:commandButton value="Relatório Geral" update=":idmsg,@form" ajax="false"
+					action="#{clienteController.imprimirRelatorioGeral}" icon="ui-icon-print"
+					title="Imprimir Relatório Geral" />
 		    </h:panelGrid>
 
 			<p:focus for=":cadastro:nome" />
@@ -68,14 +71,14 @@
 				<p:column headerText="Nome" style="text-align:left;width:180px;max-width:180px;;min-width:180px;" sortBy="#{ent.nome}" >
                     <h:outputText value="#{ent.nome}" />
                 </p:column>
+				<p:column headerText="Idade" style="width:40px; max-width:40px; min-width:40px;">
+                    <h:outputText value="#{ent.idade}">
+                    	<f:convertNumber  pattern="#,##0" locale="pt_BR" />
+                    </h:outputText>
+				</p:column>
 				<p:column headerText="Sexo" sortBy="#{ent.sexo}" style="width:30px; max-width:30px; min-width:30px;">
                     <h:outputText value="#{ent.sexo}" />
                 </p:column>
-				<p:column headerText="Data Nascimento" style="width:50px; max-width:43px; min-width:43px;">
-                    <h:outputText value="#{ent.dataNascimento}">
-                    	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
-                    </h:outputText>
-				</p:column>
 				<p:column headerText="Telefone" sortBy="#{ent.telefone}" style="text-align:left;width:50px;max-width:50px;;min-width:50px;">
                     <h:outputText value="#{ent.telefone}" />
                 </p:column>
@@ -88,7 +91,8 @@
 							<f:setPropertyActionListener value="#{ent.id}" target="#{clienteController.idCliente}" />
 						</p:commandButton>
 						<p:commandButton action="#{clienteController.imprimirProntuario}" ajax="false" icon="ui-icon-document" process="@this"
-							title="Prontuário" immediate="true" style="background-color:#aaa !important; background:none;">
+							title="Prontuário" immediate="true" style="background-color:#aaa !important; background:none;"
+							onclick="javascript:this.form.target='_blank';" onblur="javascript:this.form.target='_self'">
 							<f:setPropertyActionListener value="#{ent.id}" target="#{clienteController.idCliente}" />
 						</p:commandButton>
                         <p:commandButton update=":frmtabcliente:displayexc" icon="ui-icon ui-icon-close"

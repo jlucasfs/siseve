@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import br.com.mobiew.siseve.dto.PacienteDTO;
+import br.com.mobiew.siseve.dto.RelatorioDto;
 import br.com.mobiew.siseve.model.entity.Atendimento;
 import br.com.mobiew.siseve.model.entity.Cliente;
 import br.com.mobiew.siseve.model.entity.Evento;
@@ -35,10 +36,16 @@ import br.com.mobiew.siseve.util.Constantes;
 import br.com.mobiew.siseve.util.MessagesHelper;
 import br.com.mobiew.siseve.util.Util;
 import br.com.mobiew.siseve.util.scopes.Scopes;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 @Controller
 @Scope( Scopes.SESSION )
@@ -123,7 +130,7 @@ public class ClienteController {
 		this.eventos = eventoService.findAll();
 		this.eventosSelecionados = new ArrayList<Evento>();
 		this.dataMinima = new DateTime().withDate( 1900, 1, 1 ).toDate();
-		this.servicos = servicoService.findAll();
+		this.servicos = servicoService.findAllEventoAtual();
 		Collections.sort( servicos, new Comparator<Servico>() {
 			@Override
 			public int compare( Servico o1Param, Servico o2Param ) {
@@ -131,6 +138,8 @@ public class ClienteController {
 			}
 		});
 		this.atendimento = new Atendimento( this.cliente, new Servico(), null );
+		this.idadeInicial = null;
+		this.idadeFinal = null;
 	}
 
 	public String entrar() {
@@ -205,6 +214,19 @@ public class ClienteController {
 	}
 
 	public String salvar() {
+		String result = salvarAtendimento();
+		inicializar();
+		return result;
+	}
+
+	public void salvarImprimirProntuario() {
+		String salvar = salvarAtendimento();
+		if ( salvar != null && salvar.indexOf( "paciente-index" ) >= 0 ) {
+			imprimirProntuario();
+		}
+	}
+	
+	private String salvarAtendimento() {
 		try {
 			if ( StringUtils.isBlank( this.cliente.getNome() ) ) {
 				ControllerUtil.addErrorMessage( null, "Campo Nome é obrigatório." );
@@ -216,7 +238,6 @@ public class ClienteController {
 			}
 			this.clienteService.save( this.cliente );
 			ControllerUtil.addInfoMessage( null, "Paciente " + ( inclusao ? "incluído" : "alterado" ) + " com sucesso." );
-			inicializar();
 			return "paciente-index?faces-redirect=true";
 		} catch ( Exception e ) {
 			ControllerUtil.addErrorMessage( null, "Erro ao salvar " + this.entidade + "." );
@@ -266,7 +287,10 @@ public class ClienteController {
 	}
 
     public void imprimirProntuario() {
-		this.cliente = this.clienteService.findById( this.idCliente );
+    	if ( this.idCliente != null ) {
+    		// neste caso, esta vindo do botao imprimir prontuario da tela de consulta
+    		this.cliente = this.clienteService.findById( this.idCliente );
+    	}
     	if ( this.cliente == null ) {
     		ControllerUtil.addErrorMessage( null, "Cliente não selecionado." );
     		return;
@@ -279,11 +303,8 @@ public class ClienteController {
         InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/" + nomeRelatorio );
         try {
             Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put( "SUBREPORT_DIR", "report/" );
             parameters.put( Constantes.PARAMETRO_REPORT_LOCALE, Constantes.LOCALE_PT_BR );
-            List<Cliente> lista = new ArrayList<>();
-            lista.add( this.cliente );
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource( lista );
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource( this.cliente.getAtendimentos() );
             JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, dataSource );
             OutputStream ous = Util.createOutputStreamPDFPagina( "prontuario.pdf" );
             JasperExportManager.exportReportToPdfStream( print, ous );
@@ -291,6 +312,28 @@ public class ClienteController {
             ous.close();
             FacesContext.getCurrentInstance().renderResponse();
             FacesContext.getCurrentInstance().responseComplete();
+            
+            
+//            JRPdfExporter exporter = new JRPdfExporter();
+//			exporter.setExporterInput( new SimpleExporterInput( print ) );
+//			exporter.setExporterOutput( new SimpleOutputStreamExporterOutput( "prontuario.pdf" ) );
+//
+//			SimplePdfReportConfiguration reportConfig = new SimplePdfReportConfiguration();
+//			reportConfig.setSizePageToContent( true );
+//			reportConfig.setForceLineBreakPolicy( false );
+//
+//			SimplePdfExporterConfiguration exportConfig = new SimplePdfExporterConfiguration();
+//			exportConfig.setMetadataAuthor( "" );
+//			exportConfig.setEncrypted( true );
+//			exportConfig.setAllowedPermissionsHint( "PRINTING" );
+//
+//			exporter.setConfiguration( reportConfig );
+//			exporter.setConfiguration( exportConfig );
+//			exporter.exportReport();
+        } catch (JRException ex) {
+        	LOG.error( "Erro ao gerar arquivo com o prontuario" );
+        	FacesContext.getCurrentInstance().addMessage( FacesMessage.FACES_MESSAGES,
+        			new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao gerar arquivo com o prontuário do paciente", ex.getMessage() ) );
         } catch ( Exception e ) {
             LOG.error( e.getMessage() );
             FacesContext.getCurrentInstance().addMessage( FacesMessage.FACES_MESSAGES,
@@ -298,6 +341,49 @@ public class ClienteController {
         }
     }
 
+    public void imprimirRelatorioGeral() {
+        String nomeRelatorio = "relatorioGeral.jasper";
+        InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/" + nomeRelatorio );
+        try {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put( Constantes.PARAMETRO_REPORT_LOCALE, Constantes.LOCALE_PT_BR );
+			parameters.put( JRParameter.IS_IGNORE_PAGINATION, Boolean.TRUE );
+			List<RelatorioDto> lista = new ArrayList<>();
+			lista.add( new RelatorioDto( 1L, "JOAO", 30L ) );
+			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource( lista );
+			JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, dataSource );
+			//ByteArrayOutputStream ous = new ByteArrayOutputStream();
+			OutputStream ous = Util.createOutputStreamXls( "relatoriogeral.xls", 1024 );
+			
+			JRXlsExporter exporter = new JRXlsExporter();
+			exporter.setExporterInput( new SimpleExporterInput( print ) );
+			exporter.setExporterOutput( new SimpleOutputStreamExporterOutput( ous ) );
+			SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+			configuration.setOnePagePerSheet( false );
+			configuration.setDetectCellType( false );
+			configuration.setCollapseRowSpan( false );
+			configuration.setRemoveEmptySpaceBetweenRows( true );
+			configuration.setWhitePageBackground( false );
+			exporter.setConfiguration( configuration );
+			exporter.exportReport();
+			
+//			result = new DefaultStreamedContent( new ByteArrayInputStream( ous.toByteArray() ), 
+//					"application/" + Constantes.EXTENSAO_XLS,
+//					"relatorioGeral." + Constantes.EXTENSAO_XLS );
+			
+			ous.flush();
+            ous.close();
+            FacesContext.getCurrentInstance().renderResponse();
+            FacesContext.getCurrentInstance().responseComplete();
+            
+		} catch ( Exception e ) {
+			LOG.error( e.getMessage() );
+			FacesContext.getCurrentInstance().addMessage( FacesMessage.FACES_MESSAGES,
+					new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao gerar relatorio geral", e.getMessage() ) );
+		}
+//        return result;
+	}
+    
 	public String getEntidade() {
 		return entidade;
 	}

@@ -1,9 +1,11 @@
 package br.com.mobiew.siseve.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,9 +97,31 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public List<Cliente> findAll( String nome, String sexo, Integer idadeInicial, Integer idadeFinal ) {
+    	List<Cliente> result = new ArrayList<>();
         List<Cliente> lista = this.clienteDAO.findAll( nome, sexo, idadeInicial, idadeFinal );
-        inicializarOrdenarListaClientes( lista );
-        return lista;
+    	if ( CollectionUtils.isNotEmpty( lista ) ) {
+    		for ( Cliente cliente: lista ) {
+    			boolean adiciona = false;
+    			if ( idadeInicial == null ) {
+    				if ( idadeFinal == null ) {
+    					adiciona = true;
+    				} else {
+    	    			adiciona = cliente.getIdade().compareTo( idadeFinal ) <= 0;
+    	    		}
+    	    	} else {
+    	    		if ( idadeFinal == null ) {
+    	    			adiciona = cliente.getIdade().compareTo( idadeInicial ) >= 0;
+    	    		} else {
+    	    			adiciona = cliente.getIdade().compareTo( idadeInicial ) >= 0 && cliente.getIdade().compareTo( idadeFinal ) <= 0;
+    	    		}
+    	    	}
+    			if ( adiciona ) {
+    				result.add( cliente );
+    			}
+			}
+    	}
+        inicializarOrdenarListaClientes( result );
+        return result;
     }
 
     @Override

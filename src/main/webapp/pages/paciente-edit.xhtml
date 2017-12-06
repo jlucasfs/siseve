@@ -16,9 +16,12 @@
 		<h:form id="formcadCliente" styleClass="form-contour">
 			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
 				<p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
-	               	action="#{clienteController.voltar}" immediate="true" />
+	               	action="#{clienteController.entrar}" immediate="true" />
 				<p:commandButton value="#{msg['button.clear']}" update=":formcadCliente:nome" 
 					action="#{clienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
+				<p:commandButton value="#{msg['button.save']} e Imprimir Prontuário" update=":idmsg,@form,:formcadCliente" icon="ui-icon ui-icon-disk"
+					ajax="false" process=":formcadCliente" action="#{clienteController.salvarImprimirProntuario}" 
+					onclick="javascript:this.form.target='_blank';" onblur="javascript:this.form.target='_self'" />
 				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form,:formcadCliente" ajax="true"
 					action="#{clienteController.salvar}" icon="ui-icon ui-icon-disk"
 					process=":formcadCliente" oncomplete="goTopPage();" partialSubmit="true"/>
@@ -29,7 +32,7 @@
 					<h:outputLabel value="Nome *: " for="nome" />
 	        		<h:outputLabel value="Data de Nascimento: " />
 					<h:outputLabel value="Sexo: " />
-					<p:inputText id="nome" maxlength="60" size="45" value="#{clienteController.cliente.nome}" />
+					<p:inputText id="nome" maxlength="100" size="60" value="#{clienteController.cliente.nome}" />
 					<p:calendar id='dtnasc' value="#{clienteController.cliente.dataNascimento}" showOn="both"
 						maxdate="#{clienteController.dataAtual}" pattern="dd/MM/yyyy"
 						maxlength="10" size="11" popupIconOnly="true"
@@ -66,21 +69,27 @@
 				<p:panel id="pnAtendimentos" header="Atendimentos" styleClass="boxSubtit">
 					<h:panelGrid columns="3" cellpadding="2" cellspacing="5">
 						<h:outputLabel value="Serviço :" for="serv" />
+						<!-- 
 						<h:outputLabel value="Data : " for="dtserv" />
+						 -->
+						<h:outputText value="" />
 						<h:outputText value="" />
 						<p:selectOneMenu id="serv" value="#{clienteController.idServico}" 
 							styleClass="push-l" style="width:300px; margin-left: 0;" height="200">
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 							<f:selectItems value="#{clienteController.servicos}" var="en" itemValue="#{en.id}" itemLabel="#{en.nome}" />
 						</p:selectOneMenu>
+			        	<!-- 
 			        	<p:calendar id='dtserv' value="#{clienteController.dataAtendimento}" showOn="both"
 							maxdate="#{clienteController.dataAtual}" pattern="dd/MM/yyyy"
 							maxlength="10" size="11" popupIconOnly="true"
 							readOnlyInputText="false" navigator="true" locale="pt_BR" timeZone="America/Sao_Paulo" />	
+			        	 -->
+						<h:outputText value="" />
 						<p:commandButton id="btnAddServ" oncomplete="if($('#idmsg').html()!=''){goTopPage();}" 
-							value="Incluir" process="@this, dtserv, serv" 
+							value="Incluir" process="@this, serv" 
 							action="#{clienteController.incluirAtendimento}"
-							update=":idmsg,:formcadCliente:dtserv,:formcadCliente:serv,:formcadCliente:dataTableServicos" />
+							update=":idmsg,:formcadCliente:serv,:formcadCliente:dataTableServicos" />
 					</h:panelGrid>
 					<p:separator />					
 					<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
@@ -93,11 +102,13 @@
 							<p:column headerText="Serviço" style="text-align:left; width:450px;min-width:450px;max-width:450px;">
 								<h:outputText value="#{atd.servico.nome}" />
 							</p:column>
+							<!-- 
 							<p:column headerText="Data" styleClass="gridHeaderName" style="width:100px;min-width:100px;max-width:100px;">
 								<h:outputText value="#{atd.dataAtendimento}">
 		                            <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="America/Sao_Paulo" />
 		                        </h:outputText>
 							</p:column>					                 
+							 -->
 							<p:column headerText="Ações" style="width:50px;min-width:50px;max-width:50px;">
 	    	    				<p:commandButton action="#{clienteController.removerAtendimento}" icon="ui-icon ui-icon-close" 
 									update=":formcadCliente:dataTableServicos" ajax="true" immediate="true">
@@ -111,9 +122,12 @@
 		
 			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
 	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
-	               	action="#{clienteController.voltar}" immediate="true" />
+	               	action="#{clienteController.entrar}" immediate="true" />
 				<p:commandButton id="btnLimpar2" value="#{msg['button.clear']}" update=":formcadCliente:nome" 
 					action="#{clienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
+				<p:commandButton value="#{msg['button.save']} e Imprimir Prontuário" update=":idmsg,@form,:formcadCliente" icon="ui-icon ui-icon-disk"
+					ajax="false" process=":formcadCliente" action="#{clienteController.salvarImprimirProntuario}" 
+					onclick="javascript:this.form.target='_blank';" onblur="javascript:this.form.target='_self'" />
 				<p:commandButton value="#{msg['button.save']}" update=":idmsg,:formcadCliente" ajax="true"
 					action="#{clienteController.salvar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
 					process=":formcadCliente" oncomplete="goTopPage();" />

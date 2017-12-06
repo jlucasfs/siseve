@@ -7,7 +7,7 @@ import br.com.mobiew.siseve.util.ConstantesData;
 
 public class PacienteDTO implements Serializable {
 
-	private static final long serialVersionUID = -7253532759622254533L;
+	private static final long serialVersionUID = -58166701216654748L;
 
 	private Long id;
 

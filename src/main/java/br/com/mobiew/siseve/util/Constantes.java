@@ -134,6 +134,8 @@ public final class Constantes {
     public static Collator COLLATOR = Collator.getInstance( Constantes.LOCALE_PT_BR );
     
     public static final String TEXTO_CONTENT_DISPOSITION = "Content-Disposition";
+
+    public static final String EXTENSAO_XLS = "xls";
     
     static {
         Constantes.COLLATOR.setStrength( Collator.PRIMARY );

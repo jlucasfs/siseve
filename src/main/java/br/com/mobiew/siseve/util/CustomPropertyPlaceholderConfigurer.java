@@ -5,12 +5,12 @@ import java.util.Properties;
 
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
-public class CustomPropertyPlaceholderConfigurer extends
-		PropertyPlaceholderConfigurer {
+public class CustomPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
+
 	private Properties props;
 
-	protected void loadProperties(Properties propsParam) throws IOException {
-		super.loadProperties(propsParam);
+	protected void loadProperties( Properties propsParam ) throws IOException {
+		super.loadProperties( propsParam );
 		this.props = propsParam;
 	}
 

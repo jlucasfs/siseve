@@ -8,7 +8,7 @@ import br.com.mobiew.siseve.model.enuns.StatusEnum;
 
 public class FiltroDTO implements Serializable {
 
-	private static final long serialVersionUID = -6879112043149944258L;
+	private static final long serialVersionUID = 7912409913029575555L;
 
 	private String nome;
 

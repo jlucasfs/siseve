@@ -22,9 +22,9 @@
 						<p:panel header="Evento" style="text-align:center;height:120px;width:225px; margin: 5px 0 2px 0!important;" styleClass="boxSubtit2">
 							<h:panelGrid columns="2" cellpadding="2" cellspacing="4">
 								<h:panelGroup>
-									<a title="Cadastro de Evento" href="#{request.contextPath}/pages/evento-index.jsf">
+									<h:commandLink value="" action="#{eventoController.entrar}" title="Cadastro de Evento">
 										<p:graphicImage value="/static/img/evento.png" width="70" /> <br />
-									</a>
+									</h:commandLink>
 								</h:panelGroup>
 								<h:panelGrid columns="1" cellpadding="2" cellspacing="4">
 									<h:panelGroup styleClass="txt-color-purple">
@@ -91,7 +91,7 @@
 								legendPosition="ne" style="width:400px;height:200px;margin:5px;"
 								barMargin="10" barPadding="10" xaxisAngle="-40" stacked="true" />
 						</p:panel>
-						<p:panel header="Atendimentos eventos atual por serviço" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:445px;">
+						<p:panel header="Atendimentos evento atual por serviço" styleClass="boxSubtit2" style="margin: 5px 0 2px 0!important;width:445px;">
 							<p:pieChart id="atendporserv" value="#{sessionBean.listaAtendimentosPorServico}"
 								legendPosition="e" style="width:400px;height:200px;margin:5px;" />
 						</p:panel>

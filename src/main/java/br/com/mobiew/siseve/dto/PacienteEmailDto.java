@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class PacienteEmailDto implements Serializable {
 
-	private static final long serialVersionUID = -8027242366405575567L;
+	private static final long serialVersionUID = 4557867422596816593L;
 
 	private String titulo;
 

@@ -20,6 +20,7 @@ public class AuthorizationListener implements PhaseListener {
     }
 
     public void beforePhase( PhaseEvent event ) {
+    	//
     }
 
     public PhaseId getPhaseId() {

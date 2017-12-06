@@ -7,7 +7,7 @@ import br.com.mobiew.siseve.util.ConstantesData;
 
 public class AtendimentoDTO implements Serializable {
 
-	private static final long serialVersionUID = -1994944151259741481L;
+	private static final long serialVersionUID = 655130280870957161L;
 
 	private Long idAtendimento;
 

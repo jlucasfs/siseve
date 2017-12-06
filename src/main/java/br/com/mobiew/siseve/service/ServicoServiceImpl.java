@@ -54,8 +54,13 @@ public class ServicoServiceImpl implements ServicoService {
 	}
 
 	@Override
-	public List<Servico> findAll( String nomeParam ) {
-		return this.dao.findAllByProperty( "nome", nomeParam );
+	public List<Servico> findAll( Long eventoParam, String nomeParam, String tipoParam ) {
+		return this.dao.findAll( eventoParam, nomeParam, tipoParam );
+	}
+
+	@Override
+	public List<Servico> findAllEventoAtual() {
+		return this.dao.findAllEventoAtual();
 	}
 
 }

@@ -103,6 +103,13 @@ public final class Util {
         return response.getOutputStream();
     }
 
+    public static OutputStream createOutputStreamXls( final String nomeArquivoParam, final int lengthParam ) throws IOException {
+    	HttpServletResponse response = getResponseXLS();
+    	response.setHeader( "Content-Disposition", "Attachment; Filename=" + nomeArquivoParam );
+    	response.setContentLength( lengthParam );
+    	return response.getOutputStream();
+    }
+
     public static HttpServletResponse getResponseXLS() {
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         response.setHeader( "Content-Type", "application/vnd.ms-excel" );

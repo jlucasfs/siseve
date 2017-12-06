@@ -7,6 +7,7 @@ import br.com.mobiew.siseve.service.base.CRUDService;
 
 public interface ServicoService extends CRUDService<Servico, Long> {
 
-	List<Servico> findAll( String nome );
+	List<Servico> findAll( Long evento, String nome, String tipo );
 
+	List<Servico> findAllEventoAtual();
 }

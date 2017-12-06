@@ -49,17 +49,6 @@ public class ClienteDAOImpl extends GenericHibernateDAO<Cliente, Long> implement
         if ( StringUtils.isNotBlank( sexo ) ) {
     		criteria.add( Restrictions.eq( "c.sexo", sexo ) );
     	}
-    	if ( idadeInicial == null ) {
-    		if ( idadeFinal != null ) {
-    			criteria.add( Restrictions.le( "c.idade", idadeFinal ) );
-    		}
-    	} else {
-    		if ( idadeFinal == null ) {
-    			criteria.add( Restrictions.ge( "c.idade", idadeInicial ) );
-    		} else {
-    			criteria.add( Restrictions.between( "c.idade", idadeInicial, idadeFinal ) );
-    		}
-    	}
         criteria.setResultTransformer( Criteria.DISTINCT_ROOT_ENTITY );
         return getHibernateTemplate().findByCriteria( criteria );
     }

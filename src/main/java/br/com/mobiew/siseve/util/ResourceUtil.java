@@ -1,14 +1,11 @@
 package br.com.mobiew.siseve.util;
 
-import groovy.util.ResourceException;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
  * Classe ResourceUtil responsavel por fornecer metodos utilitarios ao sistema.
- *
  */
 public final class ResourceUtil {
 

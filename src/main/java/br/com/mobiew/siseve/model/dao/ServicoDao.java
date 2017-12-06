@@ -6,5 +6,7 @@ import br.com.mobiew.siseve.model.entity.Servico;
 
 public interface ServicoDao extends GenericDAO<Servico, Long> {
 
-	List<Servico> findAll( String nome );
+	List<Servico> findAll( Long eventoParam, String nomeParam, String tipoParam );
+
+	List<Servico> findAllEventoAtual();
 }
