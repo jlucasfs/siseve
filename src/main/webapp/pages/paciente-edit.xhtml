@@ -2,6 +2,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" template="/pages/templates/ui.xhtml">
 	<ui:define name="content">
 		<script type="text/javascript">
@@ -11,6 +12,16 @@
 			}
 		</script>
 		
+		<c:if test="#{clienteController.prontoParaDownload}">
+            <script>
+                window.onload = function() {
+                    document.getElementById('formpacedit:link').onclick();
+                }
+        	</script>
+            <h:form id="formpacedit">
+                <h:commandLink id="link" action="#{clienteController.imprimirProntuario()}"/>
+            </h:form>
+           </c:if>		
 		<h2>Atendimento - cadastro</h2>
 
 		<h:form id="formcadCliente" styleClass="form-contour">
@@ -19,9 +30,8 @@
 	               	action="#{clienteController.entrar}" immediate="true" />
 				<p:commandButton value="#{msg['button.clear']}" update=":formcadCliente:nome" 
 					action="#{clienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
-				<p:commandButton value="#{msg['button.save']} e Imprimir Prontuário" update=":idmsg,@form,:formcadCliente" icon="ui-icon ui-icon-disk"
-					ajax="false" process=":formcadCliente" action="#{clienteController.salvarImprimirProntuario}" 
-					onclick="javascript:this.form.target='_blank';" onblur="javascript:this.form.target='_self'" />
+				<p:commandButton value="Salvar e Imprimir Prontuário" update=":idmsg,@form,:formcadCliente" icon="ui-icon ui-icon-disk"
+					ajax="false" process=":formcadCliente" action="#{clienteController.salvarImprimirProntuario}" />
 				<p:commandButton value="#{msg['button.save']}" update=":idmsg,@form,:formcadCliente" ajax="true"
 					action="#{clienteController.salvar}" icon="ui-icon ui-icon-disk"
 					process=":formcadCliente" oncomplete="goTopPage();" partialSubmit="true"/>
@@ -95,7 +105,7 @@
 					<h:panelGrid columns="1" cellpadding="2" cellspacing="5">
 						<p:dataTable id="dataTableServicos" var="atd" paginator="true" rows="10"
 							emptyMessage="Nenhum registro selecionado" paginatorPosition="bottom"
-							value="#{clienteController.cliente.listAtendimentos}"
+							value="#{clienteController.cliente.atendimentos}"
 		                	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		                	styleClass="gridContour" 
 			                rowIndexVar="rowIx" rowStyleClass="#{empty rowIx or rowIx mod 2 ne 0 ? 'even-row' : 'odd-row'}">
@@ -125,9 +135,11 @@
 	               	action="#{clienteController.entrar}" immediate="true" />
 				<p:commandButton id="btnLimpar2" value="#{msg['button.clear']}" update=":formcadCliente:nome" 
 					action="#{clienteController.limparEdit}" icon="ui-icon-arrowreturnthick-1-w" immediate="false" />
-				<p:commandButton value="#{msg['button.save']} e Imprimir Prontuário" update=":idmsg,@form,:formcadCliente" icon="ui-icon ui-icon-disk"
-					ajax="false" process=":formcadCliente" action="#{clienteController.salvarImprimirProntuario}" 
+				<p:commandButton value="Salvar e Imprimir Prontuário" update=":idmsg,@form,:formcadCliente" icon="ui-icon ui-icon-disk"
+					ajax="false" process=":formcadCliente" action="#{clienteController.salvarImprimirProntuario}" />
+					<!-- 
 					onclick="javascript:this.form.target='_blank';" onblur="javascript:this.form.target='_self'" />
+					 -->
 				<p:commandButton value="#{msg['button.save']}" update=":idmsg,:formcadCliente" ajax="true"
 					action="#{clienteController.salvar}" icon="ui-icon ui-icon-disk" partialSubmit="true"
 					process=":formcadCliente" oncomplete="goTopPage();" />

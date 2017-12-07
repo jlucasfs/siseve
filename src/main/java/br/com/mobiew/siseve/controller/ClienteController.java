@@ -117,6 +117,8 @@ public class ClienteController {
 	
 	private List<Servico> servicos;
 
+	private boolean prontoParaDownload;
+	
 	@PostConstruct
 	public void inicializar() {
 		this.cliente = new Cliente();
@@ -140,6 +142,8 @@ public class ClienteController {
 		this.atendimento = new Atendimento( this.cliente, new Servico(), null );
 		this.idadeInicial = null;
 		this.idadeFinal = null;
+		this.idServico = null;
+		this.prontoParaDownload = false;
 	}
 
 	public String entrar() {
@@ -219,11 +223,13 @@ public class ClienteController {
 		return result;
 	}
 
-	public void salvarImprimirProntuario() {
-		String salvar = salvarAtendimento();
-		if ( salvar != null && salvar.indexOf( "paciente-index" ) >= 0 ) {
-			imprimirProntuario();
-		}
+	public String salvarImprimirProntuario() {
+		String result = salvarAtendimento();
+		this.idCliente = this.cliente.getId(); // para o imprimirProntuario recuperar o cliente
+		inicializar();
+		this.prontoParaDownload = true;
+		result = "paciente-edit?faces-redirect=true";
+		return result;
 	}
 	
 	private String salvarAtendimento() {
@@ -287,15 +293,19 @@ public class ClienteController {
 	}
 
     public void imprimirProntuario() {
-    	if ( this.idCliente != null ) {
+    	this.prontoParaDownload = false;
+    	Cliente clienteImprimir = null;
+    	if ( this.idCliente == null ) {
+    		clienteImprimir = this.cliente;
+    	} else {
     		// neste caso, esta vindo do botao imprimir prontuario da tela de consulta
-    		this.cliente = this.clienteService.findById( this.idCliente );
+    		clienteImprimir = this.clienteService.findById( this.idCliente );
     	}
     	if ( this.cliente == null ) {
     		ControllerUtil.addErrorMessage( null, "Cliente não selecionado." );
     		return;
     	}
-        if ( this.cliente.getAtendimentos() == null || this.cliente.getAtendimentos().isEmpty() ) {
+        if ( clienteImprimir.getAtendimentos() == null || clienteImprimir.getAtendimentos().isEmpty() ) {
             ControllerUtil.addErrorMessage( null, "Não há dados para gerar prontuário do paciente." );
             return;
         }
@@ -304,15 +314,14 @@ public class ClienteController {
         try {
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put( Constantes.PARAMETRO_REPORT_LOCALE, Constantes.LOCALE_PT_BR );
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource( this.cliente.getAtendimentos() );
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource( clienteImprimir.getAtendimentos() );
             JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, dataSource );
-            OutputStream ous = Util.createOutputStreamPDFPagina( "prontuario.pdf" );
+            OutputStream ous = Util.createOutputStreamPDF( "prontuario.pdf" );
             JasperExportManager.exportReportToPdfStream( print, ous );
             ous.flush();
             ous.close();
             FacesContext.getCurrentInstance().renderResponse();
             FacesContext.getCurrentInstance().responseComplete();
-            
             
 //            JRPdfExporter exporter = new JRPdfExporter();
 //			exporter.setExporterInput( new SimpleExporterInput( print ) );
@@ -598,5 +607,15 @@ public class ClienteController {
 
 	public void setIdServico( Long idServicoParam ) {
 		this.idServico = idServicoParam;
+	}
+
+	
+	public boolean isProntoParaDownload() {
+		return this.prontoParaDownload;
+	}
+
+	
+	public void setProntoParaDownload( boolean prontoParaDownloadParam ) {
+		this.prontoParaDownload = prontoParaDownloadParam;
 	}
 }

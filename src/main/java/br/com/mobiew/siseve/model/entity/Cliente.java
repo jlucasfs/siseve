@@ -5,9 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -65,8 +63,8 @@ public class Cliente implements Serializable {
 	private String email;
 
     @OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "cliente", orphanRemoval = true )
-	private Set<Atendimento> atendimentos = new HashSet<Atendimento>( 0 );
-
+	private List<Atendimento> atendimentos = new ArrayList<Atendimento>( 0 );
+    
 	public Cliente() {
 		//
 	}
@@ -155,14 +153,6 @@ public class Cliente implements Serializable {
 		this.email = email;
 	}
 
-	public Set<Atendimento> getAtendimentos() {
-		return this.atendimentos;
-	}
-
-	public void setAtendimentos( Set<Atendimento> atendimentos ) {
-		this.atendimentos = atendimentos;
-	}
-
 	public Integer getIdade() {
         Integer idade = null;
         if ( this.dataNascimento != null ) {
@@ -170,8 +160,13 @@ public class Cliente implements Serializable {
         }
         return idade;
     }
+	
+	public List<Atendimento> getAtendimentos() {
+		return this.atendimentos;
+	}
 
-	public List<Atendimento> getListAtendimentos() {
-        return new ArrayList<Atendimento>( this.atendimentos );
-    }
+	
+	public void setAtendimentos( List<Atendimento> atendimentosParam ) {
+		this.atendimentos = atendimentosParam;
+	}
 }
