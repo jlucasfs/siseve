@@ -21,7 +21,8 @@
             <h:form id="formpacedit">
                 <h:commandLink id="link" action="#{clienteController.imprimirProntuario()}"/>
             </h:form>
-           </c:if>		
+        </c:if>		
+		
 		<h2>Atendimento - cadastro</h2>
 
 		<h:form id="formcadCliente" styleClass="form-contour">
@@ -52,6 +53,9 @@
 						<f:selectItem itemLabel="Feminino" itemValue="F" />
 					</p:selectOneRadio>
 				</h:panelGrid>
+				
+				<p:focus for=":formcadCliente:nome" />
+		
 				
 				<p:panel id="pnEnd" header="Endereço e Contatos" styleClass="boxSubtit">
 					<h:panelGrid columns="4" cellpadding="2" cellspacing="5">

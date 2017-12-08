@@ -9,7 +9,11 @@
 		<f:facet name="first">
 			<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
-			<title>#{msg['app.sigla']} - #{msg['app.title']}</title>
+			<title>
+				#{msg['app.sigla']} - <h:outputFormat value="#{msg['app.title']}">
+										<f:param value="#{sessionBean.tituloSistema}" />
+									  </h:outputFormat>
+			</title>
 		</f:facet>
 		<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
 		<script type="text/javascript" src="#{request.contextPath}/static/js/jquery.easing.1.3.js" />
@@ -58,7 +62,11 @@
 				<a href="#{request.contextPath}/pages/home.jsf" title='Página inicial'>
 					<img src="#{request.contextPath}/static/img/eventos-site.jpg" height="60" />
 				</a>
-				<h2 class="nome-sistema">#{msg['app.title']}</h2>
+				<h2 class="nome-sistema">
+					<h:outputFormat value="#{msg['app.title']}">
+						<f:param value="#{sessionBean.tituloSistema}" />
+					</h:outputFormat>
+				</h2>
 			</div>
 			<div class="tarja-bem-vindo">
 				<div id='bem-vindo'>

@@ -8,7 +8,7 @@
 			function goTopPage() {
 				$( 'html, body' ).animate( { scrollTop: 0 }, 'slow' );
 			}
-		</script>
+ 		</script>
 		
 		<h2>Cadastro de Serviço</h2>
 
@@ -41,9 +41,7 @@
 					</p:selectOneRadio>
 				</h:panelGrid>
             </p:panel>
-            <!-- 
-			<p:focus for=":formcadEnt:cbevento" />
-             -->
+			<p:focus for=":formcadEnt:nome" />
 		
 			<h:panelGrid styleClass="btnForm" columns="5" cellpadding="2" cellspacing="5">
 	            <p:commandButton value="#{msg['button.back']}" icon="ui-icon ui-icon-triangle-1-w" ajax="false" 
