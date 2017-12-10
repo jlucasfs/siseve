@@ -359,7 +359,7 @@ public class ClienteController {
 			parameters.put( Constantes.PARAMETRO_REPORT_LOCALE, Constantes.LOCALE_PT_BR );
 			parameters.put( JRParameter.IS_IGNORE_PAGINATION, Boolean.TRUE );
             
-			InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/relatorioXLS.jasper" );
+			InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/relatorioGeral.jasper" );
 			JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, new JRBeanCollectionDataSource( lista ) );
             Util.gerarRespostaXls( (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse(), print, "relatorio.xls" );
 
