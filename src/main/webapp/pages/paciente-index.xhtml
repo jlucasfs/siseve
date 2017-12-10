@@ -48,11 +48,9 @@
 				<p:commandButton value="Novo #{clienteController.entidade}" update=":idmsg,@form" ajax="false"
 					action="#{clienteController.incluir}" icon="ui-icon-plus"
 					title="Incluir um novo #{clienteController.entidade}" />
-				<!-- 
-				<p:commandButton value="Relatório Geral" update=":idmsg,@form" ajax="false"
-					action="#{clienteController.imprimirRelatorioGeral}" icon="ui-icon-print"
-					title="Imprimir Relatório Geral" />
-				 -->
+				<p:commandButton value="Relatório" update=":idmsg,@form" ajax="false"
+					action="#{clienteController.imprimirRelatorioXls}" icon="ui-icon-print"
+					title="Imprimir Relatório" />
 		    </h:panelGrid>
 
 			<p:focus for=":cadastro:nome" />

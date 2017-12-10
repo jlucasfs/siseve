@@ -1,5 +1,6 @@
 package br.com.mobiew.siseve.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -34,6 +36,11 @@ import org.apache.commons.lang.StringUtils;
 
 import br.com.mobiew.siseve.exceptions.NegocioException;
 import br.com.mobiew.siseve.exceptions.SistemaException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 public final class Util {
 
@@ -484,4 +491,37 @@ public final class Util {
         }
         return result;
     }
+    
+    public static void gerarRespostaXls( final HttpServletResponse response, final JasperPrint print, final String fileName ) throws Exception {
+        JRXlsExporter exporter = new JRXlsExporter();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+//        exporter.setParameter( JRXlsExporterParameter.JASPER_PRINT, impressao );
+//        exporter.setParameter( JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE );
+//        exporter.setParameter( JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE );
+//        exporter.setParameter( JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE );
+//        exporter.setParameter( JRExporterParameter.OUTPUT_STREAM, xlsReport );
+        exporter.setConfiguration( getReportConfigurationXls() );
+        exporter.setExporterInput( new SimpleExporterInput( print ) );
+		exporter.setExporterOutput( new SimpleOutputStreamExporterOutput( os ) );
+        exporter.exportReport();
+        
+        response.setContentType( "application/vnd.ms-excel" );
+        response.setHeader( "Content-disposition", "inline; filename=\"" + fileName + "\"" );
+
+        final byte[] relatorio = os.toByteArray();
+        ServletOutputStream ouputStream = response.getOutputStream();
+        ouputStream.write( relatorio, 0, relatorio.length );
+        ouputStream.flush();
+        ouputStream.close();
+    }
+
+	private static SimpleXlsReportConfiguration getReportConfigurationXls() {
+		SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+		configuration.setOnePagePerSheet( false );
+		configuration.setDetectCellType( false );
+		configuration.setCollapseRowSpan( false );
+		configuration.setRemoveEmptySpaceBetweenRows( true );
+		configuration.setWhitePageBackground( false );
+		return configuration;
+	}
 }

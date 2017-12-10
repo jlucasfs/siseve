@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -42,10 +43,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 @Controller
 @Scope( Scopes.SESSION )
@@ -350,48 +347,30 @@ public class ClienteController {
         }
     }
 
-    public void imprimirRelatorioGeral() {
-        String nomeRelatorio = "relatorioGeral.jasper";
-        InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/" + nomeRelatorio );
+    public void imprimirRelatorioXls() {
         try {
+        	List<RelatorioDto> lista = new ArrayList<>();
+			lista.add( new RelatorioDto( 1L, "JOÃO", 430L ) );
+			lista.add( new RelatorioDto( 2L, "LUCAS", 520L ) );
+			lista.add( new RelatorioDto( 3L, "FRANÇA", 610L ) );
+			lista.add( new RelatorioDto( 4L, "SARMENTO", 703L ) );
+			
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put( Constantes.PARAMETRO_REPORT_LOCALE, Constantes.LOCALE_PT_BR );
 			parameters.put( JRParameter.IS_IGNORE_PAGINATION, Boolean.TRUE );
-			List<RelatorioDto> lista = new ArrayList<>();
-			lista.add( new RelatorioDto( 1L, "JOAO", 30L ) );
-			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource( lista );
-			JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, dataSource );
-			//ByteArrayOutputStream ous = new ByteArrayOutputStream();
-			OutputStream ous = Util.createOutputStreamXls( "relatoriogeral.xls", 1024 );
-			
-			JRXlsExporter exporter = new JRXlsExporter();
-			exporter.setExporterInput( new SimpleExporterInput( print ) );
-			exporter.setExporterOutput( new SimpleOutputStreamExporterOutput( ous ) );
-			SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
-			configuration.setOnePagePerSheet( false );
-			configuration.setDetectCellType( false );
-			configuration.setCollapseRowSpan( false );
-			configuration.setRemoveEmptySpaceBetweenRows( true );
-			configuration.setWhitePageBackground( false );
-			exporter.setConfiguration( configuration );
-			exporter.exportReport();
-			
-//			result = new DefaultStreamedContent( new ByteArrayInputStream( ous.toByteArray() ), 
-//					"application/" + Constantes.EXTENSAO_XLS,
-//					"relatorioGeral." + Constantes.EXTENSAO_XLS );
-			
-			ous.flush();
-            ous.close();
+            
+			InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/relatorioXLS.jasper" );
+			JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, new JRBeanCollectionDataSource( lista ) );
+            Util.gerarRespostaXls( (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse(), print, "relatorio.xls" );
+
             FacesContext.getCurrentInstance().renderResponse();
             FacesContext.getCurrentInstance().responseComplete();
-            
-		} catch ( Exception e ) {
-			LOG.error( e.getMessage() );
-			FacesContext.getCurrentInstance().addMessage( FacesMessage.FACES_MESSAGES,
-					new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao gerar relatorio geral", e.getMessage() ) );
-		}
-//        return result;
-	}
+        } catch ( Exception e ) {
+        	LOG.error( e.getMessage() );
+        	FacesContext.getCurrentInstance().addMessage( FacesMessage.FACES_MESSAGES,
+        			new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao gerar relatorio geral", e.getMessage() ) );
+        }
+    }
     
 	public String getEntidade() {
 		return entidade;
