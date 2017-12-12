@@ -30,6 +30,7 @@ import br.com.mobiew.siseve.model.entity.Cliente;
 import br.com.mobiew.siseve.model.entity.Evento;
 import br.com.mobiew.siseve.model.entity.Servico;
 import br.com.mobiew.siseve.model.enuns.UFEnum;
+import br.com.mobiew.siseve.service.AtendimentoService;
 import br.com.mobiew.siseve.service.ClienteService;
 import br.com.mobiew.siseve.service.EventoService;
 import br.com.mobiew.siseve.service.ServicoService;
@@ -80,6 +81,9 @@ public class ClienteController {
 	
 	@Autowired
 	private ServicoService servicoService;
+	
+	@Autowired
+	private AtendimentoService atendimentoService;
 
 	private List<Evento> eventosSelecionados;
 
@@ -115,6 +119,8 @@ public class ClienteController {
 	private List<Servico> servicos;
 
 	private boolean prontoParaDownload;
+
+	private Evento eventoAtual;
 	
 	@PostConstruct
 	public void inicializar() {
@@ -141,6 +147,7 @@ public class ClienteController {
 		this.idadeFinal = null;
 		this.idServico = null;
 		this.prontoParaDownload = false;
+		this.eventoAtual = this.eventoService.findEventoAtual();
 	}
 
 	public String entrar() {
@@ -349,22 +356,13 @@ public class ClienteController {
 
     public void imprimirRelatorioXls() {
         try {
-        	List<RelatorioDto> lista = new ArrayList<>();
-			lista.add( new RelatorioDto( 1L, "JOÃO", 430L ) );
-			lista.add( new RelatorioDto( 2L, "LUCAS", 520L ) );
-			lista.add( new RelatorioDto( 3L, "FRANÇA", 610L ) );
-			lista.add( new RelatorioDto( 4L, "SARMENTO", 703L ) );
-			
+			List<RelatorioDto> lista = this.atendimentoService.findAllRelatorio( this.eventoAtual );
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put( Constantes.PARAMETRO_REPORT_LOCALE, Constantes.LOCALE_PT_BR );
 			parameters.put( JRParameter.IS_IGNORE_PAGINATION, Boolean.TRUE );
-            
-			InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/relatorioGeral.jasper" );
+			InputStream arquivoJasperIS = getClass().getClassLoader().getResourceAsStream( "report/relatorioXls.jasper" );
 			JasperPrint print = JasperFillManager.fillReport( arquivoJasperIS, parameters, new JRBeanCollectionDataSource( lista ) );
-            Util.gerarRespostaXls( (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse(), print, "relatorio.xls" );
-
-            FacesContext.getCurrentInstance().renderResponse();
-            FacesContext.getCurrentInstance().responseComplete();
+            Util.gerarRelatorioXls( (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse(), print, "relatorio.xls" );
         } catch ( Exception e ) {
         	LOG.error( e.getMessage() );
         	FacesContext.getCurrentInstance().addMessage( FacesMessage.FACES_MESSAGES,
@@ -588,13 +586,19 @@ public class ClienteController {
 		this.idServico = idServicoParam;
 	}
 
-	
 	public boolean isProntoParaDownload() {
 		return this.prontoParaDownload;
 	}
 
-	
 	public void setProntoParaDownload( boolean prontoParaDownloadParam ) {
 		this.prontoParaDownload = prontoParaDownloadParam;
+	}
+
+	public Evento getEventoAtual() {
+		return this.eventoAtual;
+	}
+
+	public void setEventoAtual( Evento eventoAtualParam ) {
+		this.eventoAtual = eventoAtualParam;
 	}
 }

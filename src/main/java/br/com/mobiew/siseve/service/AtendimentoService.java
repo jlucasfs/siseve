@@ -6,7 +6,9 @@ import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
 import br.com.mobiew.siseve.dto.AtendimentoDTO;
+import br.com.mobiew.siseve.dto.RelatorioDto;
 import br.com.mobiew.siseve.model.entity.Atendimento;
+import br.com.mobiew.siseve.model.entity.Evento;
 import br.com.mobiew.siseve.service.base.CRUDService;
 
 public interface AtendimentoService extends CRUDService<Atendimento, Long> {
@@ -20,4 +22,6 @@ public interface AtendimentoService extends CRUDService<Atendimento, Long> {
 	CartesianChartModel findAllAtendimentosSeisMeses();
 	
 	PieChartModel findAllAtendimentosPorServico();
+
+	List<RelatorioDto> findAllRelatorio( Evento evento );
 }

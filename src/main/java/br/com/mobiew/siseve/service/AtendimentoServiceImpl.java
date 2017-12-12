@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.mobiew.siseve.dto.AtendimentoDTO;
+import br.com.mobiew.siseve.dto.RelatorioDto;
 import br.com.mobiew.siseve.model.dao.AtendimentoDAO;
 import br.com.mobiew.siseve.model.entity.Atendimento;
+import br.com.mobiew.siseve.model.entity.Evento;
 
 @Service
 public class AtendimentoServiceImpl implements AtendimentoService {
@@ -133,5 +135,10 @@ public class AtendimentoServiceImpl implements AtendimentoService {
 	public PieChartModel findAllAtendimentosPorServico() {
 		PieChartModel pie = new PieChartModel();
 		return pie;
+	}
+
+	@Override
+	public List<RelatorioDto> findAllRelatorio( Evento eventoParam ) {
+		return this.dao.findAllRelatorio( eventoParam );
 	}
 }

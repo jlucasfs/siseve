@@ -492,7 +492,7 @@ public final class Util {
         return result;
     }
     
-    public static void gerarRespostaXls( final HttpServletResponse response, final JasperPrint print, final String fileName ) throws Exception {
+    public static void gerarRelatorioXls( final HttpServletResponse response, final JasperPrint print, final String fileName ) throws Exception {
         JRXlsExporter exporter = new JRXlsExporter();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 //        exporter.setParameter( JRXlsExporterParameter.JASPER_PRINT, impressao );
@@ -513,6 +513,9 @@ public final class Util {
         ouputStream.write( relatorio, 0, relatorio.length );
         ouputStream.flush();
         ouputStream.close();
+        
+        FacesContext.getCurrentInstance().renderResponse();
+        FacesContext.getCurrentInstance().responseComplete();
     }
 
 	private static SimpleXlsReportConfiguration getReportConfigurationXls() {
