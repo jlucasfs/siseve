@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.primefaces.component.datatable.DataTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -369,7 +370,14 @@ public class ClienteController {
         			new FacesMessage( FacesMessage.SEVERITY_ERROR, "Erro ao gerar relatorio geral", e.getMessage() ) );
         }
     }
-    
+
+	public void onPageChange() {
+		DataTable dt = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent( "frmtabcliente:dtclientes" );
+		if ( dt != null ) {
+			this.paginaAtual = dt.getPage();
+		}
+	}
+
 	public String getEntidade() {
 		return entidade;
 	}

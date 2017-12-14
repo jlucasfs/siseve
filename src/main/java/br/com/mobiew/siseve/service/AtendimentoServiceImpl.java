@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import br.com.mobiew.siseve.dto.RelatorioDto;
 import br.com.mobiew.siseve.model.dao.AtendimentoDAO;
 import br.com.mobiew.siseve.model.entity.Atendimento;
 import br.com.mobiew.siseve.model.entity.Evento;
+import br.com.mobiew.siseve.util.ConstantesData;
 
 @Service
 public class AtendimentoServiceImpl implements AtendimentoService {
@@ -127,10 +129,20 @@ public class AtendimentoServiceImpl implements AtendimentoService {
 
 	@Override
 	public CartesianChartModel findAllAtendimentosSeisMeses() {
-		CartesianChartModel lista = new CartesianChartModel();
-		return lista;
-	}
+        CartesianChartModel lista = new CartesianChartModel();
 
+        ChartSeries chartAtendimentos = new ChartSeries();
+        chartAtendimentos.setLabel( "Atendimentos" );
+        lista.addSeries( chartAtendimentos );
+
+        List<AtendimentoDTO> listaAtendimentos = this.dao.findAllAtendimentosSeisMeses();
+        for ( AtendimentoDTO atend: listaAtendimentos ) {
+        	chartAtendimentos.set( ConstantesData.FMT_NOME_MES.format( atend.getDataAtendimento() ), atend.getQuantidade() );
+        }
+        
+        return lista;
+	}
+	
 	@Override
 	public PieChartModel findAllAtendimentosPorServico() {
 		PieChartModel pie = new PieChartModel();

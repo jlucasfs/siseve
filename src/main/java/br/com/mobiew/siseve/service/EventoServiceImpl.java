@@ -32,7 +32,16 @@ public class EventoServiceImpl implements EventoService {
 
 	@Override
 	public List<Evento> findAll() {
-		return this.eventoDAO.findAll();
+		List<Evento> lista = this.eventoDAO.findAll();
+		if ( lista != null && !lista.isEmpty() ) {
+			Collections.sort( lista, new Comparator<Evento>() {
+				@Override
+				public int compare( Evento o1Param, Evento o2Param ) {
+					return o2Param.getDataInicio().compareTo( o1Param.getDataInicio() );
+				}
+			});
+		}
+		return lista;
 	}
 
 	@Override

@@ -7,29 +7,19 @@
 	<h:form id='frmmenu'>
 		<div style='position:relative;'>
 			<p:menubar styleClass="bg-menu" autoDisplay="false">
+			 	<!-- 
 			 	<p:menuitem value="Painel" url="/pages/home.jsf" icon="ui-icon ui-icon-home" style="max-width:70px; min-width:90px;" />
+			 	 -->
+			 	<p:menuitem value="Painel" action="#{sessionBean.refresh}" icon="ui-icon ui-icon-home" style="max-width:70px; min-width:90px;" />
 			    <p:submenu label="Cadastro" style="opacity:0.95;">
 			        <p:menuitem value="Evento" url='/pages/evento-index.jsf' style="width:180px;" />
 			        <p:menuitem value="Serviço" url='/pages/servico-index.jsf' style="width:180px;" />
 			        <p:menuitem value="Profissional" url='/pages/profissional-index.jsf' style="width:180px;" />
 			    </p:submenu>
-			 	<p:menuitem value="Atendimento" icon="ui-icon ui-icon-home" style="max-width:180px; min-width:180px;"
+			 	<p:menuitem value="Atendimento" icon="ui-icon ui-icon-clipboard" style="max-width:130px; min-width:130px;"
 			 		ajax="false" action="#{clienteController.entrar}" />
-			    <!-- 
-			    <p:submenu label="Atendimento" style="opacity:0.95;">
-			        <p:menuitem value="Paciente" ajax="false" action="#{clienteController.entrar}" style="width:180px;" />
-			    </p:submenu>
-			     -->
-			    <!-- 
-			    <p:submenu label="Administração" rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}">
-			        <p:menuitem value="Usuário" url='/pages/ca/usuario.jsf' style="width:170px;" />
-			        <p:menuitem value="Funcionalidade" url='/pages/ca/funcionalidade.jsf' style="width:170px;" />
-			        <p:menuitem value="Perfil" url='/pages/ca/perfil.jsf' style="width:170px;" />
-			        <p:menuitem value="Perfil x usuarios" url='/pages/ca/perfilUsuario.jsf' style="width:170px;" />
-			        <p:menuitem value="Permissões" url='/pages/ca/permissaoPerfil.jsf' style="width:170px;" />
-			        <p:menuitem value="Consulta Envio e-mails" url='/pages/consulta-envio-emails.jsf' style="width:170px;" rendered="#{sessionScope.perfilUsuarioAutenticado == 'ADM'}" />
-			    </p:submenu>
-			     -->
+			 	<p:menuitem value="Relatório" icon="ui-icon ui-icon-print" style="max-width:130px; min-width:130px;"
+			 		ajax="false" action="#{relatorioController.entrar}" />
 			</p:menubar>
 			<!-- 
 			<p:commandButton value="Sair" ajax="false" action="#{loginController.doLogoff}" icon="ui-icon-power" title="Sair do sistema"

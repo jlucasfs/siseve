@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/templates/ui.xhtml">
+	<ui:define name="content">
+		<style>
+			table thead tr th {
+				font-weight: bold;
+			}
+		</style>
+ 		
+ 		<h2>Relatório</h2>
+		<h:form id="cadastro" styleClass="form-contour">
+            <p:panel header="Filtro de consulta" styleClass="boxSubtit" id="panel">
+            	<h:panelGrid columns="2" cellpadding="2" cellspacing="5">
+            		<p:spacer width="320" height="10" />
+					<h:outputLabel value="Evento :" />
+					<h:outputText value="" />
+					<p:selectOneMenu id="eve" value="#{relatorioController.idEvento}" 
+						styleClass="push-l" style="width:240px; margin-left:0;">
+						<f:selectItem itemLabel="Selecione" itemValue="" />
+						<f:selectItems value="#{relatorioController.eventos}" var="ent" itemValue="#{ent.id}" itemLabel="#{ent.nome}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+            </p:panel>
+
+			<h:panelGrid styleClass="btnForm" columns="6" cellpadding="2" cellspacing="5">
+				<p:commandButton value="Gerar Relatório XLS" update=":idmsg,@form" ajax="false"
+					action="#{relatorioController.imprimirRelatorioXls}" icon="ui-icon-print"
+					title="Imprimir Relatório XLS" />
+		    </h:panelGrid>
+
+			<p:focus for=":cadastro:eve" />
+		</h:form>
+		
+	</ui:define>
+</ui:composition>

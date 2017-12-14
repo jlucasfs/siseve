@@ -27,6 +27,8 @@ public class AtendimentoDTO implements Serializable {
 
 	private String tipoPlano;
 
+	private Integer quantidade;
+
 	public Date getDataAtendimento() {
 		return this.dataAtendimento;
 	}
@@ -105,5 +107,13 @@ public class AtendimentoDTO implements Serializable {
 
 	public void setNomeProfissional( String nomeProfissionalParam ) {
 		this.nomeProfissional = nomeProfissionalParam;
+	}
+
+	public Integer getQuantidade() {
+		return this.quantidade;
+	}
+
+	public void setQuantidade( Integer quantidadeParam ) {
+		this.quantidade = quantidadeParam;
 	}
 }

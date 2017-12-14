@@ -1,6 +1,7 @@
 package br.com.mobiew.siseve.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class RelatorioDto implements Serializable {
 
@@ -10,11 +11,15 @@ public class RelatorioDto implements Serializable {
 
 	private String local;
 
+	private Date dataEvento;
+
 	private String nome;
 
 	private Long idade;
 
 	private String endereco;
+
+	private String bairro;
 
 	private String telefone;
 
@@ -175,6 +180,22 @@ public class RelatorioDto implements Serializable {
 
 	public void setQtdeFisioterapia( Long qtdeFisioterapiaParam ) {
 		this.qtdeFisioterapia = qtdeFisioterapiaParam;
+	}
+
+	public Date getDataEvento() {
+		return this.dataEvento;
+	}
+
+	public void setDataEvento( Date dataEventoParam ) {
+		this.dataEvento = dataEventoParam;
+	}
+
+	public String getBairro() {
+		return this.bairro;
+	}
+
+	public void setBairro( String bairroParam ) {
+		this.bairro = bairroParam;
 	}
 
 }

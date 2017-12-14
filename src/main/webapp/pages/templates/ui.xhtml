@@ -59,9 +59,11 @@
 		<f:loadBundle basename="messages" var="msg" />
 		<div class="ui-widget ui-widget-header">
 			<div id="logo">
-				<a href="#{request.contextPath}/pages/home.jsf" title='Página inicial'>
-					<img src="#{request.contextPath}/static/img/eventos-site.jpg" height="60" />
-				</a>
+				<h:form>
+				<h:commandLink value="" action="#{sessionBean.refresh}" title="Página inicial">
+					<p:graphicImage value="/static/img/eventos-site.jpg" height="60" /> <br />
+				</h:commandLink>
+				</h:form>
 				<h2 class="nome-sistema">
 					<h:outputFormat value="#{msg['app.title']}">
 						<f:param value="#{sessionBean.tituloSistema}" />
