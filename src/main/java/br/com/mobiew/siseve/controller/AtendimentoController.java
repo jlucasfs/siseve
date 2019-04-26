@@ -62,23 +62,10 @@ public class AtendimentoController {
 		consultar();
 	}
 
-	private void obterAtendimentos() {
-		if ( this.pacienteSelecionado != null ) {
-			this.listaAtendimentos = this.atendimentoService.findAllAtendimentosByPaciente( this.pacienteSelecionado.getId() );
-		}
-	}
-
 	public void limparEdit() {
 		inicializar();
 	}
 	
-    private void limpar() {
-    	this.pacienteSelecionado = null;
-    	this.nomePaciente = null;
-    	this.atendimentos = null;
-    	this.listaAtendimentos = null;
-    }
-
 	public void consultar() {
 		try {
 			this.atendimentoService.findAllByNomePaciente( this.nomePaciente );
